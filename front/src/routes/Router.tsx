@@ -12,6 +12,9 @@ const ModernDash = Loadable(lazy(() => import('../views/dashboard/Modern')));
 const EcommerceDash = Loadable(lazy(() => import('../views/dashboard/Ecommerce')));
 const Client = Loadable(lazy(() => import('../views/dashboard/client')));
 const Fournisseur = Loadable(lazy(() => import('../views/dashboard/fournisseur')));
+const Produit = Loadable(lazy(() => import('../views/dashboard/produit')));
+const Vente = Loadable(lazy(() => import('../views/dashboard/vente')));
+const Achat = Loadable(lazy(() => import('../views/dashboard/achat')));
 
 /* ****Apps***** */
 const Blog = Loadable(lazy(() => import('../views/apps/blog/Blog')));
@@ -123,7 +126,10 @@ const Router = [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
       { path: '/dashboards/modern', exact: true, element: <ProtectedRoute element={<ModernDash />} /> },
       { path: '/dashboards/clients', exact: true, element: <ProtectedRoute element={<Client />} /> },
-      { path: '/dashboards/Fournisseurs', exact: true, element: <ProtectedRoute element={<Fournisseur />} /> },
+      { path: '/dashboards/fournisseurs', exact: true, element: <ProtectedRoute element={<Fournisseur />} /> },
+      { path: '/dashboards/produits', exact: true, element: <ProtectedRoute element={<Produit />} /> },
+      { path: '/dashboards/ventes', exact: true, element: <ProtectedRoute element={<Vente />} /> },
+      { path: '/dashboards/achats', exact: true, element: <ProtectedRoute element={<Achat />} /> },
       { path: '/dashboards/ecommerce', exact: true, element: <ProtectedRoute element={<EcommerceDash />} /> },
       { path: '/apps/contacts', element: <ProtectedRoute element={<Contacts />} /> },
       { path: '/apps/blog/posts', element: <ProtectedRoute element={<Blog />} /> },

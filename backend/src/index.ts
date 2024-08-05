@@ -8,6 +8,8 @@ import { router as userRoutes } from "./routes/user";
 import { router as authRoutes } from "./routes/auth";
 import { router as clientsRoutes } from "./routes/client";
 import { router as fournisseursRoutes } from "./routes/fornisseur";
+import { router as produitRoutes } from "./routes/produit";
+import { router as factureRoutes } from "./routes/facture";
 
 dotenv.config({ path: ".env" });
 
@@ -35,6 +37,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/fournisseurs", fournisseursRoutes);
+app.use("/api/produits", produitRoutes);
+app.use("/api/facture", factureRoutes);
 
 app.use(notFoundError);
 app.use(errorHundler);

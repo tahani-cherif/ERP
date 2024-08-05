@@ -2,30 +2,26 @@ import mongoose, { Document, Model } from "mongoose";
 
 const { Schema, model } = mongoose;
 interface IFacture extends Document {
-  numero: string;
   client:  mongoose.Schema.Types.ObjectId;
+  fournisseur:  mongoose.Schema.Types.ObjectId;
   date: Date;
   total_general: Number;
   statut: string;
   articles:  {
-    description:  string,
-    quantite:  Number,
-    prix_unitaire: Number,
-    total: Number
+    produit: mongoose.Schema.Types.ObjectId,
+    quantite: Number
 }[]
 }
 
 const factureSchema = new Schema<IFacture>(
   {
-    numero: {
-      type: String,
-      required: true,
-      unique: true
-  },
   client: {
     type: mongoose.Schema.Types.ObjectId,
      ref:"client",
-     required: true
+  },
+  fournisseur: {
+    type: mongoose.Schema.Types.ObjectId,
+     ref:"fournisseur"
   },
   date: {
       type: Date,
@@ -34,22 +30,14 @@ const factureSchema = new Schema<IFacture>(
   },
   articles: [
       {
-          description: {
-              type: String,
-              required: true
+        produit: {
+            type: mongoose.Schema.Types.ObjectId,
+             ref:"produit",
           },
           quantite: {
               type: Number,
               required: true
           },
-          prix_unitaire: {
-              type: Number,
-              required: true
-          },
-          total: {
-              type: Number,
-              required: true
-          }
       }
   ],
   total_general: {
@@ -58,8 +46,9 @@ const factureSchema = new Schema<IFacture>(
   },
   statut: {
       type: String,
-      // enum: ['en attente', 'payée', 'annulée'],
-      // required: true
+      enum: ['pending', 'paid', 'cancelled'],
+      default: 'pending',
+      required: true
   }
   },
   { timestamps: true }

@@ -14,6 +14,7 @@ interface MenuitemsType {
   variant?: string;
   external?: boolean;
 }
+
 import {
   IconAward,
   IconBoxMultiple,
@@ -64,6 +65,8 @@ import {
   IconBorderStyle2,
   IconAppWindow,
   IconUsers,
+  IconBuildingStore,
+  IconReportMoney,
 } from '@tabler/icons';
 
 const Menuitems: MenuitemsType[] = [
@@ -88,9 +91,27 @@ const Menuitems: MenuitemsType[] = [
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="en" ?"Supplier":'Fournisseur',
+    title: localStorage.getItem("i18nextLng")==="fr" ?"Fournisseur":'Supplier',
     icon: IconShoppingCart ,
-    href: '/dashboards/Fournisseurs',
+    href: '/dashboards/fournisseurs',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem("i18nextLng")==="fr" ?"Produits":'Products',
+    icon: IconBuildingStore,
+    href: '/dashboards/produits',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem("i18nextLng")==="fr" ?"Achats":'Purchases',
+    icon: IconBasket,
+    href: '/dashboards/achats',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem("i18nextLng")==="fr" ?"ventes":'sales',
+    icon: IconReportMoney,
+    href: '/dashboards/ventes',
   },
   {
     id: uniqueId(),

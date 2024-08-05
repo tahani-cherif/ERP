@@ -6,9 +6,15 @@ import ApiError from "../utils/apiError";
 // @desc    Get all factures
 // @route   GET api/factures/
 // @access  Private
-const getFactures = asyncHandler(async (req: Request, res: Response) => {
-  const factures = await factureModel.find({});
-  res.status(200).json({ results: factures.length, data: factures });
+const getFacturesClient = asyncHandler(async (req: any, res: Response) => {
+  const userId = req?.user?._id;
+  const factures = await factureModel.find({admin:userId}).populate("client").populate('articles.produit');
+  res.status(200).json({ results: factures.filter((item)=>item.client!==undefined).length, data: factures.filter((item)=>item.client!==undefined) });
+});
+const getFacturesFournisseur = asyncHandler(async (req: any, res: Response) => {
+  const userId = req?.user?._id;
+  const factures = await factureModel.find({admin:userId}).populate('fournisseur').populate('articles.produit');
+  res.status(200).json({ results: factures.filter((item)=>item.fournisseur!==undefined).length, data: factures.filter((item)=>item.fournisseur!==undefined) });
 });
 
 // @desc    Get specific facture by id
@@ -59,7 +65,8 @@ const deleteFacture = asyncHandler(async (req: Request, res: Response, next: Nex
 });
 
 export {
-  getFactures,
+  getFacturesClient,
+  getFacturesFournisseur,
   getFacture,
   createFacture,
   updateFacture,
