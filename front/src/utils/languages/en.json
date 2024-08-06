@@ -46,7 +46,7 @@
    "updateClient": "Update Client",
    "fournisseur":"Supplier",
    "addFournisseur": "Add New Supplier",
-   "produit": "Products",
+   "produit": "Stock/Inventory",
    "addProduit": "Add New Product",
    "nom":"Product name",
    "description": "Description",
@@ -65,7 +65,16 @@
    "pending":"Pending",
    "paid":"Paid",
    "cancelled":"Cancelled",
-    "montantTotal":"Total amount",
-    "quantite":"Quantity"
+   "montantTotal":"Total amount",
+   "quantite":"Quantity",
+   "nomFournisseur":"Supplier name ",
+   "titleUpdateStatus":"Update status",
+   "descriptionUpdateStatus":"Please update status",
+   "sorte":"Outgoing stock",
+   "entre":"Incoming stock",
+   "stockProduction": "Stock/Inventory Production",
+   "stockAchat": "Stock/Inventory Purchased",
+   "typeProduit":"Product type",
+   "imprimer":"print"
 
 }

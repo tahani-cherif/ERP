@@ -20,7 +20,6 @@ import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
-import { addProduit } from 'src/store/apps/produit/produitSlice';
 import TableAchat from 'src/components/tables/achatTab';
 import { fetchAchats } from 'src/store/apps/achat/achatSlice';
 
@@ -64,7 +63,7 @@ interface IAchat{
       title: 'Home',
     },
     {
-      title: t("vente") || "",
+      title: t("achat") || "",
     },
   ];
   const theme = useTheme();
@@ -91,7 +90,8 @@ interface IAchat{
     onSubmit: async(values) => {
       setLoading(true);
       try {
-      await dispatch(addProduit({...values,price:Number(values.price)})).then((secc:any)=>setData(data ? [secc,...data ]:[secc]));
+        console.log(values)
+      // await dispatch(addProduit({...values,price:Number(values.price)})).then((secc:any)=>setData(data ? [secc,...data ]:[secc]));
         setLoading(false);
      
         handleCloseModal()

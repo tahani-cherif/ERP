@@ -7,7 +7,24 @@ interface IProduit extends Document {
   price: number;
   stock:number;
   admin: mongoose.Schema.Types.ObjectId;
+  type:string;
+  historique:{
+    type: string
+    date:Date,
+    quantite: number
+  }
 }
+const historiqueSchema = new mongoose.Schema({
+  type: { 
+    type: String, 
+  },
+  date: { 
+    type: Date, 
+  },
+  quantite: { 
+    type: Number, 
+  }
+});
 
 const produitSchema = new Schema<IProduit>(
   {
@@ -27,11 +44,18 @@ const produitSchema = new Schema<IProduit>(
       type: Number,
       default: 0
   },
+  type: { 
+    type: String, 
+  },
   admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref:"user",
     required: true
  },
+ historique: {
+  type: [historiqueSchema],
+  default: []
+}
   },
   { timestamps: true }
 );

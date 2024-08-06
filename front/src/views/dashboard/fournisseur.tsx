@@ -125,7 +125,7 @@ interface IFournisseur{
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
       > <form onSubmit={formik.handleSubmit} className='w-full'>
-        <DialogTitle id="responsive-dialog-title">{t("fournisseur")}</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">{t("addFournisseur")}</DialogTitle>
         <DialogContent>
            <div className='flex gap-4'>
         <Box >

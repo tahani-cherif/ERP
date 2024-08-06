@@ -48,6 +48,7 @@
     "react-scripts": "5.0.1",
     "react-slick": "0.29.0",
     "react-spring": "^9.5.5",
+    "react-to-print": "^2.15.1",
     "simplebar-react": "2.4.1",
     "slick-carousel": "1.8.1",
     "stylis-plugin-rtl": "2.0.2",

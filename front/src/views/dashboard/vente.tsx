@@ -20,7 +20,6 @@ import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
-import { addProduit } from 'src/store/apps/produit/produitSlice';
 import TableVente from 'src/components/tables/venteTab';
 import { fetchVentes } from 'src/store/apps/vente/venteSlice';
 
@@ -91,7 +90,8 @@ interface IVente{
     onSubmit: async(values) => {
       setLoading(true);
       try {
-      await dispatch(addProduit({...values,price:Number(values.price)})).then((secc:any)=>setData(data ? [secc,...data ]:[secc]));
+        console.log(values)
+      // await dispatch(addProduit({...values,price:Number(values.price)})).then((secc:any)=>setData(data ? [secc,...data ]:[secc]));
         setLoading(false);
      
         handleCloseModal()

@@ -46,7 +46,7 @@
    "updateClient": "Mettre à jour le client",
    "fournisseur":"fournisseur",
    "addFournisseur": "Ajouter un nouveau Fournisseur",
-   "produit": "Produit",
+   "produit": "Stock/Inventaire",
    "addProduit": "Ajouter un nouveau Produit",
    "nom":"Nom de produit",
    "description":"Description",
@@ -59,12 +59,21 @@
    "deleteTitleProduit":"Supprimer produit",
    "achat":"Achats",
    "addAchat":"Ajouter un nouveau Achat",
+   "vente":"Ventes",
+   "addVente": "Ajouter un nouveau vente",
    "nomClients":"Nom de client ",
    "pending" : "En attente",
    "paid" : "Payé",
    "cancelled" : "Annulé",
    "montantTotal":"Montant totale",
-     "quantite":"Quantité"
-
-
+   "quantite":"Quantité",
+   "nomFournisseur":"Nom de fournisseur ",
+   "titleUpdateStatus" : "Mettre à jour le statut",
+   "descriptionUpdateStatus" : "Veuillez mettre à jour votre statut",
+   "sorte":"Stock sortant",
+   "entre":"Stock entrant",
+   "stockProduction":"Stock/Inventaire Production",
+   "stockAchat":"Stock/Inventaire Achetés",
+   "typeProduit":"Type de produit",
+   "imprimer":"Imprimer"
 }

@@ -15,7 +15,10 @@ import {
   TablePagination,
   useMediaQuery,
   Collapse,
-  Chip
+  Chip,
+  Menu,
+  ListItemIcon,
+  MenuItem
 } from '@mui/material';
 
 
@@ -39,12 +42,13 @@ import { useDispatch } from 'src/store/Store';
 import SpinnerSubmit from 'src/views/spinnerSubmit/Spinner';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import CustomFormLabel from '../forms/theme-elements/CustomFormLabel';
-import CustomTextField from '../forms/theme-elements/CustomTextField';
 import moment from 'moment';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { IconDotsVertical, IconEdit } from '@tabler/icons';
+import CustomSelect from '../forms/theme-elements/CustomSelect';
+import { updateStatus } from 'src/store/apps/vente/venteSlice';
 
 
 //pagination
@@ -144,63 +148,58 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
   console.log(data, dispatch)
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
   const [openArticle, setOpenArticle] = React.useState(false);
-  const [openAlertEdit, setOpenAlerteEdit] = React.useState(false);
   const [id, setId] = React.useState<string>("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
-    name: Yup.string().required(t('faildRequired') || ""),
-    description: Yup.string().required(t('faildRequired') || ""),
-    price: Yup.number()
-    .typeError(t('priceMustBeNumber') || "Price must be a number") // Custom message for type errors
-    .required(t('faildRequired') || "Price is required")
-    .min(0, t('priceMustBePositive') || "Price must be a non-negative number")
+    status: Yup.string().required(t('faildRequired') || ""),
   });
   const formik = useFormik({
     initialValues: {
-      name: '',
-      description: '',
-      price: '',
+      status: '',
     },
     validationSchema,
     onSubmit: async(values) => {
-
-      console.log(values)
         setLoading(true);
-        // try {
-        // await dispatch(updateProduit({...values,price:Number(values.price)},id)).then((secc:any)=>setData(()=>{
-        //   const newData=data?.map((item:IVente)=>{
-        //        if(item?._id===id)
-        //        {
+        try {
+        await dispatch(updateStatus( {  status: values.status},id)).then((secc:any)=>setData(()=>{
+          const newData=data?.map((item:IVente)=>{
+               if(item?._id===id)
+               { console.log({secc})
   
-        //         return secc
-        //        }else{
+                return {
+                  ...item,
+                  statut:values.status
+                }
+               }else{
   
-        //         return item
-        //        }
-        //   })
+                return item
+               }
+          })
   
-        //   return newData
-        // }));
-        //   setLoading(false);
-        //   handleCloseModalEdit()
-        // } catch (error) {
-        //   console.error(error);
-        // }
+          return newData
+        }));
+        setLoading(false);
+        handleCloseModal()
+        } catch (error) {
+          console.error(error);
+        }
     },
   });
-
-  const handleCloseModal = () => {
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
     setOpenAlerteDelete(false)
   };
-  const handleCloseModalEdit = () => {
-    setLoading(false);
-    setOpenAlerteEdit(false)
-    setId("")
-    formik.resetForm()
+  const handleCloseModal = () => {
+    setOpenAlerteDelete(false)
   };
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -275,6 +274,35 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
                     {row.statut==="paid" && <Chip label={t(row.statut)} color="success" size="small" />}
                     {row.statut==="pending" && <Chip label={t(row.statut)} color="warning" size="small" />}
                     {row.statut==="cancelled" && <Chip label={t(row.statut)} color="error" size="small" />}
+                  { row.statut==="pending" &&  <IconButton
+                    id="basic-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                  >
+                    <IconDotsVertical width={18} />
+                  </IconButton>}
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'basic-button',
+                    }}
+                  >
+                    <MenuItem onClick={()=>{handleClose()
+                      setOpenAlerteDelete(true)
+                      setId(row?._id)
+                   
+                       }}>
+                      <ListItemIcon>
+                        <IconEdit width={18} />
+                      </ListItemIcon>
+                      Edit statut
+                    </MenuItem>
+                  </Menu>
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -390,97 +418,51 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
               </TableFooter>
         </Table>
       </TableContainer>
-{/* dialog delete */}
+{/* dialog edit status */}
         <Dialog
         fullScreen={fullScreen}
         open={openAlertDelete}
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">{t("deleteTitleProduct")}</DialogTitle>
+        <form onSubmit={formik.handleSubmit} className='w-full'>
+        <DialogTitle id="responsive-dialog-title">{t("titleUpdateStatus")}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          {t("deleteDescriptionProduit")}
+          {t("descriptionUpdateStatus")}
           </DialogContentText>
+          <br/>
+          <CustomSelect
+              id="status"
+               name="status"
+              value={formik.values.status}
+              defaultValue={formik.values.status}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.status && Boolean(formik.errors.status)}
+              helperText={formik.touched.status && formik.errors.status}
+              fullWidth
+              variant="outlined"
+            >
+                <MenuItem value="paid">
+                  {t("paid")}
+                </MenuItem>
+                <MenuItem value="cancelled">
+                  {t("cancelled")}
+                </MenuItem>
+            </CustomSelect>
+         
         </DialogContent>
         <DialogActions>
           <Button color="error" onClick={handleCloseModal}>
             {t("cancel")}
           </Button>
-          <Button onClick={async()=>{
-            setLoading(true)
-            //  await dispatch(deleteProduit(id));
-             setData(rows.filter((row :IVente)=> row._id!==id))
-             setId("")
-             setLoading(false)
-            handleCloseModal()
-          }} disabled={loading}  className='flex gap-10' >
+          <Button type="submit"disabled={loading}  className='flex gap-10' >
               {loading && <div><SpinnerSubmit /></div> }
               <span>Submit</span></Button>
 
         </DialogActions>
-      </Dialog>
-      {/* dialog edit */}
-      <Dialog
-        fullScreen={fullScreen}
-        open={openAlertEdit}
-        onClose={handleCloseModalEdit}
-        aria-labelledby="responsive-dialog-title"
-      >  <form onSubmit={formik.handleSubmit} className='w-96'>
-      <DialogTitle id="responsive-dialog-title">{t("produit")}</DialogTitle>
-      <DialogContent>
-      <Box >
-        <CustomFormLabel htmlFor="fullName">{t("nom")}</CustomFormLabel>
-        <CustomTextField
-          id="name"
-          name="name"
-          variant="outlined"
-          fullWidth
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-      </Box>
-      <Box >
-        <CustomFormLabel htmlFor="address">{t("description")}</CustomFormLabel>
-        <CustomTextField
-          id="description"
-          name="description"
-          variant="outlined"
-          fullWidth
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.description && Boolean(formik.errors.description)}
-          helperText={formik.touched.description && formik.errors.description}
-        />
-      </Box>
-      <Box >
-        <CustomFormLabel htmlFor="matriculeFiscale">{t("price")}</CustomFormLabel>
-        <CustomTextField
-          id="price"
-          name="price"
-          variant="outlined"
-          fullWidth
-          value={formik.values.price}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.price && Boolean(formik.errors.price)}
-          helperText={formik.touched.price && formik.errors.price}
-        />
-      </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" onClick={handleCloseModal}>
-          {t("cancel")}
-        </Button>
-        <Button type="submit" className='flex gap-10'  disabled={loading}>
-        {loading && <div><SpinnerSubmit /></div> }
-          <span>Submit</span></Button>
-      </DialogActions>
-      </form>
+        </form>
       </Dialog>
     </BlankCard>
   );

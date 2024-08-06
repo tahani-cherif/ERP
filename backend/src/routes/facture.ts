@@ -13,6 +13,7 @@ import {
   getFacture,
   updateFacture,
   deleteFacture,
+  updateStatus
 } from "../controllers/facture";
 import { allowedTo, protect } from "../controllers/auth";
 
@@ -25,6 +26,9 @@ router
 router
   .route("/vente")
   .get(protect, allowedTo("user"),getFacturesClient)
+router
+  .route("/status/:id")
+  .put(protect, allowedTo("user"),updateStatus)
 router
   .route("/achat")
   .get(protect, allowedTo("user"),getFacturesFournisseur)

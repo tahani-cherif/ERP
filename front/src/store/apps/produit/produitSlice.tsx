@@ -41,6 +41,7 @@ export const addProduit =(body:{
   name:string,
   description:string,
   price:number | null,
+  type:string 
 })=> async (dispatch: AppDispatch) => {
   try {
     const response = await axios.post('/produits/',body);

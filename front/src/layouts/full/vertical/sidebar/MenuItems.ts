@@ -97,7 +97,7 @@ const Menuitems: MenuitemsType[] = [
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"Produits":'Products',
+    title: localStorage.getItem("i18nextLng")==="fr" ?"Stock/Inventaire":'Stock/Inventory',
     icon: IconBuildingStore,
     href: '/dashboards/produits',
   },

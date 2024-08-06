@@ -15,7 +15,8 @@ import {
   Box, Stack,
   TableFooter,
   TablePagination,
-  useMediaQuery
+  useMediaQuery,
+  Collapse
 } from '@mui/material';
 import BlankCard from '../shared/BlankCard';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons';
@@ -39,6 +40,8 @@ import { useFormik } from 'formik';
 import CustomFormLabel from '../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../forms/theme-elements/CustomTextField';
 import { deleteProduit, updateProduit } from 'src/store/apps/produit/produitSlice';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 //pagination
 interface TablePaginationActionsProps {
@@ -105,7 +108,13 @@ interface TablePaginationActionsProps {
     description: string;
     price: string;
     stock:number;
-    admin: string;}
+    admin: string;
+    type: string;
+    historique?:{
+      type: string
+      date:Date,
+      quantite: number
+    }[]}
 const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IProduit[] | undefined}) => {
   const {t}=useTranslation()
   const dispatch = useDispatch();
@@ -116,6 +125,7 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  const [openHistorique, setOpenHistorique] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -191,6 +201,8 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
+            <TableCell>
+              </TableCell>
               <TableCell>
                 <Typography variant="h6">{t("Reference")}</Typography>
               </TableCell>
@@ -216,8 +228,13 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
             {(rowsPerPage > 0
                   ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : rows
-                ).map((row) => (
+                ).map((row) => (<>
               <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+               <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpenHistorique(!openHistorique)}>
+            {openHistorique ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <Box>
@@ -296,6 +313,72 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
                   </Menu>
                 </TableCell>
               </TableRow>
+              <TableRow>
+        <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+          <Collapse in={openHistorique} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                sx={{
+                  mt: 2,
+                  backgroundColor: (theme) => theme.palette.grey.A200,
+                  p: '5px 15px',
+                  color: (theme) =>
+                    `${
+                      theme.palette.mode === 'dark'
+                        ? theme.palette.grey.A200
+                        : 'rgba(0, 0, 0, 0.87)'
+                    }`,
+                }}
+              >
+                Historique stock
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                <TableRow>
+              <TableCell>
+                <Typography variant="h6">{t("entre")}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">{t("sorte")}</Typography>
+              </TableCell>
+            </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row?.historique?.map((article: {
+      type: string
+      date:Date,
+      quantite: number
+    }) => (
+                    <TableRow key={article.type}>
+                      <TableCell>
+                        <Typography color="textSecondary" fontWeight="400">
+                          {article.type==="entre" ?article.quantite:"-"}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography color="textSecondary" fontWeight="400">
+                        {article.type==="sorte" ?article.quantite:"-"}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                       {row?.historique?.length===0&& (
+                  <TableRow >
+                    <TableCell colSpan={12} className='w-full flex justify-center'>
+                        <span  className='text-center m-auto'>{t("notFound")}</span>
+                    </TableCell>
+                  </TableRow>
+                )}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+   
+      </TableRow>
+              </>
             ))}
               {rows.length===0&& (
                   <TableRow >
@@ -407,7 +490,7 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
       </Box>
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={handleCloseModal}>
+        <Button color="error" onClick={handleCloseModalEdit}>
           {t("cancel")}
         </Button>
         <Button type="submit" className='flex gap-10'  disabled={loading}>

@@ -81,4 +81,13 @@ export const updateVente =(body: {  fullName: string,
     throw new Error(err);
   }
 };
+export const updateStatus =(body: {  status: string},id:string)=> async () => {
+  try {
+    const response = await axios.put('/facture/status/'+id,{...body,type:"vente"});
+
+    return response.data
+  } catch (err:any) {
+    throw new Error(err);
+  }
+};
 export default VenteSlice.reducer;
