@@ -75,6 +75,11 @@
    "stockProduction": "Stock/Inventory Production",
    "stockAchat": "Stock/Inventory Purchased",
    "typeProduit":"Product type",
-   "imprimer":"print"
+   "imprimer":"print",
+   "attachment":"attachment",
+   "attachementDescription":"see the necessary attachments here",
+   "bonCommande":"Purchase order",
+   "facture":"Invoice",
+   "conditionsPaiement":"Payment Terms :"
 
 }

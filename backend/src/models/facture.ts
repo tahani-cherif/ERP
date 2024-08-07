@@ -7,6 +7,9 @@ interface IFacture extends Document {
   date: Date;
   total_general: Number;
   statut: string;
+  tva:number;
+  totalHTV:number;
+  modepaiement:string;
   articles:  {
     produit: mongoose.Schema.Types.ObjectId,
     quantite: Number
@@ -42,6 +45,18 @@ const factureSchema = new Schema<IFacture>(
   ],
   total_general: {
       type: Number,
+      required: true
+  },
+  totalHTV: {
+      type: Number,
+      required: true
+  },
+  tva: {
+      type: Number,
+      required: true
+  },
+  modepaiement: {
+      type: String,
       required: true
   },
   statut: {

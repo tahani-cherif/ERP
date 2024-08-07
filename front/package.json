@@ -11,6 +11,7 @@
     "@mui/lab": "5.0.0-alpha.110",
     "@mui/material": "5.10.16",
     "@mui/x-date-pickers": "5.0.6",
+    "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "1.8.3",
     "@tabler/icons": "1.84.0",
     "@testing-library/jest-dom": "5.16.4",

@@ -49,6 +49,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconDotsVertical, IconEdit } from '@tabler/icons';
 import CustomSelect from '../forms/theme-elements/CustomSelect';
 import { updateStatus } from 'src/store/apps/chat/ChatSlice';
+import { PDFViewer } from '@react-pdf/renderer';
+import PurchaseOrderPDF from '../file/purchaseOrderPDF';
+import InvoicePDF from '../file/invoicePDF';
 
 
 //pagination
@@ -140,6 +143,9 @@ interface TablePaginationActionsProps {
       total_general: string,
       statut:string,
       date: string,
+      tva:number;
+      totalHTV:number;
+      modepaiement:string;
     admin: string;}
     
 const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[] | undefined}) => {
@@ -148,7 +154,8 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
   console.log(data, dispatch)
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
   const [openArticle, setOpenArticle] = React.useState(false);
-  const [openAlertEdit, setOpenAlerteEdit] = React.useState(false);
+  const [openAttachment, setOpenAttachment] = React.useState(false);
+  const [facture, setFacture] = React.useState<any>();
   const [id, setId] = React.useState<string>("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -205,11 +212,11 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
   const handleCloseModal = () => {
     setOpenAlerteDelete(false)
   };
-  const handleCloseModalEdit = () => {
+  const handleCloseOpenAttachment = () => {
     setLoading(false);
-    setOpenAlerteEdit(false)
+    setOpenAttachment(false)
+    setFacture({})
     setId("")
-    formik.resetForm()
   };
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -219,7 +226,6 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
 
   return (
     <BlankCard>
@@ -244,6 +250,9 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
               </TableCell>
               <TableCell>
                 <Typography variant="h6">{t("montantTotal")}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">Action</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -279,6 +288,7 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
                     </Box>
                   </Stack>
                 </TableCell>
+                
                 <TableCell scope="row">
                   <Typography  variant="subtitle1" color="textSecondary">
                   {row.statut==="paid" && <Chip label={t(row.statut)} color="success" size="small" />}
@@ -319,6 +329,60 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
                 <Typography variant="subtitle1" color="textSecondary">
                     {row.total_general}
                   </Typography>
+                </TableCell>
+                <TableCell>
+                 <Button onClick={()=>{
+                 
+                     setOpenAttachment(true)
+                     const invoice = {
+                      number: "98765",
+                      date: "2024-08-07",
+                      dueDate: "2024-09-07",
+                      client: { name: "Client Name", address: "Client Address" },
+                      items: [
+                        { description: "Product/Service 1", quantity: 2, unitPrice: 50, total: 100 },
+                        { description: "Product/Service 2", quantity: 1, unitPrice: 150, total: 150 },
+                      ],
+                      totalHT: 250,
+                      taxRate: 20,
+                      taxAmount: 50,
+                      totalTTC: 300,
+                      paymentTerms: "Payment within 30 days"
+                    };
+                     setFacture({order:{
+                      number: row._id,
+                      date:moment(row.date).format("YYYY-MM-DD"),
+                      supplier: { name: row.fournisseur.fullName, address: row.fournisseur.address },
+                      client: { name: "", address: "" },
+                      items:row.articles.map((item:any)=>{
+
+                        return{
+                          description:item.produit.name,quantity:item.quantite,unitPrice:item.produit.price,total:Number(item.quantite)*Number(item.produit.price)
+                        }
+                      }),
+                      totalHT: row.totalHTV,
+                      taxRate: row.tva,
+                      taxAmount: row.totalHTV*row.tva/100,
+                      totalTTC: row.total_general,
+                      paymentTerms: row.modepaiement
+                     },
+                     invoice:{
+                      number: row._id,
+                      date:moment(row.date).format("YYYY-MM-DD"),
+                      client: { name: "", address: "" },
+                      items:row.articles.map((item:any)=>{
+
+                        return{
+                          description:item.produit.name,quantity:item.quantite,unitPrice:item.produit.price,total:Number(item.quantite)*Number(item.produit.price)
+                        }
+                      }),
+                      totalHT: row.totalHTV,
+                      taxRate: row.tva,
+                      taxAmount: row.totalHTV*row.tva/100,
+                      totalTTC: row.total_general,
+                      paymentTerms: row.modepaiement
+                    }})
+                 }}>{t("attachment")}</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -399,6 +463,7 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
             </Box>
           </Collapse>
         </TableCell>
+ 
       </TableRow>
               </>))}
               {rows.length===0&& (
@@ -434,6 +499,11 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
         open={openAlertDelete}
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
+        sx={{
+          '& .MuiPaper-root': {
+            maxWidth: '100%',
+          },
+        }}
       >
         <form onSubmit={formik.handleSubmit} className='w-full'>
         <DialogTitle id="responsive-dialog-title">{t("titleUpdateStatus")}</DialogTitle>
@@ -473,6 +543,42 @@ const TableAchat = ({rows,setData,data}:{rows:IAchat[],setData:any,data:IAchat[]
 
         </DialogActions>
         </form>
+      </Dialog>
+{/* dialog attachement */}
+<Dialog
+        fullScreen={fullScreen}
+        open={openAttachment}
+        onClose={handleCloseOpenAttachment}
+        aria-labelledby="responsive-dialog-title"
+        className='w-full'
+        sx={{
+          '& .MuiPaper-root': {
+            maxWidth: '100%',
+          },
+        }}
+      >
+        <DialogTitle id="responsive-dialog-title">{t("attachment")}</DialogTitle>
+        <DialogContent className='w-full'>
+          <DialogContentText>
+          {t("attachementDescription")}
+          </DialogContentText>
+          <br/>
+         
+       <div className='flex gap-10 w-full'>
+       <PDFViewer width="100%" height="500">
+        <PurchaseOrderPDF  order={facture?.order} />
+      </PDFViewer>
+       <PDFViewer width="100%" height="500">
+       <InvoicePDF  invoice={facture?.invoice} />
+      </PDFViewer>
+       </div>
+         
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={handleCloseOpenAttachment}>
+            {t("cancel")}
+          </Button>
+        </DialogActions>
       </Dialog>
     </BlankCard>
   );

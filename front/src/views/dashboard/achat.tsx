@@ -52,6 +52,9 @@ interface IAchat{
     total_general: string,
     statut:string,
     date: string,
+    tva:number;
+    totalHTV:number;
+    modepaiement:string;
   admin: string;}
 
   const Vente = () => {

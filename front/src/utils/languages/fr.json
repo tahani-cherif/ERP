@@ -75,5 +75,10 @@
    "stockProduction":"Stock/Inventaire Production",
    "stockAchat":"Stock/Inventaire Achetés",
    "typeProduit":"Type de produit",
-   "imprimer":"Imprimer"
+   "imprimer":"Imprimer",
+   "attachment":"pièce jointe",
+   "attachementDescription":"voir ici les pièce jointe necessaire ",
+   "bonCommande":"Bon de Commande",
+   "facture":"Facture",
+   "conditionsPaiement":"Conditions de paiement :"
 }
