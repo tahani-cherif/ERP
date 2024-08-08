@@ -31,10 +31,14 @@ export const { setClients, setClient ,setClientsAdd} = ClientSlice.actions;
 
 export const fetchClients = () => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get('/clients/');
+    const response = await axios.get('/clients/', { responseType: 'json' });
+    console.log('Fetched clients:', response);
     dispatch(setClients(response.data));
-  } catch (err:any) {
-    throw new Error(err);
+  } catch (err) {
+    // Cast err to an Error if it's not already
+    const error = err instanceof Error ? err : new Error('An unknown error occurred');
+    console.error('Error fetching clients:', error.message);
+    throw error; // Re-throw the error after logging it
   }
 };
 export const addClient =(body: {  fullName: string,

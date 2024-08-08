@@ -55,6 +55,10 @@
    "ref":"Référence",
    "priceMustBeNumber":"Le prix doit être un nombre",
    "priceMustBePositive":"Le prix doit être un nombre non négatif",
+   "tvaMustBeNumber":"Le prix doit être un nombre",
+   "tvaMustBePositive":"Le prix doit être un nombre non négatif",
+   "quantiteMustBeNumber":"Le prix doit être un nombre",
+   "quantiteMustBePositive":"Le prix doit être un nombre non négatif",
    "deleteDescriptionProduit":"Êtes-vous sûr de vouloir supprimer ce produit ? Cette action ne peut être annulée.",
    "deleteTitleProduit":"Supprimer produit",
    "achat":"Achats",
@@ -80,5 +84,13 @@
    "attachementDescription":"voir ici les pièce jointe necessaire ",
    "bonCommande":"Bon de Commande",
    "facture":"Facture",
-   "conditionsPaiement":"Conditions de paiement :"
+   "conditionsPaiement":"Conditions de paiement :",
+   "quantiteLivree":"Quantité Livrée",
+   "quantiteCommandee":"Quantité Commandée",
+   "BonLivraison":"Bon de Livraison",
+   "espece":"Espèce",
+   "cheque":"Chéque",
+   "traite":"Traite",
+   "virementBancaire":"Virement bancaire",
+   "produitTitle":"Produit"
 }

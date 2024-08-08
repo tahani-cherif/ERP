@@ -49,6 +49,10 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconDotsVertical, IconEdit } from '@tabler/icons';
 import CustomSelect from '../forms/theme-elements/CustomSelect';
 import { updateStatus } from 'src/store/apps/vente/venteSlice';
+import { PDFViewer } from '@react-pdf/renderer';
+import InvoicePDF from '../file/invoicePDF';
+import DeliveryNotePDF from '../file/deliveryNotePDF';
+import QuotePDF from '../file/quotePDF';
 
 
 //pagination
@@ -140,6 +144,9 @@ interface TablePaginationActionsProps {
       total_general: string,
       statut:string,
       date: string,
+      tva:number;
+      totalHTV:number;
+      modepaiement:string;
     admin: string;}
     
 const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[] | undefined}) => {
@@ -148,6 +155,8 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
   console.log(data, dispatch)
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
   const [openArticle, setOpenArticle] = React.useState(false);
+  const [openAttachment, setOpenAttachment] = React.useState(false);
+  const [facture, setFacture] = React.useState<any>();
   const [id, setId] = React.useState<string>("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -209,7 +218,12 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const handleCloseOpenAttachment = () => {
+    setLoading(false);
+    setOpenAttachment(false)
+    setFacture({})
+    setId("")
+  };
 
   return (
     <BlankCard>
@@ -234,6 +248,9 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
               </TableCell>
               <TableCell>
                 <Typography variant="h6">{t("montantTotal")}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">Action</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -309,6 +326,72 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
                 <Typography variant="subtitle1" color="textSecondary">
                     {row.total_general}
                   </Typography>
+                </TableCell>
+                <TableCell>
+                 <Button onClick={()=>{
+                 
+                     setOpenAttachment(true)
+
+                     setFacture({order:{
+                      number: row._id,
+                      date:moment(row.date).format("YYYY-MM-DD"),
+                      supplier: { name: "", address:"" },
+                      client: { name: row.client.fullName, address: row.client.address },
+                      items:row.articles.map((item:any)=>{
+
+                        return{
+                          description:item.produit.name,quantity:item.quantite,unitPrice:item.produit.price,total:Number(item.quantite)*Number(item.produit.price)
+                        }
+                      }),
+                      totalHT: row.totalHTV,
+                      taxRate: row.tva,
+                      taxAmount: row.totalHTV*row.tva/100,
+                      totalTTC: row.total_general,
+                      paymentTerms: row.modepaiement
+                     },
+                     invoice:{
+                      number: row._id,
+                      date:moment(row.date).format("YYYY-MM-DD"),
+                      client: { name:row.client.fullName, address:row.client.address },
+                      items:row.articles.map((item:any)=>{
+
+                        return{
+                          description:item.produit.name,quantity:item.quantite,unitPrice:item.produit.price,total:Number(item.quantite)*Number(item.produit.price)
+                        }
+                      }),
+                      totalHT: row.totalHTV,
+                      taxRate: row.tva,
+                      taxAmount: row.totalHTV*row.tva/100,
+                      totalTTC: row.total_general,
+                      paymentTerms: row.modepaiement
+                    },
+                   deliveryNote :{
+                    number: row._id,
+                    date:moment(row.date).format("YYYY-MM-DD"),
+                    client: { name: row.client.fullName, address: row.client.address },
+                      items:row.articles.map((item:any)=>{
+                        return{
+                          description:item.produit.name,quantityDelivered:item.quantite,quantityOrdered:item.quantite
+                        }
+                      }),
+                    },
+                    quote : {
+                      number: row._id,
+                      date:moment(row.date).format("YYYY-MM-DD"),
+                      client:  { name: row.client.fullName, address: row.client.address },
+                      items:row.articles.map((item:any)=>{
+
+                        return{
+                          description:item.produit.name,quantity:item.quantite,unitPrice:item.produit.price,total:Number(item.quantite)*Number(item.produit.price)
+                        }
+                      }),
+                      totalHT: row.totalHTV,
+                      taxRate: row.tva,
+                      taxAmount: row.totalHTV*row.tva/100,
+                      totalTTC: row.total_general,
+                      paymentTerms: row.modepaiement
+                    }})
+                 }}>{t("attachment")}</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -463,6 +546,45 @@ const TableVente = ({rows,setData,data}:{rows:IVente[],setData:any,data:IVente[]
 
         </DialogActions>
         </form>
+      </Dialog>
+      {/* dialog attachement */}
+<Dialog
+        fullScreen={fullScreen}
+        open={openAttachment}
+        onClose={handleCloseOpenAttachment}
+        aria-labelledby="responsive-dialog-title"
+        className='w-full'
+        sx={{
+          '& .MuiPaper-root': {
+            maxWidth: '100%',
+          },
+        }}
+      >
+        <DialogTitle id="responsive-dialog-title">{t("attachment")}</DialogTitle>
+        <DialogContent className='w-full'>
+          <DialogContentText>
+          {t("attachementDescription")}
+          </DialogContentText>
+          <br/>
+         
+       <div className='flex gap-10 w-full'>
+       <PDFViewer width="100%" height="500">
+       <DeliveryNotePDF deliveryNote={facture?.deliveryNote} />
+      </PDFViewer>
+       <PDFViewer width="100%" height="500">
+       <InvoicePDF  invoice={facture?.invoice} />
+      </PDFViewer>
+       <PDFViewer width="100%" height="500">
+       <QuotePDF quote={facture?.quote} />
+      </PDFViewer>
+       </div>
+         
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={handleCloseOpenAttachment}>
+            {t("cancel")}
+          </Button>
+        </DialogActions>
       </Dialog>
     </BlankCard>
   );

@@ -80,6 +80,14 @@
    "attachementDescription":"see the necessary attachments here",
    "bonCommande":"Purchase order",
    "facture":"Invoice",
-   "conditionsPaiement":"Payment Terms :"
+   "conditionsPaiement":"Payment Terms :",
+   "quantiteLivree":"Quantity delivered",
+   "quantiteCommandee":"Quantity ordered",
+   "BonLivraison":"Delivery note",
+   "espece": "Cash",
+   "cheque": "Cheque",
+   "traite": "Draft",
+   "virementBancaire": "Bank transfer",
+   "produitTitle":"Product"
 
 }
