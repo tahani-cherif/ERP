@@ -92,5 +92,6 @@
    "cheque":"Chéque",
    "traite":"Traite",
    "virementBancaire":"Virement bancaire",
-   "produitTitle":"Produit"
+   "produitTitle":"Produit",
+   "quantiteExceedsStock":"La quantité dépasse le stock"
 }

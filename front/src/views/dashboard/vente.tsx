@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import * as Yup from 'yup';
-import { useFormik, FieldArray, FormikErrors } from 'formik';
+import { Formik, FieldArray, FormikErrors } from 'formik';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
 import TableVente from 'src/components/tables/venteTab';
@@ -71,8 +71,8 @@ const Vente = () => {
   const clients = useSelector((state: any) => state.clientReducer.clients);
   const produits = useSelector((state: any) => state.produitReducer.produits);
   const [data, setData] = useState<IVente[]>();
-  const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
     client: Yup.string().required(t('faildRequired') || ""),
@@ -80,37 +80,22 @@ const Vente = () => {
     articles: Yup.array().of(
       Yup.object({
         produit: Yup.string().required(t('faildRequired') || ""),
-        quantite: Yup.string()
+        quantite: Yup.number()
           .typeError(t('quantiteMustBeNumber') || "quantite must be a number")
           .required(t('faildRequired') || "quantite is required")
-          .min(1, t('quantiteMustBePositive') || "quantite must be a non-negative number"),
+          .min(1, t('quantiteMustBePositive') || "quantite must be a non-negative number")
+          .test('less-than-stock', t('quantiteExceedsStock') || "Quantité exceeds stock", function (value :any) {
+            const { produit } = this.parent;
+            const produitInfo = produits.find((p: IProduit) => p._id === produit);
+
+            return produitInfo ? value <= produitInfo.stock : true;
+          }),
       })
     ),
-    tva: Yup.string()
+    tva: Yup.number()
       .typeError(t('tvaMustBeNumber') || "tva must be a number")
       .required(t('faildRequired') || "tva is required")
       .min(0, t('tvaMustBePositive') || "tva must be a non-negative number"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      client: '',
-      modepaiement: '',
-      tva: "",
-      articles: [{ produit: '', quantite: '' }],
-    },
-    validationSchema,
-    onSubmit: async (values) => {
-      setLoading(true);
-      try {
-        console.log(values);
-        // Handle submission
-        setLoading(false);
-        handleCloseModal();
-      } catch (error) {
-        console.error(error);
-      }
-    },
   });
 
   useEffect(() => {
@@ -133,11 +118,10 @@ const Vente = () => {
   }, [ventes]);
 
   const handleCloseModal = () => {
-    formik.resetForm();
     setLoading(false);
     setOpen(false);
   };
-console.log(`formik.values.articles?.[0]?.produit`)
+
   return (
     <PageContainer title={t("vente") || ""}>
       <Breadcrumb title={t("vente") || ""} items={[
@@ -166,155 +150,199 @@ console.log(`formik.values.articles?.[0]?.produit`)
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
       >
-        <form onSubmit={formik.handleSubmit} className='w-96'>
-          <DialogTitle id="responsive-dialog-title">{t("addVente")}</DialogTitle>
-          <DialogContent>
-            <Box>
-              <CustomFormLabel htmlFor="client">{t("client")}</CustomFormLabel>
-              <CustomSelect
-                id="client"
-                name="client"
-                value={formik.values.client}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.client && Boolean(formik.errors.client)}
-                helperText={formik.touched.client && formik.errors.client}
-                fullWidth
-                variant="outlined"
-              >
-                {clients?.map((client: Iclient) => (
-                  <MenuItem key={client._id} value={client._id}>
-                    {client.fullName}
-                  </MenuItem>
-                ))}
-              </CustomSelect>
-            </Box>
+        <Formik
+          initialValues={{
+            client: '',
+            modepaiement: '',
+            tva: "",
+            articles: [{ produit: '', quantite: '' }],
+          }}
+          validationSchema={validationSchema}
+          onSubmit={async (values, { resetForm }) => {
+            setLoading(true);
+            try {
+              // Validate stock quantities before submitting
+              const invalidArticle = values.articles.find((article) => {
+                const produitInfo = produits.find((p: IProduit) => p._id === article.produit);
 
-            <Box>
-              <CustomFormLabel htmlFor="tva">TVA</CustomFormLabel>
-              <CustomSelect
-                id="tva"
-                name="tva"
-                value={formik.values.tva}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.tva && Boolean(formik.errors.tva)}
-                helperText={formik.touched.tva && formik.errors.tva}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="7">7%</MenuItem>
-                <MenuItem value="13">13%</MenuItem>
-                <MenuItem value="19">19%</MenuItem>
-              </CustomSelect>
-            </Box>
+                return produitInfo ? parseInt(article.quantite) > produitInfo.stock : false;
+              });
+              if (invalidArticle) {
+                // You can set a custom error message here
+                console.error(t('quantiteExceedsStock'));
+                setLoading(false);
 
-            <Box>
-              <CustomFormLabel htmlFor="modepaiement">{t("modepaiement")}</CustomFormLabel>
-              <CustomSelect
-                id="modepaiement"
-                name="modepaiement"
-                value={formik.values.modepaiement}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.modepaiement && Boolean(formik.errors.modepaiement)}
-                helperText={formik.touched.modepaiement && formik.errors.modepaiement}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="espece">{t("espece")}</MenuItem>
-                <MenuItem value="cheque">{t("cheque")}</MenuItem>
-                <MenuItem value="traite">{t("traite")}</MenuItem>
-                <MenuItem value="virementBancaire">{t("virementBancaire")}</MenuItem>
-              </CustomSelect>
-            </Box>
+                return;
+              }
+              console.log(values);
+              setLoading(false);
+              handleCloseModal();
+              resetForm();
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
+          {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => (
+            <form onSubmit={handleSubmit}>
+              <DialogTitle id="responsive-dialog-title">{t("addVente")}</DialogTitle>
+              <DialogContent>
+                <Box>
+                  <CustomFormLabel htmlFor="client">{t("client")}</CustomFormLabel>
+                  <CustomSelect
+                    id="client"
+                    name="client"
+                    value={values.client}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.client && Boolean(errors.client)}
+                    helperText={touched.client && errors.client}
+                    fullWidth
+                    variant="outlined"
+                  >
+                    {clients?.map((client: Iclient) => (
+                      <MenuItem key={client._id} value={client._id}>
+                        {client.fullName}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
 
-            <FieldArray name="articles">
-  {({ push, remove }) => (
-    <>
-      {formik.values.articles.map((article, index) => {
-        const articleError = formik.errors.articles?.[index] as
-          | FormikErrors<{ produit: string; quantite: string }>
-          | undefined;
+                <Box>
+                  <CustomFormLabel htmlFor="tva">TVA</CustomFormLabel>
+                  <CustomSelect
+                    id="tva"
+                    name="tva"
+                    value={values.tva}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.tva && Boolean(errors.tva)}
+                    helperText={touched.tva && errors.tva}
+                    fullWidth
+                    variant="outlined"
+                  >
+                    <MenuItem value="7">7%</MenuItem>
+                    <MenuItem value="13">13%</MenuItem>
+                    <MenuItem value="19">19%</MenuItem>
+                  </CustomSelect>
+                </Box>
 
-        return (
-          <div key={index} className='flex gap-4'>
-            <Box className='w-full'>
-              <CustomFormLabel htmlFor={`articles[${index}].produit`}>
-                {t("produit")}
-              </CustomFormLabel>
-              <CustomSelect
-                id={`articles[${index}].produit`}
-                name={`articles[${index}].produit`}
-                value={article.produit}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={Boolean(articleError?.produit)}
-                helperText={articleError?.produit}
-                fullWidth
-                variant="outlined"
-              >
-                {produits
-                  ?.filter(
-                    (produit: IProduit) =>
-                      produit.type === "vente" && produit.stock > 0
-                  )
-                  ?.map((produit: IProduit) => (
-                    <MenuItem key={produit._id} value={produit._id}>
-                      {produit.name}
-                    </MenuItem>
-                  ))}
-              </CustomSelect>
-            </Box>
+                <Box>
+                  <CustomFormLabel htmlFor="modepaiement">{t("modepaiement")}</CustomFormLabel>
+                  <CustomSelect
+                    id="modepaiement"
+                    name="modepaiement"
+                    value={values.modepaiement}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.modepaiement && Boolean(errors.modepaiement)}
+                    helperText={touched.modepaiement && errors.modepaiement}
+                    fullWidth
+                    variant="outlined"
+                  >
+                    <MenuItem value="espece">{t("espece")}</MenuItem>
+                    <MenuItem value="cheque">{t("cheque")}</MenuItem>
+                    <MenuItem value="traite">{t("traite")}</MenuItem>
+                    <MenuItem value="virementBancaire">{t("virementBancaire")}</MenuItem>
+                  </CustomSelect>
+                </Box>
 
-            <Box className='w-full'>
-              <CustomFormLabel htmlFor={`articles[${index}].quantite`}>
-                {t("quantite")}
-              </CustomFormLabel>
-              <CustomTextField
-                id={`articles[${index}].quantite`}
-                name={`articles[${index}].quantite`}
-                variant="outlined"
-                fullWidth
-                value={article.quantite}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={Boolean(articleError?.quantite)}
-                helperText={articleError?.quantite}
-              />
-            </Box>
+                <FieldArray name="articles">
+                  {({ push, remove }) => (
+                    <div className=' flex flex-col gap-2'>
+                      {values.articles.map((article, index) => {
+                        const articleError = errors.articles?.[index] as
+                          | FormikErrors<{ produit: string; quantite: string }>
+                          | undefined;
+                        const selectedProduits = values.articles.map((a) => a.produit);
 
-            <IconButton color="error" onClick={() => remove(index)}>
-              <IconTrash />
-            </IconButton>
-          </div>
-        );
-      })}
+                        return (
+                          <div key={index} className='flex gap-4 '>
+                            <Box className='w-full'>
+                              <CustomFormLabel htmlFor={`articles[${index}].produit`}>
+                                {t("produit")}
+                              </CustomFormLabel>
+                              <CustomSelect
+                                id={`articles[${index}].produit`}
+                                name={`articles[${index}].produit`}
+                                value={values.articles[index]?.produit || ''}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={Boolean(articleError?.produit)}
+                                helperText={articleError?.produit}
+                                fullWidth
+                                variant="outlined"
+                              >
+                                {produits.filter((produit:IProduit)=>produit?.stock>0).map((produit: IProduit) => (
+                                  <MenuItem
+                                    key={produit._id}
+                                    value={produit._id}
+                                    disabled={selectedProduits.includes(produit._id) && values.articles[index]?.produit !== produit._id}
+                                  >
+                                    {produit.name}
+                                  </MenuItem>
+                                ))}
+                              </CustomSelect>
+                            </Box>
 
-      <Button
-        className='mt-4'
-        variant="outlined"
-        color="primary"
-        onClick={() => push({ produit: '', quantite: '' })}
-      >
-        {t("addArticle")}
-      </Button>
-    </>
-  )}
-</FieldArray>
+                            <Box className='w-full'>
+                              <CustomFormLabel htmlFor={`articles[${index}].quantite`}>
+                                {t("quantite")}
+                              </CustomFormLabel>
+                              <CustomTextField
+                                id={`articles[${index}].quantite`}
+                                name={`articles[${index}].quantite`}
+                                value={values.articles?.[index].quantite}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={Boolean(articleError?.quantite)}
+                                helperText={articleError?.quantite}
+                                fullWidth
+                                variant="outlined"
+                              />
+                            </Box>
 
+                            <Box className='items-end mt-auto'>
+                              {index > 0 && (
+                                <IconButton
+                                  aria-label="delete"
+                                  size="large"
+                                  onClick={() => remove(index)}
+                                >
+                                  <IconTrash />
+                                </IconButton>
+                              )}
+                            </Box>
+                          </div>
+                        );
+                      })}
+                      <Button
+                        className='mt-4 items-end'
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => push({ produit: '', quantite: '' })}
+                        disabled={values.articles.length >= produits.filter((produit:IProduit)=>produit?.stock>0)?.length}
+                      >
+                        {t("addArticle")}
+                      </Button>
+                    </div>
+                  )}
+                </FieldArray>
 
-          </DialogContent>
-          <DialogActions>
-            <Button color="error" onClick={handleCloseModal}>
-              {t("cancel")}
-            </Button>
-            <Button type="submit" className='flex gap-10' disabled={loading}>
-              {loading && <SpinnerSubmit />}
-              <span>{t("submit")}</span>
-            </Button>
-          </DialogActions>
-        </form>
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus color="error" onClick={handleCloseModal}>
+                  {t("cancel")}
+                </Button>
+
+                <Button type="submit" className='flex gap-10' disabled={loading}>
+                  {loading && <SpinnerSubmit />}
+                  <span>{t("submit")}</span>
+                </Button>
+              </DialogActions>
+            </form>
+          )}
+        </Formik>
       </Dialog>
     </PageContainer>
   );
