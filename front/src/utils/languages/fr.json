@@ -93,5 +93,6 @@
    "traite":"Traite",
    "virementBancaire":"Virement bancaire",
    "produitTitle":"Produit",
-   "quantiteExceedsStock":"La quantité dépasse le stock"
+   "quantiteExceedsStock":"La quantité dépasse le stock",
+   "modepaiement":"Mode de paiement"
 }

@@ -8,19 +8,14 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
 import { IconCirclePlus, IconTrash } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import * as Yup from 'yup';
 import { Formik, FieldArray, FormikErrors } from 'formik';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
 import TableVente from 'src/components/tables/venteTab';
-import { fetchVentes } from 'src/store/apps/vente/venteSlice';
+import { addVente, fetchVentes } from 'src/store/apps/vente/venteSlice';
 import CustomSelect from 'src/components/forms/theme-elements/CustomSelect';
 import { fetchClients } from 'src/store/apps/client/clientSlice';
 import { fetchProduits } from 'src/store/apps/produit/produitSlice';
@@ -75,27 +70,31 @@ const Vente = () => {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
-    client: Yup.string().required(t('faildRequired') || ""),
-    modepaiement: Yup.string().required(t('faildRequired') || ""),
+    client: Yup.string().required(t('faildRequired') || ''),
+    modepaiement: Yup.string().required(t('faildRequired') || ''),
     articles: Yup.array().of(
       Yup.object({
-        produit: Yup.string().required(t('faildRequired') || ""),
+        produit: Yup.string().required(t('faildRequired') || ''),
         quantite: Yup.number()
-          .typeError(t('quantiteMustBeNumber') || "quantite must be a number")
-          .required(t('faildRequired') || "quantite is required")
-          .min(1, t('quantiteMustBePositive') || "quantite must be a non-negative number")
-          .test('less-than-stock', t('quantiteExceedsStock') || "Quantité exceeds stock", function (value :any) {
-            const { produit } = this.parent;
-            const produitInfo = produits.find((p: IProduit) => p._id === produit);
+          .typeError(t('quantiteMustBeNumber') || 'quantite must be a number')
+          .required(t('faildRequired') || 'quantite is required')
+          .min(1, t('quantiteMustBePositive') || 'quantite must be a non-negative number')
+          .test(
+            'less-than-stock',
+            t('quantiteExceedsStock') || 'Quantité exceeds stock',
+            function (value: any) {
+              const { produit } = this.parent;
+              const produitInfo = produits.find((p: IProduit) => p._id === produit);
 
-            return produitInfo ? value <= produitInfo.stock : true;
-          }),
-      })
+              return produitInfo ? value <= produitInfo.stock : true;
+            },
+          ),
+      }),
     ),
     tva: Yup.number()
-      .typeError(t('tvaMustBeNumber') || "tva must be a number")
-      .required(t('faildRequired') || "tva is required")
-      .min(0, t('tvaMustBePositive') || "tva must be a non-negative number"),
+      .typeError(t('tvaMustBeNumber') || 'tva must be a number')
+      .required(t('faildRequired') || 'tva is required')
+      .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
   });
 
   useEffect(() => {
@@ -123,21 +122,21 @@ const Vente = () => {
   };
 
   return (
-    <PageContainer title={t("vente") || ""}>
-      <Breadcrumb title={t("vente") || ""} items={[
-        { to: '/', title: 'Home' },
-        { title: t("vente") || "" },
-      ]} />
-      <ParentCard title={t("vente") || ""}>
+    <PageContainer title={t('vente') || ''}>
+      <Breadcrumb
+        title={t('vente') || ''}
+        items={[{ to: '/', title: 'Home' }, { title: t('vente') || '' }]}
+      />
+      <ParentCard title={t('vente') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className='flex justify-end'>
-              <Button className='flex gap-4 p-4' onClick={() => setOpen(true)}>
+            <div className="flex justify-end">
+              <Button className="flex gap-4 p-4" onClick={() => setOpen(true)}>
                 <IconCirclePlus />
-                <span>{t("addVente")}</span>
+                <span>{t('addVente')}</span>
               </Button>
             </div>
-            <Box className='mt-4'>
+            <Box className="mt-4">
               <TableVente rows={data || []} setData={setData} data={data} />
             </Box>
           </Grid>
@@ -154,7 +153,7 @@ const Vente = () => {
           initialValues={{
             client: '',
             modepaiement: '',
-            tva: "",
+            tva: '',
             articles: [{ produit: '', quantite: '' }],
           }}
           validationSchema={validationSchema}
@@ -174,21 +173,47 @@ const Vente = () => {
 
                 return;
               }
+              let total_generalhtva = 0;
+              produits.map((p: IProduit) => {
+                values.articles.map((article) => {
+                  console.log(article.produit === p._id);
+                  if (article.produit === p._id) {
+                    total_generalhtva += Number(article.quantite) * Number(p.price);
+                  }
+                });
+              });
+
+              // Dispatch the action to add a client
+
+              await dispatch(
+                addVente({
+                  client: values.client,
+                  date: new Date(),
+                  modepaiement: values.modepaiement,
+                  total_general: total_generalhtva + total_generalhtva * (Number(values.tva) / 100),
+                  tva: Number(values.tva),
+                  totalHTV: total_generalhtva,
+                  articles: values.articles,
+                  admin: JSON.parse(localStorage.getItem('user') || '')._id,
+                }),
+              ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
+
               console.log(values);
               setLoading(false);
               handleCloseModal();
               resetForm();
             } catch (error) {
               console.error(error);
+              setLoading(false); // Ensure loading is turned off in case of an error
             }
           }}
         >
           {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => (
             <form onSubmit={handleSubmit}>
-              <DialogTitle id="responsive-dialog-title">{t("addVente")}</DialogTitle>
+              <DialogTitle id="responsive-dialog-title">{t('addVente')}</DialogTitle>
               <DialogContent>
                 <Box>
-                  <CustomFormLabel htmlFor="client">{t("client")}</CustomFormLabel>
+                  <CustomFormLabel htmlFor="client">{t('client')}</CustomFormLabel>
                   <CustomSelect
                     id="client"
                     name="client"
@@ -228,7 +253,7 @@ const Vente = () => {
                 </Box>
 
                 <Box>
-                  <CustomFormLabel htmlFor="modepaiement">{t("modepaiement")}</CustomFormLabel>
+                  <CustomFormLabel htmlFor="modepaiement">{t('modepaiement')}</CustomFormLabel>
                   <CustomSelect
                     id="modepaiement"
                     name="modepaiement"
@@ -240,16 +265,16 @@ const Vente = () => {
                     fullWidth
                     variant="outlined"
                   >
-                    <MenuItem value="espece">{t("espece")}</MenuItem>
-                    <MenuItem value="cheque">{t("cheque")}</MenuItem>
-                    <MenuItem value="traite">{t("traite")}</MenuItem>
-                    <MenuItem value="virementBancaire">{t("virementBancaire")}</MenuItem>
+                    <MenuItem value="espece">{t('espece')}</MenuItem>
+                    <MenuItem value="cheque">{t('cheque')}</MenuItem>
+                    <MenuItem value="traite">{t('traite')}</MenuItem>
+                    <MenuItem value="virementBancaire">{t('virementBancaire')}</MenuItem>
                   </CustomSelect>
                 </Box>
 
                 <FieldArray name="articles">
                   {({ push, remove }) => (
-                    <div className=' flex flex-col gap-2'>
+                    <div className=" flex flex-col gap-2">
                       {values.articles.map((article, index) => {
                         const articleError = errors.articles?.[index] as
                           | FormikErrors<{ produit: string; quantite: string }>
@@ -257,10 +282,10 @@ const Vente = () => {
                         const selectedProduits = values.articles.map((a) => a.produit);
 
                         return (
-                          <div key={index} className='flex gap-4 '>
-                            <Box className='w-full'>
+                          <div key={index} className="flex gap-4 ">
+                            <Box className="w-full">
                               <CustomFormLabel htmlFor={`articles[${index}].produit`}>
-                                {t("produit")}
+                                {t('produit')}
                               </CustomFormLabel>
                               <CustomSelect
                                 id={`articles[${index}].produit`}
@@ -273,21 +298,26 @@ const Vente = () => {
                                 fullWidth
                                 variant="outlined"
                               >
-                                {produits.filter((produit:IProduit)=>produit?.stock>0).map((produit: IProduit) => (
-                                  <MenuItem
-                                    key={produit._id}
-                                    value={produit._id}
-                                    disabled={selectedProduits.includes(produit._id) && values.articles[index]?.produit !== produit._id}
-                                  >
-                                    {produit.name}
-                                  </MenuItem>
-                                ))}
+                                {produits
+                                  .filter((produit: IProduit) => produit?.stock > 0)
+                                  .map((produit: IProduit) => (
+                                    <MenuItem
+                                      key={produit._id}
+                                      value={produit._id}
+                                      disabled={
+                                        selectedProduits.includes(produit._id) &&
+                                        values.articles[index]?.produit !== produit._id
+                                      }
+                                    >
+                                      {produit.name}
+                                    </MenuItem>
+                                  ))}
                               </CustomSelect>
                             </Box>
 
-                            <Box className='w-full'>
+                            <Box className="w-full">
                               <CustomFormLabel htmlFor={`articles[${index}].quantite`}>
-                                {t("quantite")}
+                                {t('quantite')}
                               </CustomFormLabel>
                               <CustomTextField
                                 id={`articles[${index}].quantite`}
@@ -302,7 +332,7 @@ const Vente = () => {
                               />
                             </Box>
 
-                            <Box className='items-end mt-auto'>
+                            <Box className="items-end mt-auto">
                               {index > 0 && (
                                 <IconButton
                                   aria-label="delete"
@@ -317,27 +347,34 @@ const Vente = () => {
                         );
                       })}
                       <Button
-                        className='mt-4 items-end'
+                        className="mt-4 items-end"
                         variant="outlined"
                         color="primary"
+                        type="button"
                         onClick={() => push({ produit: '', quantite: '' })}
-                        disabled={values.articles.length >= produits.filter((produit:IProduit)=>produit?.stock>0)?.length}
+                        disabled={
+                          values.articles.length >=
+                          produits.filter((produit: IProduit) => produit?.stock > 0)?.length
+                        }
                       >
-                        {t("addArticle")}
+                        {t('addArticle')}
                       </Button>
                     </div>
                   )}
                 </FieldArray>
-
               </DialogContent>
               <DialogActions>
                 <Button autoFocus color="error" onClick={handleCloseModal}>
-                  {t("cancel")}
+                  {t('cancel')}
                 </Button>
 
-                <Button type="submit" className='flex gap-10' disabled={loading}>
-                  {loading && <SpinnerSubmit />}
-                  <span>{t("submit")}</span>
+                <Button type="submit" className="flex gap-10" disabled={loading}>
+                  {loading && (
+                    <div>
+                      <SpinnerSubmit />
+                    </div>
+                  )}
+                  <span>Submit</span>
                 </Button>
               </DialogActions>
             </form>

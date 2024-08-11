@@ -89,6 +89,7 @@
    "traite": "Draft",
    "virementBancaire": "Bank transfer",
    "produitTitle":"Product",
-   "quantiteExceedsStock":"Quantity exceeds stock"
+   "quantiteExceedsStock":"Quantity exceeds stock",
+   "modepaiement":"Payment method"
 
 }

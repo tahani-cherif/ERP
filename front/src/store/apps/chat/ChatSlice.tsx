@@ -67,12 +67,12 @@ export const fetchChats = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const updateStatus =(body: {  status: string},id:string)=> async () => {
+export const updateStatus = (body: { status: string }, id: string) => async () => {
   try {
-    const response = await axios.put('/facture/status/'+id,{...body,type:"achat"});
+    const response = await axios.put('/facture/status/' + id, { ...body, type: 'achat' });
 
-    return response.data
-  } catch (err:any) {
+    return response.data;
+  } catch (err: any) {
     throw new Error(err);
   }
 };

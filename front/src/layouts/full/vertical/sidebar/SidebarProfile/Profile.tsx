@@ -9,7 +9,7 @@ export const Profile = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
   const hideMenu = lgUp ? customizer.isCollapse && !customizer.isSidebarHover : '';
-  const user=JSON.parse(localStorage.getItem('user') || "")
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   return (
     <Box
@@ -23,18 +23,18 @@ export const Profile = () => {
           <Avatar alt="Remy Sharp" src={img1} />
 
           <Box>
-            <Typography variant="h6">{user?.firstName +" " +user?.lastName} </Typography>
+            <Typography variant="h6">{user?.firstName + ' ' + user?.lastName} </Typography>
             <Typography variant="caption">{user?.role} </Typography>
           </Box>
           <Box sx={{ ml: 'auto' }}>
-            <Tooltip title="Logout" placement="top" >
+            <Tooltip title="Logout" placement="top">
               <IconButton
                 color="primary"
                 component={Link}
                 to="auth/login"
                 aria-label="logout"
-                size="small" 
-                onClick={()=>{
+                size="small"
+                onClick={() => {
                   localStorage.clear();
                 }}
               >

@@ -6,52 +6,88 @@ import { useTranslation } from 'react-i18next';
 const styles = StyleSheet.create({
   page: { padding: 30 },
   section: { marginBottom: 10 },
-  table: { display: "table", width: "auto", borderStyle: "solid", borderWidth: 1, borderRightWidth: 0, borderBottomWidth: 0 },
-  tableRow: { flexDirection: "row" },
-  tableCol: { width: "25%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 0, borderTopWidth: 0 },
+  table: {
+    display: 'table',
+    width: 'auto',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  },
+  tableRow: { flexDirection: 'row' },
+  tableCol: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
   subHeader: { fontSize: 14, marginBottom: 10 },
-  conditions: { marginTop: 20, fontSize: 12 }
+  conditions: { marginTop: 20, fontSize: 12 },
 });
 
-const QuotePDF =({ quote }) =>{ 
-    const {t}=useTranslation()
-    
-    return(
-  <Document >
-    <Page style={styles.page}>
-      <Text style={styles.header}>Devis N° : {quote?.number}</Text>
-      <Text style={styles.section}>Date : {quote?.date}</Text>
+const QuotePDF = ({ quote }) => {
+  const { t } = useTranslation();
 
-      <Text style={styles.subHeader}>Client :</Text>
-      <Text style={styles.section}>{quote?.client?.name}</Text>
-      <Text style={styles.section}>{quote?.client?.address}</Text>
+  return (
+    <Document>
+      <Page style={styles.page}>
+        <Text style={styles.header}>Devis N° : {quote?.number}</Text>
+        <Text style={styles.section}>Date : {quote?.date}</Text>
 
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-        <View style={styles.tableCol}><Text style={styles.tableCell}>{t("nom")}</Text></View>
-          <View style={styles.tableCol}><Text style={styles.tableCell}>{t("quantite")}</Text></View>
-          <View style={styles.tableCol}><Text style={styles.tableCell}>{t("price")}</Text></View>
-          <View style={styles.tableCol}><Text style={styles.tableCell}>{t('montantTotal')}</Text></View>
-        </View>
-        {quote?.items?.map((item, index) => (
-          <View style={styles.tableRow} key={index}>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item?.description}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item?.quantity}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item?.unitPrice}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item?.total}</Text></View>
+        <Text style={styles.subHeader}>Client :</Text>
+        <Text style={styles.section}>{quote?.client?.name}</Text>
+        <Text style={styles.section}>{quote?.client?.address}</Text>
+
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{t('nom')}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{t('quantite')}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{t('price')}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{t('montantTotal')}</Text>
+            </View>
           </View>
-        ))}
-      </View>
+          {quote?.items?.map((item, index) => (
+            <View style={styles.tableRow} key={index}>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item?.description}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item?.quantity}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item?.unitPrice}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item?.total}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
 
-      <Text style={styles.section}>{t('montantTotal')+" "}HT:  {quote?.totalHT}</Text>
-      <Text style={styles.section}>TVA ({quote?.taxRate}%) : {quote?.taxAmount}</Text>
-      <Text style={styles.section}>{t('montantTotal')+" "}TTC: {quote?.totalTTC}</Text>
+        <Text style={styles.section}>
+          {t('montantTotal') + ' '}HT: {quote?.totalHT}
+        </Text>
+        <Text style={styles.section}>
+          TVA ({quote?.taxRate}%) : {quote?.taxAmount}
+        </Text>
+        <Text style={styles.section}>
+          {t('montantTotal') + ' '}TTC: {quote?.totalTTC}
+        </Text>
 
-      <Text style={styles.conditions}> {t("conditionsPaiement")+' '+quote?.paymentTerms}</Text>
-    </Page>
-  </Document>
-)};
+        <Text style={styles.conditions}> {t('modepaiement') + ' ' + quote?.paymentTerms}</Text>
+      </Page>
+    </Document>
+  );
+};
 
 export default QuotePDF;
