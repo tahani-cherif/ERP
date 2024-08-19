@@ -15,8 +15,7 @@ import {
   Box, Stack,
   TableFooter,
   TablePagination,
-  useMediaQuery,
-  Collapse
+  useMediaQuery
 } from '@mui/material';
 import BlankCard from '../shared/BlankCard';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons';
@@ -39,10 +38,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import CustomFormLabel from '../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../forms/theme-elements/CustomTextField';
-import { deleteProduit, updateProduit } from 'src/store/apps/produit/produitSlice';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import moment from 'moment';
+import { deleteFournisseur, updateFournisseur } from 'src/store/apps/fournisseur/fournisseurSlice';
 
 //pagination
 interface TablePaginationActionsProps {
@@ -103,20 +99,15 @@ interface TablePaginationActionsProps {
   }
 
   // page
-  interface IProduit{
+  interface IBanque{
     _id: string;
-    name: string;
-    description: string;
-    price: string;
-    stock:number;
-    admin: string;
-    type: string;
-    historique?:{
-      type: string
-      date:Date,
-      quantite: number
-    }[]}
-const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IProduit[] | undefined}) => {
+    banque: string;
+    rib: string;
+    iban: string;
+    swift: string;
+    admin: string;}
+
+const TableBanque = ({rows,setData,data}:{rows:IBanque[],setData:any,data:IBanque[] | undefined}) => {
   const {t}=useTranslation()
   const dispatch = useDispatch();
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
@@ -126,62 +117,62 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
-  const [openHistorique, setOpenHistorique] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const phonetunis=/^[+0]{0,2}(91)?[0-9]{8}$/;
   const validationSchema = Yup.object({
-    name: Yup.string().required(t('faildRequired') || ""),
-    description: Yup.string().required(t('faildRequired') || ""),
-    price: Yup.number()
-    .typeError(t('priceMustBeNumber') || "Price must be a number") // Custom message for type errors
-    .required(t('faildRequired') || "Price is required")
-    .min(0, t('priceMustBePositive') || "Price must be a non-negative number")
+    fullName: Yup.string().required(t('faildRequired') || ""),
+    address: Yup.string().required(t('faildRequired') || ""),
+    email: Yup.string().email(t('invalidEmail') || "").required(t('faildRequired') || ""),
+    matriculeFiscale: Yup.string().required(t('faildRequired') || ""),
+    phone: Yup.string().required(t('faildRequired') || "").matches(phonetunis, t("phoneerrors") || "")  ,
   });
   const formik = useFormik({
     initialValues: {
-      name: '',
-      description: '',
-      price: '',
+      fullName: '',
+      address: '',
+      email: '',
+      matriculeFiscale: '',
+      phone: '',
     },
     validationSchema,
     onSubmit: async(values) => {
-        setLoading(true);
-        try {
-        await dispatch(updateProduit({...values,price:Number(values.price)},id)).then((secc:any)=>setData(()=>{
-          const newData=data?.map((item:IProduit)=>{
-               if(item?._id===id)
-               {
-  
-                return secc
-               }else{
-  
-                return item
-               }
-          })
-  
-          return newData
-        }));
-          setLoading(false);
-          handleCloseModalEdit()
-        } catch (error) {
-          console.error(error);
-        }
+      setLoading(true);
+      try {
+      await dispatch(updateFournisseur(values,id)).then((secc:any)=>setData(()=>{
+        const newData=data?.map((item:IBanque)=>{
+             if(item?._id===id)
+             {
+
+              return secc
+             }else{
+
+              return item
+             }
+        })
+
+        return newData
+      }));
+        setLoading(false);
+        handleCloseModalEdit()
+      } catch (error) {
+        console.error(error);
+      }
     },
   });
+
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
-    setLoading(false);
     setOpenAlerteDelete(false)
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false)
   };
   const handleCloseModalEdit = () => {
-    setLoading(false);
     setOpenAlerteEdit(false)
     setId("")
     formik.resetForm()
@@ -202,22 +193,17 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>
+              <TableCell>
+                <Typography variant="h6">{t("banque")}</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t("Reference")}</Typography>
+                <Typography variant="h6">RIB </Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t("nom")}</Typography>
+                <Typography variant="h6">IBAN </Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t("description")}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{t("Prix")}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{t("stock")}</Typography>
+                <Typography variant="h6">Code SWIFT </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">Action</Typography>
@@ -229,42 +215,28 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
             {(rowsPerPage > 0
                   ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : rows
-                ).map((row) => (<>
-              <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-               <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpenHistorique(!openHistorique)}>
-            {openHistorique ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
+                ).map((row) => (
+              <TableRow key={row.banque} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <Box>
-                      <Typography variant="h6">{row._id}</Typography>
-                    </Box>
-                  </Stack>
-                </TableCell>
-                <TableCell>
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box>
-                      <Typography  variant="subtitle1" color="textSecondary">{row.name}</Typography>
-                    </Box>
-                  </Stack>
-                </TableCell>
-                <TableCell>
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box>
-                      <Typography  variant="subtitle1" color="textSecondary">{row.description}</Typography>
+                      <Typography variant="h6">{row.banque}</Typography>
                     </Box>
                   </Stack>
                 </TableCell>
                 <TableCell scope="row">
-                  <Typography  variant="subtitle1" color="textSecondary">
-                    {row.price}
+                  <Typography variant="subtitle1" color="textSecondary">
+                    {row.rib}
                   </Typography>
                 </TableCell>
                 <TableCell>
                 <Typography variant="subtitle1" color="textSecondary">
-                    {row.stock}
+                    {row.iban}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                <Typography variant="subtitle1" color="textSecondary">
+                    {row.swift}
                   </Typography>
                 </TableCell>
 
@@ -291,11 +263,14 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
                       setOpenAlerteEdit(true)
                       setId(row?._id)
 
-                      formik.setValues({
-                        name: row.name,
-                        description: row.description,
-                        price:  row.price 
-                      })
+                      // formik.setValues({
+                      //   fullName: row.fullName,
+                      //   address: row.address,
+                      //   email: row.email,
+                      //   matriculeFiscale:row.matriculeFiscale,
+                      //   phone: row.phone,
+                      // })
+                      
                        }}>
                       <ListItemIcon>
                         <IconEdit width={18} />
@@ -314,80 +289,6 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
                   </Menu>
                 </TableCell>
               </TableRow>
-              <TableRow>
-        <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
-          <Collapse in={openHistorique} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Typography
-                gutterBottom
-                variant="h5"
-                sx={{
-                  mt: 2,
-                  backgroundColor: (theme) => theme.palette.grey.A200,
-                  p: '5px 15px',
-                  color: (theme) =>
-                    `${
-                      theme.palette.mode === 'dark'
-                        ? theme.palette.grey.A200
-                        : 'rgba(0, 0, 0, 0.87)'
-                    }`,
-                }}
-              >
-                Historique stock
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                <TableRow>
-              <TableCell>
-                <Typography variant="h6">{t("entre")}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Date</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{t("sorte")}</Typography>
-              </TableCell>
-            </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row?.historique?.map((article: {
-      type: string
-      date:Date,
-      quantite: number
-    }) => (
-                    <TableRow key={article.type}>
-                      <TableCell>
-                        <Typography color="textSecondary" fontWeight="400">
-                          {moment(article.date).format("MM/DD/YYYY")}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography color="textSecondary" fontWeight="400">
-                          {article.type==="entre" ?article.quantite:"-"}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography color="textSecondary" fontWeight="400">
-                        {article.type==="sorte" ?article.quantite:"-"}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                       {row?.historique?.length===0&& (
-                  <TableRow >
-                    <TableCell colSpan={12} className='w-full flex justify-center'>
-                        <span  className='text-center m-auto'>{t("notFound")}</span>
-                    </TableCell>
-                  </TableRow>
-                )}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-   
-      </TableRow>
-              </>
             ))}
               {rows.length===0&& (
                   <TableRow >
@@ -423,10 +324,10 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">{t("deleteTitleProduct")}</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">{t("deleteTitleClient")}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          {t("deleteDescriptionProduit")}
+          {t("deleteDescriptionClient")}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -435,8 +336,8 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
           </Button>
           <Button onClick={async()=>{
             setLoading(true)
-             await dispatch(deleteProduit(id));
-             setData(rows.filter((row :IProduit)=> row._id!==id))
+             await dispatch(deleteFournisseur(id));
+             setData(rows.filter((row :IBanque)=> row._id!==id))
              setId("")
              setLoading(false)
             handleCloseModal()
@@ -452,64 +353,96 @@ const TableProduit = ({rows,setData,data}:{rows:IProduit[],setData:any,data:IPro
         open={openAlertEdit}
         onClose={handleCloseModalEdit}
         aria-labelledby="responsive-dialog-title"
-      >  <form onSubmit={formik.handleSubmit} className='w-96'>
-      <DialogTitle id="responsive-dialog-title">{t("produit")}</DialogTitle>
-      <DialogContent>
-      <Box >
-        <CustomFormLabel htmlFor="fullName">{t("nom")}</CustomFormLabel>
-        <CustomTextField
-          id="name"
-          name="name"
-          variant="outlined"
-          fullWidth
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-      </Box>
-      <Box >
-        <CustomFormLabel htmlFor="address">{t("description")}</CustomFormLabel>
-        <CustomTextField
-          id="description"
-          name="description"
-          variant="outlined"
-          fullWidth
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.description && Boolean(formik.errors.description)}
-          helperText={formik.touched.description && formik.errors.description}
-        />
-      </Box>
-      <Box >
-        <CustomFormLabel htmlFor="matriculeFiscale">{t("price")}</CustomFormLabel>
-        <CustomTextField
-          id="price"
-          name="price"
-          variant="outlined"
-          fullWidth
-          value={formik.values.price}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.price && Boolean(formik.errors.price)}
-          helperText={formik.touched.price && formik.errors.price}
-        />
-      </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" onClick={handleCloseModalEdit}>
-          {t("cancel")}
-        </Button>
-        <Button type="submit" className='flex gap-10'  disabled={loading}>
-        {loading && <div><SpinnerSubmit /></div> }
-          <span>Submit</span></Button>
-      </DialogActions>
-      </form>
+      > <form onSubmit={formik.handleSubmit} className='w-full'>
+        <DialogTitle id="responsive-dialog-title">{t("updateClient")+ " "+ formik.values.fullName}</DialogTitle>
+        <DialogContent>
+           <div className='flex gap-4'>
+        <Box >
+          <CustomFormLabel htmlFor="fullName">{t("fullName")}</CustomFormLabel>
+          <CustomTextField
+            id="fullName"
+            name="fullName"
+            variant="outlined"
+            fullWidth
+            value={formik.values.fullName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.fullName && Boolean(formik.errors.fullName)}
+            helperText={formik.touched.fullName && formik.errors.fullName}
+          />
+        </Box>
+        <Box >
+          <CustomFormLabel htmlFor="email">{t("email")}</CustomFormLabel>
+          <CustomTextField
+            id="email"
+            name="email"
+            variant="outlined"
+            fullWidth
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+          />
+        </Box>
+        </div>
+           <div className='flex gap-4'>
+        <Box >
+          <CustomFormLabel htmlFor="address">{t("address")}</CustomFormLabel>
+          <CustomTextField
+            id="address"
+            name="address"
+            variant="outlined"
+            fullWidth
+            value={formik.values.address}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.address && Boolean(formik.errors.address)}
+            helperText={formik.touched.address && formik.errors.address}
+          />
+        </Box>
+        <Box >
+          <CustomFormLabel htmlFor="phone">{t("phone")}</CustomFormLabel>
+          <CustomTextField
+            id="phone"
+            name="phone"
+            variant="outlined"
+            fullWidth
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.phone && Boolean(formik.errors.phone)}
+            helperText={formik.touched.phone && formik.errors.phone}
+          />
+        </Box>
+        </div>
+        <Box >
+          <CustomFormLabel htmlFor="matriculeFiscale">{t("matriculeFiscale")}</CustomFormLabel>
+          <CustomTextField
+            id="matriculeFiscale"
+            name="matriculeFiscale"
+            variant="outlined"
+            fullWidth
+            value={formik.values.matriculeFiscale}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.matriculeFiscale && Boolean(formik.errors.matriculeFiscale)}
+            helperText={formik.touched.matriculeFiscale && formik.errors.matriculeFiscale}
+          />
+        </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={handleCloseModalEdit}>
+            {t("cancel")}
+          </Button>
+          <Button type="submit" className='flex gap-10'  disabled={loading}>
+          {loading && <div><SpinnerSubmit /></div> }
+            <span>Submit</span></Button>
+        </DialogActions>
+        </form>
       </Dialog>
     </BlankCard>
   );
 };
 
-export default TableProduit;
+export default TableBanque;

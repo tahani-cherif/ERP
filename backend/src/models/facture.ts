@@ -22,10 +22,12 @@ const factureSchema = new Schema<IFacture>(
     client: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
+      
     },
     fournisseur: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "fournisseur",
+      required:false
     },
     date: {
       type: Date,
@@ -54,7 +56,7 @@ const factureSchema = new Schema<IFacture>(
     },
     tva: {
       type: Number,
-      required: true,
+      required:false,
     },
     modepaiement: {
       type: String,

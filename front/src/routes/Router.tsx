@@ -15,6 +15,7 @@ const Fournisseur = Loadable(lazy(() => import('../views/dashboard/fournisseur')
 const Produit = Loadable(lazy(() => import('../views/dashboard/produit')));
 const Vente = Loadable(lazy(() => import('../views/dashboard/vente')));
 const Achat = Loadable(lazy(() => import('../views/dashboard/achat')));
+const Banque = Loadable(lazy(() => import('../views/dashboard/banque')));
 
 /* ****Apps***** */
 const Blog = Loadable(lazy(() => import('../views/apps/blog/Blog')));
@@ -130,6 +131,7 @@ const Router = [
       { path: '/dashboards/produits', exact: true, element: <ProtectedRoute element={<Produit />} /> },
       { path: '/dashboards/ventes', exact: true, element: <ProtectedRoute element={<Vente />} /> },
       { path: '/dashboards/achats', exact: true, element: <ProtectedRoute element={<Achat />} /> },
+      { path: '/dashboards/banque', exact: true, element: <ProtectedRoute element={<Banque />} /> },
       { path: '/dashboards/ecommerce', exact: true, element: <ProtectedRoute element={<EcommerceDash />} /> },
       { path: '/apps/contacts', element: <ProtectedRoute element={<Contacts />} /> },
       { path: '/apps/blog/posts', element: <ProtectedRoute element={<Blog />} /> },

@@ -303,7 +303,7 @@ const TableAchat = ({
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
                         <Typography variant="subtitle1" color="textSecondary">
-                          {row.fournisseur.fullName}
+                          {row?.fournisseur?.fullName}
                         </Typography>
                       </Box>
                     </Stack>
@@ -379,8 +379,8 @@ const TableAchat = ({
                             number: row._id,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             supplier: {
-                              name: row.fournisseur.fullName,
-                              address: row.fournisseur.address,
+                              name: row?.fournisseur?.fullName,
+                              address: row?.fournisseur?.address,
                             },
                             client: { name: '', address: '' },
                             items: row.articles.map((item: any) => {
@@ -393,7 +393,7 @@ const TableAchat = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: (row.totalHTV * row.tva) / 100,
+                            taxAmount: row.tva ?(row.totalHTV * row.tva) / 100 :row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
@@ -411,7 +411,7 @@ const TableAchat = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: (row.totalHTV * row.tva) / 100,
+                            taxAmount:  row.tva ?(row.totalHTV * row.tva) / 100 :row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },

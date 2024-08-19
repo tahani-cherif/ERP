@@ -94,5 +94,10 @@
    "virementBancaire":"Virement bancaire",
    "produitTitle":"Produit",
    "quantiteExceedsStock":"La quantité dépasse le stock",
-   "modepaiement":"Mode de paiement"
+   "modepaiement":"Mode de paiement",
+   "matricule":"Matricule moyen de transport",
+   "transporteur":"Transporteur",
+   "timbre":"timbre fiscale",
+   "banque":"Banque",
+   "addBanque": "Ajouter un nouveau Banque"
 }

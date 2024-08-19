@@ -76,7 +76,7 @@ const Vente = () => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const validationSchema = Yup.object({
-    fournisseur: Yup.string().required(t('faildRequired') || ''),
+    fournisseur: Yup.string().optional(),
     modepaiement: Yup.string().required(t('faildRequired') || ''),
     articles: Yup.array().of(
       Yup.object({
@@ -89,7 +89,7 @@ const Vente = () => {
     ),
     tva: Yup.number()
       .typeError(t('tvaMustBeNumber') || 'tva must be a number')
-      .required(t('faildRequired') || 'tva is required')
+      .optional()
       .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
   });
   useEffect(() => {
@@ -160,13 +160,13 @@ const Vente = () => {
                   }
                 });
               });
-
+               console.log( values.tva)
               await dispatch(
                 addAchat({
-                  fournisseur: values.fournisseur,
+                  fournisseur: values.fournisseur ? values.fournisseur :null,
                   date: new Date(),
                   modepaiement: values.modepaiement,
-                  total_general: total_generalhtva + total_generalhtva * (Number(values.tva) / 100),
+                  total_general: total_generalhtva+1 + values.tva ? total_generalhtva * (Number(values.tva) / 100):0,
                   tva: Number(values.tva),
                   totalHTV: total_generalhtva,
                   articles: values.articles,

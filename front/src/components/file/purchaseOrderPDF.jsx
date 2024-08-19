@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
   subHeader: { fontSize: 14, marginBottom: 10 },
+  headervide:{marginTop:"150px"}
 });
 
 const PurchaseOrderPDF = ({ order }) => {
@@ -33,6 +34,8 @@ const PurchaseOrderPDF = ({ order }) => {
   return (
     <Document>
       <Page style={styles.page}>
+      <View style={styles.headervide}>
+      </View>
         <Text style={styles.header}>
           {t('bonCommande')} N° : {order?.number}
         </Text>

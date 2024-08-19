@@ -39,7 +39,7 @@ export const fetchAchats = () => async (dispatch: AppDispatch) => {
 };
 export const addAchat =
   (body: {
-    fournisseur: string;
+    fournisseur: string | null;
     modepaiement: string;
     date: Date;
     total_general: number;

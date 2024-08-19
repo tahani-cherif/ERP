@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
   subHeader: { fontSize: 14, marginBottom: 10 },
+  headervide:{marginTop:"150px"}
 });
 
 const InvoicePDF = ({ invoice }) => {
@@ -33,6 +34,8 @@ const InvoicePDF = ({ invoice }) => {
   return (
     <Document>
       <Page style={styles.page}>
+      <View style={styles.headervide}>
+      </View>
         <Text style={styles.header}>
           {t('facture')} N° : {invoice?.number}
         </Text>
@@ -81,6 +84,9 @@ const InvoicePDF = ({ invoice }) => {
         </Text>
         <Text style={styles.section}>
           TVA ({invoice?.taxRate}%): {invoice?.taxAmount}
+        </Text>
+        <Text style={styles.section}>
+          {t("timbre")} : 1
         </Text>
         <Text style={styles.section}>
           {t('montantTotal') + ' '}TTC: {invoice?.totalTTC}

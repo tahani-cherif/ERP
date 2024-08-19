@@ -90,6 +90,11 @@
    "virementBancaire": "Bank transfer",
    "produitTitle":"Product",
    "quantiteExceedsStock":"Quantity exceeds stock",
-   "modepaiement":"Payment method"
+   "modepaiement":"Payment method",
+   "matricule":"Matricule means of transport",
+   "transporteur":"Carrier",
+   "timbre":"tax stamp",
+   "banque":"Bank",
+   "addBanque": "Add New Bank"
 
 }

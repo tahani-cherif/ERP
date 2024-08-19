@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
   subHeader: { fontSize: 14, marginBottom: 10 },
   conditions: { marginTop: 20, fontSize: 12 },
+  headervide:{marginTop:"150px"}
 });
 
 const QuotePDF = ({ quote }) => {
@@ -34,6 +35,8 @@ const QuotePDF = ({ quote }) => {
   return (
     <Document>
       <Page style={styles.page}>
+      <View style={styles.headervide}>
+      </View>
         <Text style={styles.header}>Devis N° : {quote?.number}</Text>
         <Text style={styles.section}>Date : {quote?.date}</Text>
 

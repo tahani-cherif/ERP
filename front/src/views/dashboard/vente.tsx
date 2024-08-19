@@ -190,7 +190,7 @@ const Vente = () => {
                   client: values.client,
                   date: new Date(),
                   modepaiement: values.modepaiement,
-                  total_general: total_generalhtva + total_generalhtva * (Number(values.tva) / 100),
+                  total_general: total_generalhtva +1+ total_generalhtva * (Number(values.tva) / 100),
                   tva: Number(values.tva),
                   totalHTV: total_generalhtva,
                   articles: values.articles,

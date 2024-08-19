@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
   subHeader: { fontSize: 14, marginBottom: 10 },
-  signature: { marginTop: 20, fontSize: 12 }
+  signature: { marginTop: 20, fontSize: 12 },
+  headervide:{marginTop:"150px"}
 });
 
 const DeliveryNotePDF = ({ deliveryNote }) => {
@@ -21,12 +22,19 @@ const DeliveryNotePDF = ({ deliveryNote }) => {
   return (
     <Document>
       <Page style={styles.page}>
+        <View style={styles.headervide}>
+        </View>
         <Text style={styles.header}>{t("BonLivraison")} N° : {deliveryNote?.number}</Text>
         <Text style={styles.section}>Date : {deliveryNote?.date}</Text>
 
+       
         <Text style={styles.subHeader}>Client :</Text>
         <Text style={styles.section}>{t("nomClients") + " : " + deliveryNote?.client?.name}</Text>
         <Text style={styles.section}>{t("address") + " Client : "}{deliveryNote?.client?.address}</Text>
+        <Text style={styles.section}>{t("matricule") + " : " }</Text>
+        <Text style={styles.subHeader}>{t("transporteur")} :</Text>
+        <Text style={styles.section}>{t("fullName") + " : "}</Text>
+        <Text style={styles.section}>CIN :</Text>
 
         <View style={styles.table}>
           <View style={styles.tableRow}>

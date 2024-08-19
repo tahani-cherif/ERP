@@ -67,6 +67,7 @@ import {
   IconUsers,
   IconBuildingStore,
   IconReportMoney,
+  IconBuildingBank,
 } from '@tabler/icons';
 
 const Menuitems: MenuitemsType[] = [
@@ -112,6 +113,12 @@ const Menuitems: MenuitemsType[] = [
     title: localStorage.getItem("i18nextLng")==="fr" ?"ventes":'sales',
     icon: IconReportMoney,
     href: '/dashboards/ventes',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem("i18nextLng")==="fr" ?"Banque":'Bank',
+    icon: IconBuildingBank,
+    href: '/dashboards/banque',
   },
   {
     id: uniqueId(),
