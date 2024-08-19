@@ -16,6 +16,7 @@ const Produit = Loadable(lazy(() => import('../views/dashboard/produit')));
 const Vente = Loadable(lazy(() => import('../views/dashboard/vente')));
 const Achat = Loadable(lazy(() => import('../views/dashboard/achat')));
 const Banque = Loadable(lazy(() => import('../views/dashboard/banque')));
+const Credit = Loadable(lazy(() => import('../views/dashboard/credit')));
 
 /* ****Apps***** */
 const Blog = Loadable(lazy(() => import('../views/apps/blog/Blog')));
@@ -123,16 +124,37 @@ const Router = [
   {
     path: '/',
     element: <FullLayout />,
-       children: [
+    children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
-      { path: '/dashboards/modern', exact: true, element: <ProtectedRoute element={<ModernDash />} /> },
-      { path: '/dashboards/clients', exact: true, element: <ProtectedRoute element={<Client />} /> },
-      { path: '/dashboards/fournisseurs', exact: true, element: <ProtectedRoute element={<Fournisseur />} /> },
-      { path: '/dashboards/produits', exact: true, element: <ProtectedRoute element={<Produit />} /> },
+      {
+        path: '/dashboards/modern',
+        exact: true,
+        element: <ProtectedRoute element={<ModernDash />} />,
+      },
+      {
+        path: '/dashboards/clients',
+        exact: true,
+        element: <ProtectedRoute element={<Client />} />,
+      },
+      {
+        path: '/dashboards/fournisseurs',
+        exact: true,
+        element: <ProtectedRoute element={<Fournisseur />} />,
+      },
+      {
+        path: '/dashboards/produits',
+        exact: true,
+        element: <ProtectedRoute element={<Produit />} />,
+      },
       { path: '/dashboards/ventes', exact: true, element: <ProtectedRoute element={<Vente />} /> },
       { path: '/dashboards/achats', exact: true, element: <ProtectedRoute element={<Achat />} /> },
       { path: '/dashboards/banque', exact: true, element: <ProtectedRoute element={<Banque />} /> },
-      { path: '/dashboards/ecommerce', exact: true, element: <ProtectedRoute element={<EcommerceDash />} /> },
+      { path: '/dashboards/credit', exact: true, element: <ProtectedRoute element={<Credit />} /> },
+      {
+        path: '/dashboards/ecommerce',
+        exact: true,
+        element: <ProtectedRoute element={<EcommerceDash />} />,
+      },
       { path: '/apps/contacts', element: <ProtectedRoute element={<Contacts />} /> },
       { path: '/apps/blog/posts', element: <ProtectedRoute element={<Blog />} /> },
       { path: '/apps/blog/detail/:id', element: <ProtectedRoute element={<BlogDetail />} /> },
@@ -141,9 +163,18 @@ const Router = [
       { path: '/apps/notes', element: <ProtectedRoute element={<Notes />} /> },
       { path: '/apps/tickets', element: <ProtectedRoute element={<Tickets />} /> },
       { path: '/apps/ecommerce/shop', element: <ProtectedRoute element={<Ecommerce />} /> },
-      { path: '/apps/ecommerce/eco-product-list', element: <ProtectedRoute element={<EcomProductList />} /> },
-      { path: '/apps/ecommerce/eco-checkout', element: <ProtectedRoute element={<EcomProductCheckout />} /> },
-      { path: '/apps/ecommerce/detail/:id', element: <ProtectedRoute element={<EcommerceDetail />} /> },
+      {
+        path: '/apps/ecommerce/eco-product-list',
+        element: <ProtectedRoute element={<EcomProductList />} />,
+      },
+      {
+        path: '/apps/ecommerce/eco-checkout',
+        element: <ProtectedRoute element={<EcomProductCheckout />} />,
+      },
+      {
+        path: '/apps/ecommerce/detail/:id',
+        element: <ProtectedRoute element={<EcommerceDetail />} />,
+      },
       { path: '/apps/followers', element: <ProtectedRoute element={<Followers />} /> },
       { path: '/apps/friends', element: <ProtectedRoute element={<Friends />} /> },
       { path: '/apps/gallery', element: <ProtectedRoute element={<Gallery />} /> },
@@ -159,8 +190,14 @@ const Router = [
       { path: '/ui-components/rating', element: <ProtectedRoute element={<MuiRating />} /> },
       { path: '/ui-components/tabs', element: <ProtectedRoute element={<MuiTabs />} /> },
       { path: '/ui-components/tooltip', element: <ProtectedRoute element={<MuiTooltip />} /> },
-      { path: '/ui-components/transfer-list', element: <ProtectedRoute element={<MuiTransferList />} /> },
-      { path: '/ui-components/typography', element: <ProtectedRoute element={<MuiTypography />} /> },
+      {
+        path: '/ui-components/transfer-list',
+        element: <ProtectedRoute element={<MuiTransferList />} />,
+      },
+      {
+        path: '/ui-components/typography',
+        element: <ProtectedRoute element={<MuiTypography />} />,
+      },
       { path: '/pages/casl', element: <ProtectedRoute element={<RollbaseCASL />} /> },
       { path: '/pages/treeview', element: <ProtectedRoute element={<Treeview />} /> },
       { path: '/pages/pricing', element: <ProtectedRoute element={<Pricing />} /> },
@@ -172,12 +209,21 @@ const Router = [
       { path: '/tables/fixed-header', element: <ProtectedRoute element={<FixedHeaderTable />} /> },
       { path: '/tables/collapsible', element: <ProtectedRoute element={<CollapsibleTable />} /> },
       { path: '/tables/search', element: <ProtectedRoute element={<SearchTable />} /> },
-      { path: '/forms/form-elements/autocomplete', element: <ProtectedRoute element={<MuiAutoComplete />} /> },
+      {
+        path: '/forms/form-elements/autocomplete',
+        element: <ProtectedRoute element={<MuiAutoComplete />} />,
+      },
       { path: '/forms/form-elements/button', element: <ProtectedRoute element={<MuiButton />} /> },
-      { path: '/forms/form-elements/checkbox', element: <ProtectedRoute element={<MuiCheckbox />} /> },
+      {
+        path: '/forms/form-elements/checkbox',
+        element: <ProtectedRoute element={<MuiCheckbox />} />,
+      },
       { path: '/forms/form-elements/radio', element: <ProtectedRoute element={<MuiRadio />} /> },
       { path: '/forms/form-elements/slider', element: <ProtectedRoute element={<MuiSlider />} /> },
-      { path: '/forms/form-elements/date-time', element: <ProtectedRoute element={<MuiDateTime />} /> },
+      {
+        path: '/forms/form-elements/date-time',
+        element: <ProtectedRoute element={<MuiDateTime />} />,
+      },
       { path: '/forms/form-elements/switch', element: <ProtectedRoute element={<MuiSwitch />} /> },
       { path: '/forms/form-elements/switch', element: <ProtectedRoute element={<MuiSwitch />} /> },
       { path: '/forms/form-layouts', element: <ProtectedRoute element={<FormLayouts />} /> },
@@ -190,9 +236,15 @@ const Router = [
       { path: '/charts/area-chart', element: <ProtectedRoute element={<AreaChart />} /> },
       { path: '/charts/line-chart', element: <ProtectedRoute element={<LineChart />} /> },
       { path: '/charts/gredient-chart', element: <ProtectedRoute element={<GredientChart />} /> },
-      { path: '/charts/candlestick-chart', element: <ProtectedRoute element={<CandlestickChart />} /> },
+      {
+        path: '/charts/candlestick-chart',
+        element: <ProtectedRoute element={<CandlestickChart />} />,
+      },
       { path: '/charts/column-chart', element: <ProtectedRoute element={<ColumnChart />} /> },
-      { path: '/charts/doughnut-pie-chart', element: <ProtectedRoute element={<DoughnutChart />} /> },
+      {
+        path: '/charts/doughnut-pie-chart',
+        element: <ProtectedRoute element={<DoughnutChart />} />,
+      },
       { path: '/charts/radialbar-chart', element: <ProtectedRoute element={<RadialbarChart />} /> },
       { path: '/widgets/cards', element: <ProtectedRoute element={<WidgetCards />} /> },
       { path: '/widgets/banners', element: <ProtectedRoute element={<WidgetBanners />} /> },

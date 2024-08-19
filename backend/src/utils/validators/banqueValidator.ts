@@ -11,7 +11,6 @@ export const createBanqueValidator = [
   check("rib").notEmpty().withMessage("rib required"),
   check("iban").notEmpty().withMessage("iban required"),
   check("swift").notEmpty().withMessage("swift required"),
-  ,
   validatorMiddleware,
 ];
 
@@ -27,4 +26,3 @@ export const deleteBanqueValidator = [
   check("id").isMongoId().withMessage("Invalid Banque id format"),
   validatorMiddleware,
 ];
-

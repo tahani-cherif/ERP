@@ -92,33 +92,39 @@ const Menuitems: MenuitemsType[] = [
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"Fournisseur":'Supplier',
-    icon: IconShoppingCart ,
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Fournisseur' : 'Supplier',
+    icon: IconShoppingCart,
     href: '/dashboards/fournisseurs',
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"Stock/Inventaire":'Stock/Inventory',
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Stock/Inventaire' : 'Stock/Inventory',
     icon: IconBuildingStore,
     href: '/dashboards/produits',
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"Achats":'Purchases',
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Achats' : 'Purchases',
     icon: IconBasket,
     href: '/dashboards/achats',
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"ventes":'sales',
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'ventes' : 'sales',
     icon: IconReportMoney,
     href: '/dashboards/ventes',
   },
   {
     id: uniqueId(),
-    title: localStorage.getItem("i18nextLng")==="fr" ?"Banque":'Bank',
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Banque' : 'Bank',
     icon: IconBuildingBank,
     href: '/dashboards/banque',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi des crédits' : 'Credit tracking',
+    icon: IconTicket,
+    href: '/dashboards/credit',
   },
   {
     id: uniqueId(),
@@ -585,7 +591,7 @@ const Menuitems: MenuitemsType[] = [
     navlabel: true,
     subheader: 'Auth',
   },
-  
+
   {
     id: uniqueId(),
     title: 'Login',
@@ -665,7 +671,7 @@ const Menuitems: MenuitemsType[] = [
         icon: IconPoint,
         href: '/auth/two-steps2',
       },
-    ]
+    ],
   },
   {
     id: uniqueId(),
@@ -679,7 +685,7 @@ const Menuitems: MenuitemsType[] = [
     icon: IconSettings,
     href: '/auth/maintenance',
   },
- 
+
   {
     navlabel: true,
     subheader: 'Other',

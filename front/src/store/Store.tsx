@@ -13,6 +13,7 @@ import FournisseurReducer from './apps/fournisseur/fournisseurSlice';
 import ProduitReducer from './apps/produit/produitSlice';
 import VenteReducer from './apps/vente/venteSlice';
 import AchatReducer from './apps/achat/achatSlice';
+import BanqueReducer from './apps/banque/banqueSlice';
 import { combineReducers } from 'redux';
 import {
   useDispatch as useAppDispatch,
@@ -36,6 +37,7 @@ export const store = configureStore({
     produitReducer: ProduitReducer,
     venteReducer: VenteReducer,
     achatReducer: AchatReducer,
+    banqueReducer: BanqueReducer,
   },
 });
 
@@ -54,6 +56,7 @@ const rootReducer = combineReducers({
   produitReducer: ProduitReducer,
   venteReducer: VenteReducer,
   achatReducer: AchatReducer,
+  banqueReducer: BanqueReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

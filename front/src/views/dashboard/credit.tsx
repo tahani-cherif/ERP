@@ -27,7 +27,7 @@ interface IBanque {
   admin: string;
 }
 
-const Banque = () => {
+const Credit = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const BCrumb = [
@@ -36,7 +36,7 @@ const Banque = () => {
       title: 'Home',
     },
     {
-      title: t('banque') || '',
+      title: t('credit') || '',
     },
   ];
   const theme = useTheme();
@@ -94,11 +94,11 @@ const Banque = () => {
   };
 
   return (
-    <PageContainer title={t('banque') || ''}>
+    <PageContainer title={t('credit') || ''}>
       {/* breadcrumb */}
-      <Breadcrumb title={t('banque') || ''} items={BCrumb} />
+      <Breadcrumb title={t('credit') || ''} items={BCrumb} />
       {/* end breadcrumb */}
-      <ParentCard title={t('banque') || ''}>
+      <ParentCard title={t('credit') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <div className="flex justify-end">
@@ -199,4 +199,4 @@ const Banque = () => {
   );
 };
 
-export default Banque;
+export default Credit;

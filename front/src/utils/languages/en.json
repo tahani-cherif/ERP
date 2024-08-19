@@ -95,6 +95,9 @@
    "transporteur":"Carrier",
    "timbre":"tax stamp",
    "banque":"Bank",
-   "addBanque": "Add New Bank"
+   "addBanque": "Add New Bank",
+    "deleteDescriptionBanque":"Are you sure you want to delete this Bank? This action cannot be undone.",
+   "deleteTitleBanque":"Delete Bank",
+   "credit":"Credit tracking"
 
 }

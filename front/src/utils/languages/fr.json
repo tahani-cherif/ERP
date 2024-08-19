@@ -99,5 +99,8 @@
    "transporteur":"Transporteur",
    "timbre":"timbre fiscale",
    "banque":"Banque",
-   "addBanque": "Ajouter un nouveau Banque"
+   "addBanque": "Ajouter un nouveau Banque",
+   "deleteTitleBanque":"Supprimer Banque",
+   "deleteDescriptionBanque":"Êtes-vous sûr de vouloir supprimer ce banque ? Cette action ne peut être annulée.",
+   "credit":"Suivi des crédits"
 }
