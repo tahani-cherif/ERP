@@ -11,7 +11,7 @@ const initialState: StateType = {
   selectedBanque: null,
 };
 
-export const fournisseurSlice = createSlice({
+export const banqueSlice = createSlice({
   name: 'Banque',
   initialState,
   reducers: {
@@ -27,7 +27,7 @@ export const fournisseurSlice = createSlice({
     },
   },
 });
-export const { setBanques, setBanque, setBanquesAdd } = fournisseurSlice.actions;
+export const { setBanques, setBanque, setBanquesAdd } = banqueSlice.actions;
 
 export const fetchBanques = () => async (dispatch: AppDispatch) => {
   try {
@@ -76,4 +76,4 @@ export const updateBanque =
       throw new Error(err);
     }
   };
-export default fournisseurSlice.reducer;
+export default banqueSlice.reducer;

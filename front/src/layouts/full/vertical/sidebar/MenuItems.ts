@@ -68,6 +68,7 @@ import {
   IconBuildingStore,
   IconReportMoney,
   IconBuildingBank,
+  IconCash,
 } from '@tabler/icons';
 
 const Menuitems: MenuitemsType[] = [
@@ -125,6 +126,22 @@ const Menuitems: MenuitemsType[] = [
     title: localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi des crédits' : 'Credit tracking',
     icon: IconTicket,
     href: '/dashboards/credit',
+  },
+  {
+    id: uniqueId(),
+    title:
+      localStorage.getItem('i18nextLng') === 'fr'
+        ? 'Suivi caisse espèce'
+        : 'Cash register tracking',
+    icon: IconCash,
+    href: '/dashboards/caisse',
+  },
+  {
+    id: uniqueId(),
+    title:
+      localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi Recouvrement' : 'Collection follow-up',
+    icon: IconPackage,
+    href: '/dashboards/recouverement',
   },
   {
     id: uniqueId(),

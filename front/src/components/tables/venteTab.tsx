@@ -305,7 +305,7 @@ const TableVente = ({
                       {row.statut === 'paid' && (
                         <Chip label={t(row.statut)} color="success" size="small" />
                       )}
-                      {row.statut === 'pending' && (
+                      {(row.statut === 'pending' || row.statut === 'semi-paid') && (
                         <Chip label={t(row.statut)} color="warning" size="small" />
                       )}
                       {row.statut === 'cancelled' && (
@@ -562,6 +562,7 @@ const TableVente = ({
               variant="outlined"
             >
               <MenuItem value="paid">{t('paid')}</MenuItem>
+              <MenuItem value="semi-paid">{t('semi-paid')}</MenuItem>
               <MenuItem value="cancelled">{t('cancelled')}</MenuItem>
             </CustomSelect>
           </DialogContent>

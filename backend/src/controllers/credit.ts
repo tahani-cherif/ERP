@@ -8,7 +8,10 @@ import ApiError from "../utils/apiError";
 // @access  Private
 const getCredits = asyncHandler(async (req: any, res: Response) => {
   const userId = req?.user?._id;
-  const Credits = await creditModel.find({ admin: userId }).populate("banque");
+  const Credits = await creditModel
+    .find({ admin: userId })
+    .populate("banque")
+    .sort({ createdAt: -1 });
   res.status(200).json({ results: Credits.length, data: Credits });
 });
 
@@ -33,7 +36,8 @@ const createCredit = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
   const userId = req?.user?._id;
   const Credit = await creditModel.create({ ...body, admin: userId });
-  res.status(201).json({ data: Credit });
+  const Creditget = await creditModel.findById(Credit?._id).populate("banque");
+  res.status(201).json({ data: Creditget });
 });
 
 // @desc    Update specified Credit
@@ -45,10 +49,14 @@ const updateCredit = asyncHandler(
     const Credit = await creditModel.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
+
     if (!Credit) {
       return next(new ApiError(`Credit not found for this id ${id}`, 404));
     }
-    res.status(200).json({ data: Credit });
+    const Creditget = await creditModel
+      .findById(Credit?._id)
+      .populate("banque");
+    res.status(200).json({ data: Creditget });
   }
 );
 

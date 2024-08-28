@@ -9,11 +9,15 @@ interface IFacture extends Document {
   statut: string;
   tva: number;
   totalHTV: number;
+  avance: number;
+  reste: number;
   modepaiement: string;
+  numero: string;
   articles: {
     produit: mongoose.Schema.Types.ObjectId;
     quantite: Number;
   }[];
+  banque: mongoose.Schema.Types.ObjectId;
   admin: mongoose.Schema.Types.ObjectId;
 }
 
@@ -22,12 +26,11 @@ const factureSchema = new Schema<IFacture>(
     client: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-      
     },
     fournisseur: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "fournisseur",
-      required:false
+      required: false,
     },
     date: {
       type: Date,
@@ -50,21 +53,33 @@ const factureSchema = new Schema<IFacture>(
       type: Number,
       required: true,
     },
+    avance: {
+      type: Number,
+      required: false,
+    },
+    reste: {
+      type: Number,
+      required: false,
+    },
     totalHTV: {
       type: Number,
       required: true,
     },
     tva: {
       type: Number,
-      required:false,
+      required: false,
     },
     modepaiement: {
       type: String,
       required: true,
     },
+    numero: {
+      type: String,
+      required: false,
+    },
     statut: {
       type: String,
-      enum: ["pending", "paid", "cancelled"],
+      enum: ["pending", "paid", "cancelled", "semi-paid"],
       default: "pending",
       required: true,
     },
@@ -72,6 +87,11 @@ const factureSchema = new Schema<IFacture>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
+    },
+    banque: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "banque",
+      required: false,
     },
   },
   { timestamps: true }

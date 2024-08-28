@@ -50,7 +50,6 @@ const getFacture = asyncHandler(
 // @access  Private
 const createFacture = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  console.log(body);
   const facture = await factureModel.create(body);
   const factureget = await factureModel
     .findById(facture?._id)

@@ -14,11 +14,8 @@ import {
   TableFooter,
   TablePagination,
   useMediaQuery,
-  Collapse,
   Chip,
-  Menu,
   MenuItem,
-  ListItemIcon,
 } from '@mui/material';
 
 import BlankCard from '../shared/BlankCard';
@@ -43,14 +40,12 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import moment from 'moment';
 
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { IconDotsVertical, IconEdit } from '@tabler/icons';
 import CustomSelect from '../forms/theme-elements/CustomSelect';
-import { updateStatus } from 'src/store/apps/chat/ChatSlice';
+import { updateStatus } from 'src/store/apps/vente/venteSlice';
 import { PDFViewer } from '@react-pdf/renderer';
-import PurchaseOrderPDF from '../file/purchaseOrderPDF';
 import InvoicePDF from '../file/invoicePDF';
+import DeliveryNotePDF from '../file/deliveryNotePDF';
+import QuotePDF from '../file/quotePDF';
 
 //pagination
 interface TablePaginationActionsProps {
@@ -111,7 +106,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 // page
-interface Ifournisseur {
+interface Iclient {
   _id: string;
   fullName: string;
   email: string;
@@ -129,10 +124,18 @@ interface IProduit {
   stock: number;
   admin: string;
 }
-
-interface IAchat {
+interface IBanque {
   _id: string;
-  fournisseur: Ifournisseur;
+  banque: string;
+  rib: string;
+  iban: string;
+  swift: string;
+  admin: string;
+}
+
+interface IVente {
+  _id: string;
+  client: Iclient;
   articles: {
     produit: IProduit;
     quantite: string;
@@ -144,16 +147,20 @@ interface IAchat {
   totalHTV: number;
   modepaiement: string;
   admin: string;
+  avance: number;
+  reste: number;
+  numero: string;
+  banque: IBanque;
 }
 
-const TableAchat = ({
+const TableRecouverement = ({
   rows,
   setData,
   data,
 }: {
-  rows: IAchat[];
+  rows: IVente[];
   setData: any;
-  data: IAchat[] | undefined;
+  data: IVente[] | undefined;
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -178,13 +185,11 @@ const TableAchat = ({
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
-      setData([]);
       setLoading(true);
       try {
         await dispatch(updateStatus({ status: values.status }, id)).then((secc: any) =>
           setData(() => {
-            const newData = data?.map((item: IAchat) => {
+            const newData = data?.map((item: IVente) => {
               if (item?._id === id) {
                 console.log({ secc });
 
@@ -218,12 +223,6 @@ const TableAchat = ({
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
   };
-  const handleCloseOpenAttachment = () => {
-    setLoading(false);
-    setOpenAttachment(false);
-    setFacture({});
-    setId('');
-  };
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
   };
@@ -232,6 +231,12 @@ const TableAchat = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const handleCloseOpenAttachment = () => {
+    setLoading(false);
+    setOpenAttachment(false);
+    setFacture({});
+    setId('');
+  };
 
   return (
     <BlankCard>
@@ -239,7 +244,6 @@ const TableAchat = ({
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
               <TableCell>
                 <Typography variant="h6">{t('Reference')}</Typography>
               </TableCell>
@@ -247,21 +251,26 @@ const TableAchat = ({
                 <Typography variant="h6">Date</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t('nomFournisseur')}</Typography>
-              </TableCell>
-              {/* <TableCell> */}
-              {/* <Typography variant="h6">{t('modepaiement')}</Typography>
+                <Typography variant="h6">statut</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">TVA</Typography>
-              </TableCell> */}
+                <Typography variant="h6">{t('modepaiement')} </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">{t('numero')}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">{t('banque')}</Typography>
+              </TableCell>
               <TableCell>
                 <Typography variant="h6">{t('montantTotal')}</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">statut</Typography>
+                <Typography variant="h6">{t('avance')}</Typography>
               </TableCell>
-
+              <TableCell>
+                <Typography variant="h6">{t('reste')}</Typography>
+              </TableCell>
               <TableCell>
                 <Typography variant="h6">Action</Typography>
               </TableCell>
@@ -274,15 +283,6 @@ const TableAchat = ({
             ).map((row) => (
               <>
                 <TableRow key={row._id}>
-                  <TableCell>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setOpenArticle(!openArticle)}
-                    >
-                      {openArticle ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                  </TableCell>
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
@@ -299,204 +299,48 @@ const TableAchat = ({
                       </Box>
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <Box>
-                        <Typography variant="subtitle1" color="textSecondary">
-                          {row?.fournisseur?.fullName}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </TableCell>
-                  {/* <TableCell>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {row.modepaiement}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {row.tva}
-                    </Typography>
-                  </TableCell> */}
-                  <TableCell>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {row.total_general}
-                    </Typography>
-                  </TableCell>
                   <TableCell scope="row">
                     <Typography variant="subtitle1" color="textSecondary">
                       {row.statut === 'paid' && (
                         <Chip label={t(row.statut)} color="success" size="small" />
                       )}
-                      {row.statut === 'pending' && (
-                        <Chip label={t(row.statut)} color="warning" size="small" />
-                      )}
                       {row.statut === 'cancelled' && (
                         <Chip label={t(row.statut)} color="error" size="small" />
                       )}
-                      {row.statut === 'pending' && (
-                        <IconButton
-                          id="basic-button"
-                          aria-controls={open ? 'basic-menu' : undefined}
-                          aria-haspopup="true"
-                          aria-expanded={open ? 'true' : undefined}
-                          onClick={handleClick}
-                        >
-                          <IconDotsVertical width={18} />
-                        </IconButton>
+                      {(row.statut === 'pending' || row.statut === 'semi-paid') && (
+                        <Chip label={t(row.statut)} color="warning" size="small" />
                       )}
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          'aria-labelledby': 'basic-button',
-                        }}
-                      >
-                        <MenuItem
-                          onClick={() => {
-                            handleClose();
-                            setOpenAlerteDelete(true);
-                            setId(row?._id);
-                          }}
-                        >
-                          <ListItemIcon>
-                            <IconEdit width={18} />
-                          </ListItemIcon>
-                          Edit statut
-                        </MenuItem>
-                      </Menu>
                     </Typography>
                   </TableCell>
-
                   <TableCell>
-                    <Button
-                      onClick={() => {
-                        setOpenAttachment(true);
-                        setFacture({
-                          order: {
-                            number: row._id,
-                            date: moment(row.date).format('YYYY-MM-DD'),
-                            supplier: {
-                              name: row?.fournisseur?.fullName,
-                              address: row?.fournisseur?.address,
-                            },
-                            client: { name: '', address: '' },
-                            items: row.articles.map((item: any) => {
-                              return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
-                              };
-                            }),
-                            totalHT: row.totalHTV,
-                            taxRate: row.tva,
-                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
-                            totalTTC: row.total_general,
-                            paymentTerms: row.modepaiement,
-                          },
-                          invoice: {
-                            number: row._id,
-                            date: moment(row.date).format('YYYY-MM-DD'),
-                            client: { name: '', address: '' },
-                            items: row.articles.map((item: any) => {
-                              return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
-                              };
-                            }),
-                            totalHT: row.totalHTV,
-                            taxRate: row.tva,
-                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
-                            totalTTC: row.total_general,
-                            paymentTerms: row.modepaiement,
-                          },
-                        });
-                      }}
-                    >
-                      {t('attachment')}
-                    </Button>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {t(row.modepaiement)}
+                    </Typography>
                   </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
-                    <Collapse in={openArticle} timeout="auto" unmountOnExit>
-                      <Box margin={1}>
-                        <Typography
-                          gutterBottom
-                          variant="h5"
-                          sx={{
-                            mt: 2,
-                            backgroundColor: (theme) => theme.palette.grey.A200,
-                            p: '5px 15px',
-                            color: (theme) =>
-                              `${
-                                theme.palette.mode === 'dark'
-                                  ? theme.palette.grey.A200
-                                  : 'rgba(0, 0, 0, 0.87)'
-                              }`,
-                          }}
-                        >
-                          Article
-                        </Typography>
-                        <Table size="small" aria-label="purchases">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>
-                                <Typography variant="h6">{t('Reference')}</Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="h6">{t('nom')}</Typography>
-                              </TableCell>
-
-                              <TableCell>
-                                <Typography variant="h6">{t('Prix')}</Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="h6">{t('quantite')}</Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="h6">{t('montantTotal')}</Typography>
-                              </TableCell>
-                              <TableCell></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {row.articles.map((article: any) => (
-                              <TableRow key={article._id}>
-                                <TableCell>
-                                  <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit._id}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell>
-                                  <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.name}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell>
-                                  <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.price}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell>
-                                  <Typography fontWeight="600">{article.quantite}</Typography>
-                                </TableCell>
-                                <TableCell>
-                                  <Typography fontWeight="600">
-                                    {Number(article.quantite) * Number(article.produit.price)}
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </Box>
-                    </Collapse>
+                  <TableCell>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.numero || '-'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.banque?.banque || '-'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.total_general}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.avance || '-'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.reste || '-'}
+                    </Typography>
                   </TableCell>
                 </TableRow>
               </>
@@ -534,11 +378,6 @@ const TableAchat = ({
         open={openAlertDelete}
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
-        sx={{
-          '& .MuiPaper-root': {
-            maxWidth: '100%',
-          },
-        }}
       >
         <form onSubmit={formik.handleSubmit} className="w-full">
           <DialogTitle id="responsive-dialog-title">{t('titleUpdateStatus')}</DialogTitle>
@@ -597,10 +436,13 @@ const TableAchat = ({
 
           <div className="flex gap-10 w-full">
             <PDFViewer width="100%" height="500">
-              <PurchaseOrderPDF order={facture?.order} />
+              <DeliveryNotePDF deliveryNote={facture?.deliveryNote} />
             </PDFViewer>
             <PDFViewer width="100%" height="500">
               <InvoicePDF invoice={facture?.invoice} />
+            </PDFViewer>
+            <PDFViewer width="100%" height="500">
+              <QuotePDF quote={facture?.quote} />
             </PDFViewer>
           </div>
         </DialogContent>
@@ -614,4 +456,4 @@ const TableAchat = ({
   );
 };
 
-export default TableAchat;
+export default TableRecouverement;

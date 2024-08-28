@@ -8,6 +8,7 @@ interface ICredit extends Document {
   principal: number;
   interet: number;
   total: number;
+  montantemprunt: number;
   encours: number;
   etat: string;
   admin: mongoose.Schema.Types.ObjectId;
@@ -37,6 +38,10 @@ const creditSchema = new Schema<ICredit>(
       required: true,
     },
     total: {
+      type: Number,
+      required: true,
+    },
+    montantemprunt: {
       type: Number,
       required: true,
     },
