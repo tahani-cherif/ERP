@@ -39,7 +39,11 @@ const Header = () => {
       minHeight: customizer.TopbarHeight,
     },
   }));
-    const ToolbarStyled = styled(Toolbar)(({theme}) => ({ margin: '0 auto', width: '100%', color: `${theme.palette.text.secondary} !important`, }));
+  const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
+    margin: '0 auto',
+    width: '100%',
+    color: `${theme.palette.text.secondary} !important`,
+  }));
 
   return (
     <AppBarStyled position="sticky" color="default" elevation={8}>
@@ -69,7 +73,7 @@ const Header = () => {
         {/* Search Dropdown */}
         {/* ------------------------------------------- */}
         <Search />
-         {lgUp ? (
+        {lgUp ? (
           <>
             <Navigation />
           </>

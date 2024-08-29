@@ -168,6 +168,7 @@ const TableVente = ({
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedRow, setSelectedRow] = React.useState<IVente>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -207,12 +208,14 @@ const TableVente = ({
     },
   });
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: IVente) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
   };
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+    setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -317,7 +320,7 @@ const TableVente = ({
                           aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
-                          onClick={handleClick}
+                          onClick={(event) => handleClick(event, row)}
                         >
                           <IconDotsVertical width={18} />
                         </IconButton>
@@ -335,7 +338,7 @@ const TableVente = ({
                           onClick={() => {
                             handleClose();
                             setOpenAlerteDelete(true);
-                            setId(row?._id);
+                            setId(selectedRow?._id || '');
                           }}
                         >
                           <ListItemIcon>

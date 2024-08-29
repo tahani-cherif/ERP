@@ -167,6 +167,7 @@ const TableAchat = ({
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedRow, setSelectedRow] = React.useState<IAchat>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -208,12 +209,15 @@ const TableAchat = ({
     },
   });
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: IAchat) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
   };
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+    setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -340,7 +344,7 @@ const TableAchat = ({
                           aria-controls={open ? 'basic-menu' : undefined}
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
-                          onClick={handleClick}
+                          onClick={(event) => handleClick(event, row)}
                         >
                           <IconDotsVertical width={18} />
                         </IconButton>
@@ -358,7 +362,7 @@ const TableAchat = ({
                           onClick={() => {
                             handleClose();
                             setOpenAlerteDelete(true);
-                            setId(row?._id);
+                            setId(selectedRow?._id || '');
                           }}
                         >
                           <ListItemIcon>
