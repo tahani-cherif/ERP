@@ -36,14 +36,10 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    // console.log('send response', response.data);
     return response.data;
   },
   (error) => {
     console.log(error);
-    // if (error.response.status === 404) {
-    //   console.log("not found");
-    // }
     return Promise.reject(error);
   },
 );
