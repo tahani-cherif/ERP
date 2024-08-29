@@ -166,7 +166,8 @@ const TableRecouverement = ({
   const dispatch = useDispatch();
   console.log(data, dispatch);
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
-  const [openArticle, setOpenArticle] = React.useState(false);
+
+  // const [openArticle, setOpenArticle] = React.useState(false);
   const [openAttachment, setOpenAttachment] = React.useState(false);
   const [facture, setFacture] = React.useState<any>();
   const [id, setId] = React.useState<string>('');
@@ -212,14 +213,16 @@ const TableRecouverement = ({
       }
     },
   });
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-    setOpenAlerteDelete(false);
-  };
+
+  // const open = Boolean(anchorEl);
+  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  //   setOpenAlerteDelete(false);
+  // };
+
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
   };

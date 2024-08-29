@@ -17,11 +17,11 @@ const api = axios.create({
 api.interceptors.request.use(
   (request) => {
     const token = tocken();
+
     // console.log(token);
 
     if (token) {
       if (request.headers) {
-        // Ensure headers exist
         request.headers.Authorization = `Bearer ${token}`;
       }
     }
