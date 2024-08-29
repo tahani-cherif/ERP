@@ -2,13 +2,13 @@ import axios from 'axios';
 
 const tocken = () => {
   const accesstoken = window.localStorage.getItem('token');
-  console.log(accesstoken)
-  
-  return accesstoken;  // Ensure a blank line before this return statement
+  console.log(accesstoken);
+
+  return accesstoken; // Ensure a blank line before this return statement
 };
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://51.195.216.235:8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,9 +18,10 @@ api.interceptors.request.use(
   (request) => {
     const token = tocken();
     // console.log(token);
-    
+
     if (token) {
-      if (request.headers) { // Ensure headers exist
+      if (request.headers) {
+        // Ensure headers exist
         request.headers.Authorization = `Bearer ${token}`;
       }
     }
