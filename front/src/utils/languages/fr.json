@@ -133,6 +133,12 @@
    "avance":"Avance",
    "numero":"Numero cheque/trait/vairement",
    "listfacturepaid":"Listes de factures payées",
-   "listfacturenopaid":"Listes des factures en attentes ou non payés"
+   "listfacturenopaid":"Listes des factures en attentes ou non payés",
+   "not-paid":"Non payé",
+   "juridique":"Suivi juridique des impayées ",
+   "numerodossier":"Numéro de dossier",
+   "datejugement":"Date et texte du jugement",
+   "huissierjustice":"L'huissier de justice",
+   "montantimpayee":"Montant impayée"
 
 }

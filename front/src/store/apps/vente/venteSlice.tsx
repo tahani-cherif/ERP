@@ -95,13 +95,33 @@ export const updateVente =
       throw new Error(err);
     }
   };
-export const updateStatus = (body: { status: string }, id: string) => async () => {
-  try {
-    const response = await axios.put('/facture/status/' + id, { ...body, type: 'vente' });
+export const updateStatus =
+  (body: { status: string; montantimpaye: number }, id: string) => async () => {
+    try {
+      const response = await axios.put('/facture/status/' + id, { ...body, type: 'vente' });
 
-    return response.data;
-  } catch (err: any) {
-    throw new Error(err);
-  }
-};
+      return response.data;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+export const updateJuridique =
+  (
+    body: {
+      numeroDossier: string;
+      datejugement: string;
+      huissierjustice: string;
+      montantimpaye: number;
+    },
+    id: string,
+  ) =>
+  async () => {
+    try {
+      const response = await axios.put('/facture/' + id, { ...body, type: 'vente' });
+
+      return response.data;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 export default VenteSlice.reducer;

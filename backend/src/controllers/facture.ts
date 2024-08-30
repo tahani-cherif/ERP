@@ -65,6 +65,7 @@ const createFacture = asyncHandler(async (req: any, res: Response) => {
 const updateFacture = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+    console.log(req.body);
     const facture = await factureModel.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
@@ -82,7 +83,7 @@ const updateStatus = asyncHandler(
     const { id } = req.params;
     const facture = await factureModel.findOneAndUpdate(
       { _id: id },
-      { statut: req.body.status },
+      { statut: req.body.status, montantimpaye: req.body.montantimpaye },
       { new: true }
     );
 

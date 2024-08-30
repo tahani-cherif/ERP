@@ -8,7 +8,8 @@ const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
 
 /* ****Pages***** */
-const ModernDash = Loadable(lazy(() => import('../views/dashboard/Modern')));
+// const ModernDash = Loadable(lazy(() => import('../views/dashboard/Modern')));
+
 const EcommerceDash = Loadable(lazy(() => import('../views/dashboard/Ecommerce')));
 const Client = Loadable(lazy(() => import('../views/dashboard/client')));
 const Fournisseur = Loadable(lazy(() => import('../views/dashboard/fournisseur')));
@@ -19,6 +20,7 @@ const Banque = Loadable(lazy(() => import('../views/dashboard/banque')));
 const Credit = Loadable(lazy(() => import('../views/dashboard/credit')));
 const Caisse = Loadable(lazy(() => import('../views/dashboard/caisse')));
 const Recouverement = Loadable(lazy(() => import('../views/dashboard/recouvrement')));
+const Juridique = Loadable(lazy(() => import('../views/dashboard/juridique')));
 
 /* ****Apps***** */
 const Blog = Loadable(lazy(() => import('../views/apps/blog/Blog')));
@@ -127,11 +129,11 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/', element: <Navigate to="/dashboards/modern" /> },
+      { path: '/', element: <Navigate to="/dashboards/landingpage" /> },
       {
-        path: '/dashboards/modern',
+        path: '/dashboards/landingpage',
         exact: true,
-        element: <ProtectedRoute element={<ModernDash />} />,
+        element: <ProtectedRoute element={<Landingpage />} />,
       },
       {
         path: '/dashboards/clients',
@@ -157,6 +159,11 @@ const Router = [
         path: '/dashboards/recouverement',
         exact: true,
         element: <ProtectedRoute element={<Recouverement />} />,
+      },
+      {
+        path: '/dashboards/juridique',
+        exact: true,
+        element: <ProtectedRoute element={<Juridique />} />,
       },
       {
         path: '/dashboards/ecommerce',

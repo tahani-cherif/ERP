@@ -1,27 +1,29 @@
 import React from 'react';
-import { Grid, Typography, Box, Button, styled, Container, Stack } from '@mui/material';
+import { Grid, Typography, Box, Container, Stack } from '@mui/material';
 import c2aImg from 'src/assets/images/landingpage/background/c2a.png';
-import GuaranteeCard from './GuaranteeCard';
+import { IconBrandFacebook, IconBrandLinkedin } from '@tabler/icons';
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  padding: '13px 34px',
-  fontSize: '16px',
-  backgroundColor: theme.palette.background.paper,
-  color: theme.palette.primary.main,
-  fontWeight: 600,
-}));
+// import GuaranteeCard from './GuaranteeCard';
 
-const StyledButton2 = styled(Button)(({ theme }) => ({
-  padding: '13px 34px',
-  fontSize: '16px',
-  borderColor: theme.palette.background.paper,
-  color: theme.palette.background.paper,
-  fontWeight: 600,
-  '&:hover': {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.primary.main,
-  },
-}));
+// const StyledButton = styled(Button)(({ theme }) => ({
+//   padding: '13px 34px',
+//   fontSize: '16px',
+//   backgroundColor: theme.palette.background.paper,
+//   color: theme.palette.primary.main,
+//   fontWeight: 600,
+// }));
+
+// const StyledButton2 = styled(Button)(({ theme }) => ({
+//   padding: '13px 34px',
+//   fontSize: '16px',
+//   borderColor: theme.palette.background.paper,
+//   color: theme.palette.background.paper,
+//   fontWeight: 600,
+//   '&:hover': {
+//     backgroundColor: theme.palette.background.paper,
+//     color: theme.palette.primary.main,
+//   },
+// }));
 
 const C2a2 = () => {
   return (
@@ -36,21 +38,23 @@ const C2a2 = () => {
         <Container maxWidth="lg">
           <Grid container justifyContent="space-between" spacing={3}>
             <Grid item xs={12} sm={12} lg={5}>
-              <Typography variant="h2" color="background.paper" fontWeight={700} mt={4}>
-                Build your app with our highly customizable React based Dashboard
+              <Typography variant="h3" color="background.paper" fontWeight={400} mt={4}>
+                Bienvenue chez KAIS MANAGER Entreprise spécialisée dans le développement d'ERP
+                (logiciels de gestion des entreprises) et la construction de réseaux informatiques
+                et de télécom.
               </Typography>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={3}>
-                <StyledButton variant="contained" color="inherit" href="#">
-                  Buy Now
-                </StyledButton>
-                <StyledButton2
-                  variant="outlined"
-                  color="inherit"
-                  href="https://github.com/adminmart/modernize-react-lite"
-                >
-                  Download Free Version
-                </StyledButton2>
+                <div className="flew flex-row text-white items-center">
+                  <IconBrandFacebook color="white" />
+                  <a href="https://www.facebook.com/profile.php?id=61562246775096&mibextid=ZbWKwL">
+                    Kais Manager
+                  </a>
+                </div>
+                <div className="flew flex-row text-white items-center">
+                  <IconBrandLinkedin color="white" />
+                  <a href="https://www.linkedin.com/in/kais-safouene-3b7171188/">Kais Safouene</a>
+                </div>
               </Stack>
             </Grid>
             <Grid item xs={12} lg={5}>
@@ -68,9 +72,9 @@ const C2a2 = () => {
           </Grid>
         </Container>
       </Box>
-      <Container maxWidth="lg">
+      {/* <Container maxWidth="lg">
         <GuaranteeCard />
-      </Container>
+      </Container> */}
     </Box>
   );
 };

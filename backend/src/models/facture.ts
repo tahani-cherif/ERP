@@ -13,12 +13,16 @@ interface IFacture extends Document {
   reste: number;
   modepaiement: string;
   numero: string;
+  numeroDossier: string;
+  datejugement: string;
+  huissierjustice: string;
   articles: {
     produit: mongoose.Schema.Types.ObjectId;
     quantite: Number;
   }[];
   banque: mongoose.Schema.Types.ObjectId;
   admin: mongoose.Schema.Types.ObjectId;
+  montantimpaye: number;
 }
 
 const factureSchema = new Schema<IFacture>(
@@ -53,6 +57,10 @@ const factureSchema = new Schema<IFacture>(
       type: Number,
       required: true,
     },
+    montantimpaye: {
+      type: Number,
+      required: false,
+    },
     avance: {
       type: Number,
       required: false,
@@ -77,9 +85,21 @@ const factureSchema = new Schema<IFacture>(
       type: String,
       required: false,
     },
+    numeroDossier: {
+      type: String,
+      required: false,
+    },
+    huissierjustice: {
+      type: String,
+      required: false,
+    },
+    datejugement: {
+      type: String,
+      required: false,
+    },
     statut: {
       type: String,
-      enum: ["pending", "paid", "cancelled", "semi-paid"],
+      enum: ["pending", "paid", "cancelled", "semi-paid", "not-paid"],
       default: "pending",
       required: true,
     },

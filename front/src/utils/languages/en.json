@@ -128,6 +128,12 @@
    "avance":"Advance",
    "numero":"Cheque/draft/payment number",
    "listfacturepaid":"Lists of paid invoices",
-   "listfacturenopaid":"Lists of pending or unpaid invoices"
+   "listfacturenopaid":"Lists of pending or unpaid invoices",
+   "not-paid":"Not paid",
+   "juridique":"Legal follow-up of unpaid bills ",
+   "numerodossier":"File number",
+   "datejugement":"Date and text of judgment",
+   "huissierjustice":"L'huissier de justice",
+   "montantimpayee":"Amount outstanding"
 
 }

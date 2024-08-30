@@ -25,6 +25,7 @@ import {
   IconBuildingBank,
   IconCash,
   IconTicket,
+  IconNotes,
 } from '@tabler/icons';
 
 const Menuitems: MenuitemsType[] = [
@@ -98,6 +99,12 @@ const Menuitems: MenuitemsType[] = [
       localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi Recouvrement' : 'Collection follow-up',
     icon: IconPackage,
     href: '/dashboards/recouverement',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi juridique' : 'Legal follow-up',
+    icon: IconNotes,
+    href: '/dashboards/juridique',
   },
 
   // {

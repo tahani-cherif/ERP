@@ -158,7 +158,6 @@ const TableVente = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  console.log(data, dispatch);
   const [openAlertDelete, setOpenAlerteDelete] = React.useState(false);
   const [openArticle, setOpenArticle] = React.useState(false);
   const [openAttachment, setOpenAttachment] = React.useState(false);
@@ -182,12 +181,19 @@ const TableVente = ({
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await dispatch(updateStatus({ status: values.status }, id)).then((secc: any) =>
+        console.log(selectedRow);
+        await dispatch(
+          updateStatus(
+            {
+              status: values.status,
+              montantimpaye: values.status === 'not-paid' ? Number(selectedRow?.total_general) : 0,
+            },
+            id,
+          ),
+        ).then((secc: any) =>
           setData(() => {
             const newData = data?.map((item: IVente) => {
               if (item?._id === id) {
-                console.log({ secc });
-
                 return {
                   ...item,
                   statut: values.status,
@@ -215,7 +221,7 @@ const TableVente = ({
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
-    setSelectedRow(undefined);
+    // setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -298,7 +304,7 @@ const TableVente = ({
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
                         <Typography variant="subtitle1" color="textSecondary">
-                          {row.client.fullName}
+                          {row?.client?.fullName}
                         </Typography>
                       </Box>
                     </Stack>
@@ -311,7 +317,7 @@ const TableVente = ({
                       {(row.statut === 'pending' || row.statut === 'semi-paid') && (
                         <Chip label={t(row.statut)} color="warning" size="small" />
                       )}
-                      {row.statut === 'cancelled' && (
+                      {(row.statut === 'cancelled' || row.statut === 'not-paid') && (
                         <Chip label={t(row.statut)} color="error" size="small" />
                       )}
                       {row.statut === 'pending' && (
@@ -566,6 +572,7 @@ const TableVente = ({
             >
               <MenuItem value="paid">{t('paid')}</MenuItem>
               <MenuItem value="semi-paid">{t('semi-paid')}</MenuItem>
+              <MenuItem value="not-paid">{t('not-paid')}</MenuItem>
               <MenuItem value="cancelled">{t('cancelled')}</MenuItem>
             </CustomSelect>
           </DialogContent>
