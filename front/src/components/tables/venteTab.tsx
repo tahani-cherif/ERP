@@ -194,6 +194,7 @@ const TableVente = ({
           setData(() => {
             const newData = data?.map((item: IVente) => {
               if (item?._id === id) {
+                console.log(secc);
                 return {
                   ...item,
                   statut: values.status,
@@ -221,6 +222,7 @@ const TableVente = ({
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+
     // setSelectedRow(undefined);
   };
   const handleCloseModal = () => {

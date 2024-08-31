@@ -173,6 +173,7 @@ const TableRecouverement = ({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  console.log(id);
 
   // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const theme = useTheme();
@@ -190,6 +191,7 @@ const TableRecouverement = ({
       console.log(values);
       try {
         setData(data);
+
         // await dispatch(updateStatus({ status: values.status }, id)).then((secc: any) =>
         //   setData(() => {
         //     const newData = data?.map((item: IVente) => {
