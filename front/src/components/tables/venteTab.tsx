@@ -195,6 +195,7 @@ const TableVente = ({
             const newData = data?.map((item: IVente) => {
               if (item?._id === id) {
                 console.log(secc);
+
                 return {
                   ...item,
                   statut: values.status,
