@@ -7,20 +7,18 @@ export const getproduitValidator = [
 ];
 
 export const createproduitValidator = [
+  check("reference").notEmpty().withMessage("reference required"),
   check("name").notEmpty().withMessage("name required"),
-  check("description").notEmpty().withMessage("description required"),
-  check("price")
-    .notEmpty()
-    .withMessage("price required")
-    ,
+  check("price").notEmpty().withMessage("price required"),
+  check("description").optional(),
   validatorMiddleware,
 ];
 
 export const updateproduitValidator = [
+  check("reference").optional(),
   check("name").optional(),
   check("description").optional(),
-  check("price")
-    .optional(),
+  check("price").optional(),
   validatorMiddleware,
 ];
 
@@ -28,4 +26,3 @@ export const deleteproduitValidator = [
   check("id").isMongoId().withMessage("Invalid produit id format"),
   validatorMiddleware,
 ];
-

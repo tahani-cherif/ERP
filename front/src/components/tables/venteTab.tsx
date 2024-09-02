@@ -252,7 +252,7 @@ const TableVente = ({
             <TableRow>
               <TableCell></TableCell>
               <TableCell>
-                <Typography variant="h6">{t('Reference')}</Typography>
+                <Typography variant="h6">{t('facture')} N°</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">Date</Typography>
@@ -384,7 +384,7 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: (row.totalHTV * row.tva) / 100,
+                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
@@ -402,7 +402,7 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: (row.totalHTV * row.tva) / 100,
+                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
@@ -432,7 +432,7 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: (row.totalHTV * row.tva) / 100,
+                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },

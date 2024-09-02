@@ -93,7 +93,7 @@ const Vente = () => {
     ),
     tva: Yup.number()
       .typeError(t('tvaMustBeNumber') || 'tva must be a number')
-      .required(t('faildRequired') || 'tva is required')
+      .optional()
       .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
   });
 
@@ -190,7 +190,10 @@ const Vente = () => {
                   client: values.client,
                   date: new Date(),
                   modepaiement: values.modepaiement,
-                  total_general: total_generalhtva +1+ total_generalhtva * (Number(values.tva) / 100),
+                  total_general:
+                    total_generalhtva +
+                    1 +
+                    (values.tva ? total_generalhtva * (Number(values.tva) / 100) : 0),
                   tva: Number(values.tva),
                   totalHTV: total_generalhtva,
                   articles: values.articles,

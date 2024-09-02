@@ -160,13 +160,16 @@ const Vente = () => {
                   }
                 });
               });
-               console.log( values.tva)
+              console.log(values.tva);
               await dispatch(
                 addAchat({
-                  fournisseur: values.fournisseur ? values.fournisseur :null,
+                  fournisseur: values.fournisseur ? values.fournisseur : null,
                   date: new Date(),
                   modepaiement: values.modepaiement,
-                  total_general: total_generalhtva+1 + values.tva ? total_generalhtva * (Number(values.tva) / 100):0,
+                  total_general:
+                    total_generalhtva +
+                    1 +
+                    (values.tva ? total_generalhtva * (Number(values.tva) / 100) : 0),
                   tva: Number(values.tva),
                   totalHTV: total_generalhtva,
                   articles: values.articles,
@@ -174,7 +177,6 @@ const Vente = () => {
                 }),
               ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
 
-              console.log(values);
               setLoading(false);
               handleCloseModal();
               resetForm();

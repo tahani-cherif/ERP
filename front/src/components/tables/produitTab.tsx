@@ -106,6 +106,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 // page
 interface IProduit {
   _id: string;
+  reference: string;
   name: string;
   description: string;
   price: string;
@@ -141,8 +142,9 @@ const TableProduit = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
+    reference: Yup.string().required(t('faildRequired') || ''),
     name: Yup.string().required(t('faildRequired') || ''),
-    description: Yup.string().required(t('faildRequired') || ''),
+    description: Yup.string().optional(),
     price: Yup.number()
       .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
       .required(t('faildRequired') || 'Price is required')
@@ -150,6 +152,7 @@ const TableProduit = ({
   });
   const formik = useFormik({
     initialValues: {
+      reference: '',
       name: '',
       description: '',
       price: '',
@@ -229,7 +232,7 @@ const TableProduit = ({
                 <Typography variant="h6">{t('Prix')}</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t('stock')}</Typography>
+                <Typography variant="h6">{t('quantite')}</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">Action</Typography>
@@ -256,7 +259,7 @@ const TableProduit = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
-                        <Typography variant="h6">{row._id}</Typography>
+                        <Typography variant="h6">{row.reference}</Typography>
                       </Box>
                     </Stack>
                   </TableCell>
@@ -314,6 +317,7 @@ const TableProduit = ({
                           setOpenAlerteEdit(true);
                           setId(selectedRow?._id || '');
                           formik.setValues({
+                            reference: selectedRow?.reference || '',
                             name: selectedRow?.name || '',
                             description: selectedRow?.description || '',
                             price: selectedRow?.price || '',
@@ -365,10 +369,10 @@ const TableProduit = ({
                           <TableHead>
                             <TableRow>
                               <TableCell>
-                                <Typography variant="h6">{t('entre')}</Typography>
+                                <Typography variant="h6">Date</Typography>
                               </TableCell>
                               <TableCell>
-                                <Typography variant="h6">Date</Typography>
+                                <Typography variant="h6">{t('entre')}</Typography>
                               </TableCell>
                               <TableCell>
                                 <Typography variant="h6">{t('sorte')}</Typography>
@@ -486,6 +490,20 @@ const TableProduit = ({
         <form onSubmit={formik.handleSubmit} className="w-96">
           <DialogTitle id="responsive-dialog-title">{t('produit')}</DialogTitle>
           <DialogContent>
+            <Box>
+              <CustomFormLabel htmlFor="reference">{t('reference')}</CustomFormLabel>
+              <CustomTextField
+                id="reference"
+                name="reference"
+                variant="outlined"
+                fullWidth
+                value={formik.values.reference}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.reference && Boolean(formik.errors.reference)}
+                helperText={formik.touched.reference && formik.errors.reference}
+              />
+            </Box>
             <Box>
               <CustomFormLabel htmlFor="fullName">{t('nom')}</CustomFormLabel>
               <CustomTextField

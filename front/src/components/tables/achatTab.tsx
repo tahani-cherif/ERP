@@ -245,7 +245,7 @@ const TableAchat = ({
             <TableRow>
               <TableCell></TableCell>
               <TableCell>
-                <Typography variant="h6">{t('Reference')}</Typography>
+                <Typography variant="h6">{t('facture')} N°</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">Date</Typography>
