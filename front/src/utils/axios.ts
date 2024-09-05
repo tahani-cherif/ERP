@@ -8,7 +8,7 @@ const tocken = () => {
 };
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://51.195.216.235/8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
