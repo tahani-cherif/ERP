@@ -8,7 +8,7 @@ const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
 
 /* ****Pages***** */
-// const ModernDash = Loadable(lazy(() => import('../views/dashboard/Modern')));
+const ModernDash = Loadable(lazy(() => import('../views/dashboard/Modern')));
 
 const EcommerceDash = Loadable(lazy(() => import('../views/dashboard/Ecommerce')));
 const Client = Loadable(lazy(() => import('../views/dashboard/client')));
@@ -20,6 +20,7 @@ const Banque = Loadable(lazy(() => import('../views/dashboard/banque')));
 const Credit = Loadable(lazy(() => import('../views/dashboard/credit')));
 const Caisse = Loadable(lazy(() => import('../views/dashboard/caisse')));
 const Recouverement = Loadable(lazy(() => import('../views/dashboard/recouvrement')));
+const Deponse = Loadable(lazy(() => import('../views/dashboard/deponse')));
 const Juridique = Loadable(lazy(() => import('../views/dashboard/juridique')));
 
 /* ****Apps***** */
@@ -129,11 +130,11 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/', element: <Navigate to="/dashboards/landingpage" /> },
+      { path: '/', element: <Navigate to="/dashboards/modern" /> },
       {
-        path: '/dashboards/landingpage',
+        path: '/dashboards/modern',
         exact: true,
-        element: <ProtectedRoute element={<Landingpage />} />,
+        element: <ProtectedRoute element={<ModernDash />} />,
       },
       {
         path: '/dashboards/clients',
@@ -155,6 +156,16 @@ const Router = [
       { path: '/dashboards/banque', exact: true, element: <ProtectedRoute element={<Banque />} /> },
       { path: '/dashboards/credit', exact: true, element: <ProtectedRoute element={<Credit />} /> },
       { path: '/dashboards/caisse', exact: true, element: <ProtectedRoute element={<Caisse />} /> },
+      {
+        path: '/dashboards/recouverement',
+        exact: true,
+        element: <ProtectedRoute element={<Recouverement />} />,
+      },
+      {
+        path: '/dashboards/deponse',
+        exact: true,
+        element: <ProtectedRoute element={<Deponse />} />,
+      },
       {
         path: '/dashboards/recouverement',
         exact: true,

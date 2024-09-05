@@ -140,13 +140,13 @@ const TableClient = ({
   const phonetunis = /^[+0]{0,2}(91)?[0-9]{8}$/;
   const validationSchema = Yup.object({
     fullName: Yup.string().required(t('faildRequired') || ''),
-    address: Yup.string().required(t('faildRequired') || ''),
+    address: Yup.string().optional(),
     email: Yup.string()
       .email(t('invalidEmail') || '')
-      .required(t('faildRequired') || ''),
-    matriculeFiscale: Yup.string().required(t('faildRequired') || ''),
+      .optional(),
+    matriculeFiscale: Yup.string().optional(),
     phone: Yup.string()
-      .required(t('faildRequired') || '')
+      .optional()
       .matches(phonetunis, t('phoneerrors') || ''),
   });
   const formik = useFormik({

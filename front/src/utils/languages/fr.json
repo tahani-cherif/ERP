@@ -19,7 +19,7 @@
     "Calendar": "Calendrier",
     "Email": "E-mail",
     "Tickets": "Des billets",
-   "welcome":"Bienvenue à Kais Manager",
+   "welcome":"Bienvenue à Kmsolution",
    "welcomeMessage":"Votre tableau de bord administratif",
    "username": "Nom d'utilisateur",
    "password" : "Mot de passe",
@@ -139,6 +139,6 @@
    "numerodossier":"Numéro de dossier",
    "datejugement":"Date et texte du jugement",
    "huissierjustice":"L'huissier de justice",
-   "montantimpayee":"Montant impayée"
-
+   "montantimpayee":"Montant impayée",
+   "deponse":"Suivi dépense"
 }

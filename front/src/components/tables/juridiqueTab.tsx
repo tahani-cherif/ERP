@@ -135,9 +135,9 @@ const TableJuridique = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
-    datejugement: Yup.string().required(t('faildRequired') || ''),
-    numeroDossier: Yup.string().required(t('faildRequired') || ''),
-    huissierjustice: Yup.string().required(t('faildRequired') || ''),
+    datejugement: Yup.string().optional(),
+    numeroDossier: Yup.string().optional(),
+    huissierjustice: Yup.string().optional(),
     montantimpaye: Yup.number()
       .typeError(t('mustnumber') || 'must be a number')
       .required(t('faildRequired') || '')

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import factureModel from "../models/facture";
 import produitModel from "../models/produit";
+import caisseModel from "../models/caisse";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/apiError";
 
@@ -12,7 +13,8 @@ const getFacturesClient = asyncHandler(async (req: any, res: Response) => {
   const factures = await factureModel
     .find({ admin: userId })
     .populate("client")
-    .populate("articles.produit");
+    .populate("articles.produit")
+    .sort({ createdAt: -1 });
   console.log(factures.length);
   res.status(200).json({
     results: factures.filter((item) => item.client !== undefined).length,
@@ -24,7 +26,8 @@ const getFacturesFournisseur = asyncHandler(async (req: any, res: Response) => {
   const factures = await factureModel
     .find({ admin: userId })
     .populate("fournisseur")
-    .populate("articles.produit");
+    .populate("articles.produit")
+    .sort({ createdAt: -1 });
   res.status(200).json({
     results: factures.filter((item) => item.fournisseur !== undefined).length,
     data: factures.filter((item) => item.fournisseur !== undefined),
@@ -56,6 +59,30 @@ const createFacture = asyncHandler(async (req: any, res: Response) => {
     .populate("client")
     .populate("fournisseur")
     .populate("articles.produit");
+  if (
+    (factureget?.fournisseur || factureget?.fournisseur === null) &&
+    factureget?.modepaiement === "espece"
+  ) {
+    await caisseModel.create({
+      designation: facture?._id,
+      encaissement: 0,
+      decaissement: factureget.total_general,
+      date: factureget.date,
+      admin: factureget.admin,
+    });
+  }
+  if (
+    (factureget?.client || factureget?.client === null) &&
+    factureget?.modepaiement === "espece"
+  ) {
+    await caisseModel.create({
+      designation: facture?._id,
+      encaissement: factureget.total_general,
+      decaissement: 0,
+      date: factureget.date,
+      admin: factureget.admin,
+    });
+  }
   res.status(201).json({ data: factureget });
 });
 

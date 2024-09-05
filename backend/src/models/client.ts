@@ -18,25 +18,25 @@ const clientSchema = new Schema<IClient>(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     phone: {
       type: Number,
-      required: true,
+      required: false,
     },
     matriculeFiscale: {
       type: String,
-      required: true,
+      required: false,
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"user",
-      required: true
-   },
+      ref: "user",
+      required: true,
+    },
   },
   { timestamps: true }
 );

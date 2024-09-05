@@ -48,14 +48,14 @@ const Caisse = () => {
   const [totalEncaissement, setTotalEncaissement] = React.useState(0);
   const [totalDecaissement, setTotalDecaissement] = React.useState(0);
   const validationSchema = Yup.object({
-    designation: Yup.string().required(t('faildRequired') || ''),
+    designation: Yup.string().optional(),
     encaissement: Yup.number()
       .typeError(t('mustnumber') || 'must be a number')
-      .required(t('faildRequired') || '')
+      .optional()
       .min(0, t('mustnonnegative') || ' must be a non-negative number'),
     decaissement: Yup.number()
       .typeError(t('mustnumber') || 'must be a number')
-      .required(t('faildRequired') || '')
+      .optional()
       .min(0, t('mustnonnegative') || ' must be a non-negative number'),
     date: Yup.string().required(t('faildRequired') || ''),
   });

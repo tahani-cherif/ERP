@@ -7,10 +7,10 @@ export const getCaisseValidator = [
 ];
 
 export const createCaisseValidator = [
-  check("designation").notEmpty().withMessage("designation banque required"),
+  check("designation").optional(),
   check("date").notEmpty().withMessage("date required"),
-  check("decaissement").notEmpty().withMessage("decaissement required"),
-  check("encaissement").notEmpty().withMessage("encaissement required"),
+  check("decaissement").optional(),
+  check("encaissement").optional(),
   validatorMiddleware,
 ];
 

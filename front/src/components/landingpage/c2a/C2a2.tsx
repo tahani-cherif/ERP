@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Box, Container, Stack } from '@mui/material';
+import { Grid, Box, Container, Stack } from '@mui/material';
 import c2aImg from 'src/assets/images/landingpage/background/c2a.png';
 import { IconBrandFacebook, IconBrandLinkedin } from '@tabler/icons';
 
@@ -38,11 +38,17 @@ const C2a2 = () => {
         <Container maxWidth="lg">
           <Grid container justifyContent="space-between" spacing={3}>
             <Grid item xs={12} sm={12} lg={5}>
-              <Typography variant="h3" color="background.paper" fontWeight={400} mt={4}>
-                Bienvenue chez KAIS MANAGER Entreprise spécialisée dans le développement d'ERP
-                (logiciels de gestion des entreprises) et la construction de réseaux informatiques
-                et de télécom.
-              </Typography>
+              <p className="text-white text-lg">
+                Entreprise spécialisée dans le développement informatique (logiciels et application
+                web et mobile) et la construction de réseaux informatiques et de télécom.
+              </p>
+
+              <p className="text-black text-lg">
+                Cette application web a été élaborée en étroite collaboration entre Kais Safouene,
+                Directeur Administratif et Financier, et Tahani Cherif, développeuse Full Stack et
+                mobile, témoignant ainsi d'une synergie efficace entre expertise financière et
+                compétences techniques.
+              </p>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={3}>
                 <div className="flew flex-row text-white items-center">
@@ -66,7 +72,7 @@ const C2a2 = () => {
                   },
                 }}
               >
-                <img src={c2aImg} alt="img" width="330" />
+                <img src={c2aImg} alt="img" width="330" height="220" />
               </Box>
             </Grid>
           </Grid>

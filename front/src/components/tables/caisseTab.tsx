@@ -132,17 +132,18 @@ const TableCaisse = ({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState<ICaisse>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
-    designation: Yup.string().required(t('faildRequired') || ''),
+    designation: Yup.string().optional(),
     encaissement: Yup.number()
       .typeError(t('mustnumber') || 'must be a number')
-      .required(t('faildRequired') || '')
+      .optional()
       .min(0, t('mustnonnegative') || ' must be a non-negative number'),
     decaissement: Yup.number()
       .typeError(t('mustnumber') || 'must be a number')
-      .required(t('faildRequired') || '')
+      .optional()
       .min(0, t('mustnonnegative') || ' must be a non-negative number'),
     date: Yup.string().required(t('faildRequired') || ''),
   });
@@ -199,12 +200,14 @@ const TableCaisse = ({
   });
 
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: ICaisse) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
   };
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+    setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -263,7 +266,7 @@ const TableCaisse = ({
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.designation}
+                    {t('facture')} N° : {row.designation}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -282,7 +285,7 @@ const TableCaisse = ({
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
+                    onClick={(event) => handleClick(event, row)}
                   >
                     <IconDotsVertical width={18} />
                   </IconButton>
@@ -298,13 +301,12 @@ const TableCaisse = ({
                     <MenuItem
                       onClick={() => {
                         handleClose();
-                        setId(row?._id);
-                        console.log(row);
+                        setId(selectedRow?._id || '');
                         formik.setValues({
-                          designation: row.designation,
-                          encaissement: String(row.encaissement),
-                          decaissement: String(row.decaissement),
-                          date: moment(row.date).format('YYYY-MM-DD'),
+                          designation: selectedRow?.designation || '',
+                          encaissement: String(selectedRow?.encaissement) || '',
+                          decaissement: String(selectedRow?.decaissement) || '',
+                          date: moment(selectedRow?.date).format('YYYY-MM-DD') || '',
                         });
                         setOpenAlerteEdit(true);
                       }}
@@ -318,7 +320,7 @@ const TableCaisse = ({
                       onClick={() => {
                         handleClose();
                         setOpenAlerteDelete(true);
-                        setId(row?._id);
+                        setId(selectedRow?._id || '');
                       }}
                     >
                       <ListItemIcon>

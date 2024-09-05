@@ -16,7 +16,6 @@ interface MenuitemsType {
 }
 
 import {
-  IconPackage,
   IconBasket,
   IconShoppingCart,
   IconUsers,
@@ -26,6 +25,9 @@ import {
   IconCash,
   IconTicket,
   IconNotes,
+  IconPackgeExport,
+  IconPackgeImport,
+  IconAperture,
 } from '@tabler/icons';
 
 const Menuitems: MenuitemsType[] = [
@@ -34,14 +36,12 @@ const Menuitems: MenuitemsType[] = [
     subheader: 'Home',
   },
 
-  // {
-  //   id: uniqueId(),
-  //   title: 'Modern',
-  //   icon: IconAperture,
-  //   href: '/dashboards/modern',
-  //   chip: 'New',
-  //   chipColor: 'secondary',
-  // },
+  {
+    id: uniqueId(),
+    title: 'Home',
+    icon: IconAperture,
+    href: '/dashboards/modern',
+  },
   {
     id: uniqueId(),
     title: 'Clients',
@@ -97,8 +97,14 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title:
       localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi Recouvrement' : 'Collection follow-up',
-    icon: IconPackage,
+    icon: IconPackgeImport,
     href: '/dashboards/recouverement',
+  },
+  {
+    id: uniqueId(),
+    title: localStorage.getItem('i18nextLng') === 'fr' ? 'Suivi dépense' : 'Expense tracking',
+    icon: IconPackgeExport,
+    href: '/dashboards/deponse',
   },
   {
     id: uniqueId(),

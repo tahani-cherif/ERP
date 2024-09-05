@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Stack,
-  Alert,
-  AlertTitle,
-
-} from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Typography, Button, Stack, Alert, AlertTitle } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -23,8 +15,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
   const validationSchema = Yup.object({
-    username: Yup.string().email(t('invalidEmail') || "").required(t('usernameRequired') || ""),
-    password: Yup.string().required(t('passwordRequired') || ""),
+    username: Yup.string()
+      .email(t('invalidEmail') || '')
+      .required(t('usernameRequired') || ''),
+    password: Yup.string().required(t('passwordRequired') || ''),
   });
   const formik = useFormik({
     initialValues: {
@@ -34,23 +28,25 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     validationSchema,
     onSubmit: (values) => {
       console.log('Form values:', values);
-      api.post('/auth/login',{
-        email: values.username,
-        password:values.password
-    }).then((secces:any)=> {  
-      localStorage.setItem('token',secces?.token);
-      localStorage.setItem('user',JSON.stringify(secces?.data));
-      navigate('/');
-    }
-    ).catch(err=> {
-      console.log(err)
-      setError(true);
-    });
+      api
+        .post('/auth/login', {
+          email: values.username,
+          password: values.password,
+        })
+        .then((secces: any) => {
+          localStorage.setItem('token', secces?.token);
+          localStorage.setItem('user', JSON.stringify(secces?.data));
+          navigate('/');
+        })
+        .catch((err) => {
+          console.log(err);
+          setError(true);
+        });
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className='w-full'>
+    <form onSubmit={formik.handleSubmit} className="w-full">
       {title ? (
         <Typography fontWeight="700" variant="h3" mb={1}>
           {title}
@@ -61,7 +57,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
       <Stack>
         <Box mb={2}>
-          <CustomFormLabel htmlFor="username">{t("username")}</CustomFormLabel>
+          <CustomFormLabel htmlFor="username">{t('username')}</CustomFormLabel>
           <CustomTextField
             id="username"
             name="username"
@@ -75,7 +71,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           />
         </Box>
         <Box mb={2}>
-          <CustomFormLabel htmlFor="password">{t("password")}</CustomFormLabel>
+          <CustomFormLabel htmlFor="password">{t('password')}</CustomFormLabel>
           <CustomTextField
             id="password"
             name="password"
@@ -89,7 +85,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             helperText={formik.touched.password && formik.errors.password}
           />
         </Box>
-        <Stack justifyContent="space-between" direction="row" alignItems="end" my={2}>
+        {/* <Stack justifyContent="space-between" direction="row" alignItems="end" my={2}>
           <Typography
             component={Link}
             to="/auth/forgot-password"
@@ -101,26 +97,21 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           >
             {t("forgotPassword")}
           </Typography>
-        </Stack>
+        </Stack> */}
       </Stack>
       <Box mb={2}>
-        <Button
-          color="primary"
-          variant="contained"
-          size="large"
-          fullWidth
-          type="submit"
-        >
+        <Button color="primary" variant="contained" size="large" fullWidth type="submit">
           {t('login')}
         </Button>
       </Box>
       {subtitle}
-      {  error && <Alert severity="error">
-      <AlertTitle>Error</AlertTitle>
-    {t("failedLogin")}
-    </Alert>}
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {t('failedLogin')}
+        </Alert>
+      )}
     </form>
-
   );
 };
 

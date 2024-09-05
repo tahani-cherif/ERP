@@ -14,6 +14,8 @@ import SellingProducts from 'src/components/dashboards/modern/SellingProducts';
 import WeeklyStats from 'src/components/dashboards/modern/WeeklyStats';
 import TopPerformers from 'src/components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
+import C2a2 from 'src/components/landingpage/c2a/C2a2';
+import Footer from 'src/components/landingpage/footer/Footer';
 
 const Modern = () => {
   return (
@@ -73,6 +75,8 @@ const Modern = () => {
         {/* column */}
         <Welcome />
       </Box>
+      <C2a2 />
+      <Footer />
     </PageContainer>
   );
 };

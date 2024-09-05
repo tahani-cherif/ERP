@@ -6,19 +6,9 @@ import ParentCard from 'src/components/shared/ParentCard';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
 import { useTranslation } from 'react-i18next';
-import { fetchVentes } from 'src/store/apps/vente/venteSlice';
-import TableRecouverement from 'src/components/tables/recouverementTab';
 import CustomRadio from 'src/components/forms/theme-elements/CustomRadio';
-
-interface Iclient {
-  _id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  matriculeFiscale: string;
-  admin: string;
-}
+import TableDepnose from 'src/components/tables/deponseTab';
+import { fetchAchats } from 'src/store/apps/achat/achatSlice';
 
 interface IProduit {
   _id: string;
@@ -29,9 +19,8 @@ interface IProduit {
   type: string;
   admin: string;
 }
-interface IVente {
+interface IAchat {
   _id: string;
-  client: Iclient;
   articles: {
     produit: IProduit;
     quantite: string;
@@ -49,17 +38,17 @@ interface IVente {
   banque: string;
 }
 
-const Recouverement = () => {
+const Deponse = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const ventes = useSelector((state: any) => state.venteReducer.ventes);
-  const [data, setData] = useState<IVente[]>();
+  const achats = useSelector((state: any) => state.achatReducer.achats);
+  const [data, setData] = useState<IAchat[]>();
   const [etat, setEtat] = React.useState('paid');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(fetchVentes());
+        await dispatch(fetchAchats());
       } catch (error) {
         console.error(error);
       }
@@ -69,19 +58,19 @@ const Recouverement = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setData(ventes);
-  }, [ventes]);
+    setData(achats);
+  }, [achats]);
   const handleChange = (event: any) => {
     setEtat(event.target.value);
   };
 
   return (
-    <PageContainer title={t('recouverement') || ''}>
+    <PageContainer title={t('deponse') || ''}>
       <Breadcrumb
-        title={t('recouverement') || ''}
-        items={[{ to: '/', title: 'Home' }, { title: t('recouverement') || '' }]}
+        title={t('deponse') || ''}
+        items={[{ to: '/', title: 'Home' }, { title: t('deponse') || '' }]}
       />
-      <ParentCard title={t('recouverement') || ''}>
+      <ParentCard title={t('deponse') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <div className="flex justify-between">
@@ -108,9 +97,9 @@ const Recouverement = () => {
               </RadioGroup>
             </div>
             <Box className="mt-4">
-              <TableRecouverement
+              <TableDepnose
                 rows={
-                  data?.filter((item: IVente) =>
+                  data?.filter((item: IAchat) =>
                     etat === 'all' ? item?.statut !== 'paid' : item?.statut === etat,
                   ) || []
                 }
@@ -125,4 +114,4 @@ const Recouverement = () => {
   );
 };
 
-export default Recouverement;
+export default Deponse;

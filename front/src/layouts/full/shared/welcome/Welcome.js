@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Snackbar, Alert, AlertTitle } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const Welcome = () => {
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation();
 
   const handleClick = () => {
     setOpen(true);
@@ -37,8 +39,8 @@ const Welcome = () => {
           variant="filled"
           sx={{ width: '100%', color: 'white' }}
         >
-          <AlertTitle>Welcome To Modernize</AlertTitle>
-          Easy to customize the Template!!!
+          <AlertTitle>{t('welcome')}</AlertTitle>
+          {t('welcomeMessage')}
         </Alert>
       </Snackbar>
     </React.Fragment>

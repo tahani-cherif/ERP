@@ -134,6 +134,7 @@
    "numerodossier":"File number",
    "datejugement":"Date and text of judgment",
    "huissierjustice":"L'huissier de justice",
-   "montantimpayee":"Amount outstanding"
+   "montantimpayee":"Amount outstanding",
+   "deponse":"Expense tracking"
 
 }

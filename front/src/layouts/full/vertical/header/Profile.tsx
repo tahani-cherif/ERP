@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Box,
-  Menu,
-  Avatar,
-  Typography,
-  Divider,
-  Button,
-  IconButton,
-  Stack
-} from '@mui/material';
+import { Box, Menu, Avatar, Typography, Divider, Button, IconButton, Stack } from '@mui/material';
 import * as dropdownData from './data';
 
 import { IconMail } from '@tabler/icons';
@@ -19,9 +10,10 @@ import unlimitedImg from 'src/assets/images/backgrounds/unlimited-bg.png';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
-  const handleClick2 = (event: any) => {
-    setAnchorEl2(event.currentTarget);
-  };
+
+  // const handleClick2 = (event: any) => {
+  //   setAnchorEl2(event.currentTarget);
+  // };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
@@ -39,7 +31,8 @@ const Profile = () => {
             color: 'primary.main',
           }),
         }}
-        onClick={handleClick2}
+
+        // onClick={handleClick2}
       >
         <Avatar
           src={ProfileImg}
@@ -76,7 +69,7 @@ const Profile = () => {
               Mathew Anderson
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
-            Designer
+              Designer
             </Typography>
             <Typography
               variant="subtitle2"

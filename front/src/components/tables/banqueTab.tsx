@@ -127,6 +127,7 @@ const TableBanque = ({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState<IBanque>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -168,12 +169,14 @@ const TableBanque = ({
   });
 
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: IBanque) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
   };
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+    setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -251,7 +254,7 @@ const TableBanque = ({
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
+                    onClick={(event) => handleClick(event, row)}
                   >
                     <IconDotsVertical width={18} />
                   </IconButton>
@@ -268,13 +271,13 @@ const TableBanque = ({
                       onClick={() => {
                         handleClose();
                         setOpenAlerteEdit(true);
-                        setId(row?._id);
+                        setId(selectedRow?._id || '');
 
                         formik.setValues({
-                          banque: row.banque,
-                          rib: row.rib,
-                          iban: row.iban,
-                          swift: row.swift,
+                          banque: selectedRow?.banque || '',
+                          rib: selectedRow?.rib || '',
+                          iban: selectedRow?.iban || '',
+                          swift: selectedRow?.swift || '',
                         });
                       }}
                     >
@@ -287,7 +290,7 @@ const TableBanque = ({
                       onClick={() => {
                         handleClose();
                         setOpenAlerteDelete(true);
-                        setId(row?._id);
+                        setId(selectedRow?._id || '');
                       }}
                     >
                       <ListItemIcon>

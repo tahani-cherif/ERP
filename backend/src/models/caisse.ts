@@ -13,7 +13,7 @@ const creditSchema = new Schema<ICaisse>(
   {
     designation: {
       type: String,
-      required: true,
+      required: false,
     },
     date: {
       type: Date,
@@ -21,11 +21,11 @@ const creditSchema = new Schema<ICaisse>(
     },
     decaissement: {
       type: Number,
-      required: true,
+      required: false,
     },
     encaissement: {
       type: Number,
-      required: true,
+      required: false,
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,

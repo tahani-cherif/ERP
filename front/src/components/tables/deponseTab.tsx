@@ -95,15 +95,6 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 // page
-interface Iclient {
-  _id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  matriculeFiscale: string;
-  admin: string;
-}
 
 interface IProduit {
   _id: string;
@@ -114,9 +105,8 @@ interface IProduit {
   admin: string;
 }
 
-interface IVente {
+interface IAchat {
   _id: string;
-  client: Iclient;
   articles: {
     produit: IProduit;
     quantite: string;
@@ -134,14 +124,14 @@ interface IVente {
   banque: string;
 }
 
-const TableRecouverement = ({
+const TableDepnose = ({
   rows,
   setData,
   data,
 }: {
-  rows: IVente[];
+  rows: IAchat[];
   setData: any;
-  data: IVente[] | undefined;
+  data: IAchat[] | undefined;
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -152,7 +142,6 @@ const TableRecouverement = ({
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
 
-  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -187,7 +176,7 @@ const TableRecouverement = ({
       try {
         await dispatch(updateVenteRecouvrement(values, id)).then((secc: any) =>
           setData(() => {
-            const newData = data?.map((item: IVente) => {
+            const newData = data?.map((item: IAchat) => {
               if (item?._id === id) {
                 console.log({ secc });
 
@@ -392,7 +381,7 @@ const TableRecouverement = ({
         aria-labelledby="responsive-dialog-title"
       >
         <form onSubmit={formik.handleSubmit} className="w-full">
-          <DialogTitle id="responsive-dialog-title">{t('recouverement')}</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">{t('deponse')}</DialogTitle>
           <DialogContent>
             <Box className="w-full">
               <CustomFormLabel htmlFor="echeance">{t('echeance')}</CustomFormLabel>
@@ -499,4 +488,4 @@ const TableRecouverement = ({
   );
 };
 
-export default TableRecouverement;
+export default TableDepnose;

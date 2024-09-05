@@ -95,6 +95,27 @@ export const updateVente =
       throw new Error(err);
     }
   };
+export const updateVenteRecouvrement =
+  (
+    body: {
+      banque: string;
+      echeance: string;
+      numero: string;
+      total_general: string;
+      reste: string;
+      avance: string;
+    },
+    id: string,
+  ) =>
+  async () => {
+    try {
+      const response = await axios.put('/facture/' + id, body);
+
+      return response.data;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 export const updateStatus =
   (body: { status: string; montantimpaye: number }, id: string) => async () => {
     try {

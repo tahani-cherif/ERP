@@ -5,6 +5,7 @@ interface IFacture extends Document {
   client: mongoose.Schema.Types.ObjectId;
   fournisseur: mongoose.Schema.Types.ObjectId;
   date: Date;
+  echeance: Date;
   total_general: Number;
   statut: string;
   tva: number;
@@ -20,7 +21,7 @@ interface IFacture extends Document {
     produit: mongoose.Schema.Types.ObjectId;
     quantite: Number;
   }[];
-  banque: mongoose.Schema.Types.ObjectId;
+  banque: string;
   admin: mongoose.Schema.Types.ObjectId;
   montantimpaye: number;
 }
@@ -40,6 +41,11 @@ const factureSchema = new Schema<IFacture>(
       type: Date,
       default: Date.now,
       required: true,
+    },
+    echeance: {
+      type: Date,
+      default: Date.now,
+      required: false,
     },
     articles: [
       {
@@ -109,8 +115,7 @@ const factureSchema = new Schema<IFacture>(
       required: true,
     },
     banque: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "banque",
+      type: String,
       required: false,
     },
   },

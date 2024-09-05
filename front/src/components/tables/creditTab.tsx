@@ -146,6 +146,7 @@ const TableCredits = ({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [loading, setLoading] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState<ICredit>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -212,12 +213,14 @@ const TableCredits = ({
   });
 
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: ICredit) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
   };
   const handleClose = () => {
     setAnchorEl(null);
     setOpenAlerteDelete(false);
+    setSelectedRow(undefined);
   };
   const handleCloseModal = () => {
     setOpenAlerteDelete(false);
@@ -345,7 +348,7 @@ const TableCredits = ({
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
+                    onClick={(event) => handleClick(event, row)}
                   >
                     <IconDotsVertical width={18} />
                   </IconButton>
@@ -362,18 +365,20 @@ const TableCredits = ({
                       onClick={() => {
                         handleClose();
                         setOpenAlerteEdit(true);
-                        setId(row?._id);
+                        setId(selectedRow?._id || '');
 
                         formik.setValues({
-                          banque: row?.banque?._id,
-                          montantemprunt: String(row.montantemprunt),
-                          type: row.type,
-                          echeance: moment(new Date(row.echeance)).format('YYYY-MM-DD'),
-                          principal: String(row.principal),
-                          interet: String(row.interet),
-                          total: String(row.total),
-                          encours: String(row.encours),
-                          etat: row.etat,
+                          banque: selectedRow?.banque?._id || '',
+                          montantemprunt: String(selectedRow?.montantemprunt) || '',
+                          type: selectedRow?.type || '',
+                          echeance: selectedRow?.echeance
+                            ? moment(new Date(selectedRow?.echeance)).format('YYYY-MM-DD')
+                            : '',
+                          principal: String(selectedRow?.principal) || '',
+                          interet: String(selectedRow?.interet) || '',
+                          total: String(selectedRow?.total) || '',
+                          encours: String(selectedRow?.encours) || '',
+                          etat: selectedRow?.etat || '',
                         });
                       }}
                     >
@@ -386,7 +391,7 @@ const TableCredits = ({
                       onClick={() => {
                         handleClose();
                         setOpenAlerteDelete(true);
-                        setId(row?._id);
+                        setId(selectedRow?._id || '');
                       }}
                     >
                       <ListItemIcon>

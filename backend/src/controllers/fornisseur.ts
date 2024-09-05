@@ -8,21 +8,25 @@ import ApiError from "../utils/apiError";
 // @access  Private
 const getFornisseurs = asyncHandler(async (req: any, res: Response) => {
   const userId = req?.user?._id;
-  const fornisseurs = await fornisseurModel.find({admin:userId});
+  const fornisseurs = await fornisseurModel
+    .find({ admin: userId })
+    .sort({ createdAt: -1 });
   res.status(200).json({ results: fornisseurs.length, data: fornisseurs });
 });
 
 // @desc    Get specific fornisseur by id
 // @route   GET api/fornisseurs/:id
 // @access  Private
-const getFornisseur = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const fornisseur = await fornisseurModel.findById(id);
-  if (!fornisseur) {
-    return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+const getFornisseur = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const fornisseur = await fornisseurModel.findById(id);
+    if (!fornisseur) {
+      return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+    }
+    res.status(200).json({ data: fornisseur });
   }
-  res.status(200).json({ data: fornisseur });
-});
+);
 
 // @desc    Create a new fornisseur
 // @route   POST api/fornisseurs/
@@ -30,35 +34,43 @@ const getFornisseur = asyncHandler(async (req: Request, res: Response, next: Nex
 const createFornisseur = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
   const userId = req?.user?._id;
-  const fornisseur = await fornisseurModel.create({...body,admin:userId});
+  const fornisseur = await fornisseurModel.create({ ...body, admin: userId });
   res.status(201).json({ data: fornisseur });
 });
 
 // @desc    Update specified fornisseur
 // @route   PUT api/fornisseurs/:id
 // @access  Private
-const updateFornisseur = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const fornisseur = await fornisseurModel.findOneAndUpdate({ _id: id }, req.body, {
-    new: true,
-  });
-  if (!fornisseur) {
-    return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+const updateFornisseur = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const fornisseur = await fornisseurModel.findOneAndUpdate(
+      { _id: id },
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (!fornisseur) {
+      return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+    }
+    res.status(200).json({ data: fornisseur });
   }
-  res.status(200).json({ data: fornisseur });
-});
+);
 
 // @desc    Delete specified fornisseur
 // @route   DELETE api/fornisseurs/:id
 // @access  Private
-const deleteFornisseur = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const fornisseur = await fornisseurModel.findByIdAndDelete(id);
-  if (!fornisseur) {
-    return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+const deleteFornisseur = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const fornisseur = await fornisseurModel.findByIdAndDelete(id);
+    if (!fornisseur) {
+      return next(new ApiError(`fornisseur not found for this id ${id}`, 404));
+    }
+    res.status(204).send();
   }
-  res.status(204).send();
-});
+);
 
 export {
   getFornisseurs,
