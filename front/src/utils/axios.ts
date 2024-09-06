@@ -8,7 +8,7 @@ const tocken = () => {
 };
 
 const api = axios.create({
-  baseURL: 'http://51.195.216.235:8080/api',
+  baseURL: 'https://api.kmsolution.tn/api',
   headers: {
     'Content-Type': 'application/json',
   },
