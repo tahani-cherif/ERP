@@ -5,14 +5,15 @@ import PageContainer from 'src/components/container/PageContainer';
 import TopCards from 'src/components/dashboards/modern/TopCards';
 import RevenueUpdates from 'src/components/dashboards/modern/RevenueUpdates';
 import YearlyBreakup from 'src/components/dashboards/modern/YearlyBreakup';
-import MonthlyEarnings from 'src/components/dashboards/modern/MonthlyEarnings';
-import EmployeeSalary from 'src/components/dashboards/modern/EmployeeSalary';
-import Customers from 'src/components/dashboards/modern/Customers';
-import Projects from 'src/components/dashboards/modern/Projects';
-import Social from 'src/components/dashboards/modern/Social';
-import SellingProducts from 'src/components/dashboards/modern/SellingProducts';
-import WeeklyStats from 'src/components/dashboards/modern/WeeklyStats';
-import TopPerformers from 'src/components/dashboards/modern/TopPerformers';
+
+// import MonthlyEarnings from 'src/components/dashboards/modern/MonthlyEarnings';
+// import EmployeeSalary from 'src/components/dashboards/modern/EmployeeSalary';
+// import Customers from 'src/components/dashboards/modern/Customers';
+// import Projects from 'src/components/dashboards/modern/Projects';
+// import Social from 'src/components/dashboards/modern/Social';
+// import SellingProducts from 'src/components/dashboards/modern/SellingProducts';
+// import WeeklyStats from 'src/components/dashboards/modern/WeeklyStats';
+// import TopPerformers from 'src/components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import C2a2 from 'src/components/landingpage/c2a/C2a2';
 import Footer from 'src/components/landingpage/footer/Footer';
@@ -31,22 +32,21 @@ const Modern = () => {
             <RevenueUpdates />
           </Grid>
           {/* column */}
-          <Grid item xs={12} lg={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} lg={12}>
-                <YearlyBreakup />
-              </Grid>
-              <Grid item xs={12} sm={6} lg={12}>
+          <Grid item xs={12} lg={4} className="h-full">
+            <YearlyBreakup />
+            <Grid container spacing={3} className="h-full">
+              {/* <Grid item xs={12} sm={6} lg={12} className="h-full"></Grid> */}
+              {/* <Grid item xs={12} sm={6} lg={12}>
                 <MonthlyEarnings />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
           {/* column */}
-          <Grid item xs={12} lg={4}>
+          {/* <Grid item xs={12} lg={4}>
             <EmployeeSalary />
-          </Grid>
+          </Grid> */}
           {/* column */}
-          <Grid item xs={12} lg={4}>
+          {/* <Grid item xs={12} lg={4}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <Customers />
@@ -58,23 +58,26 @@ const Modern = () => {
                 <Social />
               </Grid>
             </Grid>
-          </Grid>
+          </Grid> */}
           {/* column */}
-          <Grid item xs={12} lg={4}>
+          {/* <Grid item xs={12} lg={4}>
             <SellingProducts />
-          </Grid>
+          </Grid> */}
           {/* column */}
-          <Grid item xs={12} lg={4}>
+          {/* <Grid item xs={12} lg={4}>
             <WeeklyStats />
-          </Grid>
+          </Grid> */}
           {/* column */}
-          <Grid item xs={12} lg={8}>
+          {/* <Grid item xs={12} lg={8}>
             <TopPerformers />
-          </Grid>
+          </Grid> */}
         </Grid>
         {/* column */}
         <Welcome />
       </Box>
+      <br />
+      <br />
+      <br />
       <C2a2 />
       <Footer />
     </PageContainer>

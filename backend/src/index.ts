@@ -13,6 +13,7 @@ import { router as factureRoutes } from "./routes/facture";
 import { router as banqueRoutes } from "./routes/banque";
 import { router as creditRoutes } from "./routes/credit";
 import { router as caisseRoutes } from "./routes/caisse";
+import { router as statRoutes } from "./routes/stat";
 
 dotenv.config({ path: ".env" });
 
@@ -45,6 +46,7 @@ app.use("/api/facture", factureRoutes);
 app.use("/api/banques", banqueRoutes);
 app.use("/api/credits", creditRoutes);
 app.use("/api/caisses", caisseRoutes);
+app.use("/api/stat", statRoutes);
 
 app.use(notFoundError);
 app.use(errorHundler);

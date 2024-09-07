@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
-import { Grid, Stack, Typography, Avatar } from '@mui/material';
-import { IconArrowUpLeft } from '@tabler/icons';
+import { Grid, Stack, Typography, Box } from '@mui/material';
 
 import DashboardCard from '../../shared/DashboardCard';
 import { Props } from 'react-apexcharts';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { dispatch } from 'src/store/Store';
+import { fetchstatstock } from 'src/store/apps/stat/statSlice';
+import { IconGridDots } from '@tabler/icons';
 
 const YearlyBreakup = () => {
+  const { t } = useTranslation();
+  const stat = useSelector((state: any) => state.statReducer.statstock);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchstatstock());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
+
   // chart color
   const theme = useTheme();
   const primary = theme.palette.primary.main;
   const primarylight = theme.palette.primary.light;
-  const successlight = theme.palette.success.light;
 
   // chart
   const optionscolumnchart: Props = {
@@ -59,43 +76,70 @@ const YearlyBreakup = () => {
       },
     ],
   };
-  const seriescolumnchart = [38, 40, 25];
+  const seriescolumnchart = [stat.achat, stat.vendre];
 
   return (
-    <DashboardCard title="Yearly Breakup">
-      <Grid container spacing={3}>
+    <DashboardCard title={t('produit') || ''}>
+      <Grid container spacing={3} className="h-full">
         {/* column */}
         <Grid item xs={7} sm={7}>
           <Typography variant="h3" fontWeight="700">
-            $36,358
+            {stat.produit}
           </Typography>
-          <Stack direction="row" spacing={1} mt={1} alignItems="center">
-            <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
-              <IconArrowUpLeft width={20} color="#39B69A" />
-            </Avatar>
-            <Typography variant="subtitle2" fontWeight="600">
-              +9%
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              last year
-            </Typography>
-          </Stack>
-          <Stack spacing={3} mt={5} direction="row">
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Avatar
-                sx={{ width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}
-              ></Avatar>
-              <Typography variant="subtitle2" color="textSecondary">
-                2022
-              </Typography>
+          <Stack direction="column" spacing={2} justifyContent="space-between" mt={2}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                width={45}
+                height={45}
+                bgcolor="primary.light"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography
+                  color="primary.main"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <IconGridDots width={40} />
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" color="textSecondary">
+                  {t('stockAchat')}
+                </Typography>
+                <Typography variant="h6" fontWeight="600">
+                  {stat.achat}%
+                </Typography>
+              </Box>
             </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Avatar
-                sx={{ width: 9, height: 9, bgcolor: primarylight, svg: { display: 'none' } }}
-              ></Avatar>
-              <Typography variant="subtitle2" color="textSecondary">
-                2023
-              </Typography>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                width={45}
+                height={45}
+                bgcolor="grey.200"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography
+                  color="grey.400"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <IconGridDots width={40} />
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" color="textSecondary">
+                  {t('stockProduction')}
+                </Typography>
+                <Typography variant="h6" fontWeight="600">
+                  {stat.vendre}%
+                </Typography>
+              </Box>
             </Stack>
           </Stack>
         </Grid>

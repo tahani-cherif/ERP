@@ -16,6 +16,7 @@ import AchatReducer from './apps/achat/achatSlice';
 import BanqueReducer from './apps/banque/banqueSlice';
 import CreditReducer from './apps/credit/creditSlice';
 import CaisseReducer from './apps/caisse/caisseSlice';
+import StatReducer from './apps/stat/statSlice';
 import { combineReducers } from 'redux';
 import {
   useDispatch as useAppDispatch,
@@ -42,6 +43,7 @@ export const store = configureStore({
     banqueReducer: BanqueReducer,
     creditReducer: CreditReducer,
     caisseReducer: CaisseReducer,
+    statReducer: StatReducer,
   },
 });
 
@@ -63,6 +65,7 @@ const rootReducer = combineReducers({
   banqueReducer: BanqueReducer,
   creditReducer: CreditReducer,
   caisseReducer: CaisseReducer,
+  statReducer: StatReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

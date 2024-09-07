@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
-import { MenuItem, Grid, Stack, Typography, Button, Avatar, Box } from '@mui/material';
-import { IconGridDots } from '@tabler/icons';
+import { Grid, Stack, Typography, Avatar, Box } from '@mui/material';
 import DashboardCard from '../../shared/DashboardCard';
-import CustomSelect from '../../forms/theme-elements/CustomSelect';
 import { Props } from 'react-apexcharts';
+import { useSelector } from 'react-redux';
+import { dispatch } from 'src/store/Store';
+import { fetchstatfacture } from 'src/store/apps/stat/statSlice';
+import { useTranslation } from 'react-i18next';
 
 const RevenueUpdates = () => {
-  const [month, setMonth] = React.useState('1');
+  const { t } = useTranslation();
+  const stat = useSelector((state: any) => state.statReducer.statfacture);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchstatfacture());
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMonth(event.target.value);
-  };
+    fetchData();
+  }, [dispatch]);
 
   // chart color
   const theme = useTheme();
@@ -61,13 +71,14 @@ const RevenueUpdates = () => {
         },
       },
     },
-    yaxis: {
-      min: -5,
-      max: 5,
-      tickAmount: 4,
-    },
+
+    // yaxis: {
+    //   min: -5,
+    //   max: 100,
+    //   tickAmount: 4,
+    // },
     xaxis: {
-      categories: ['16/08', '17/08', '18/08', '19/08', '20/08', '21/08', '22/08'],
+      categories: stat.month,
       axisBorder: {
         show: false,
       },
@@ -79,33 +90,17 @@ const RevenueUpdates = () => {
   };
   const seriescolumnchart = [
     {
-      name: 'Eanings this month',
-      data: [1.5, 2.7, 2.2, 3.6, 1.5, 1.0],
+      name: t('vente'),
+      data: stat.tabvente,
     },
     {
-      name: 'Expense this month',
-      data: [-1.8, -1.1, -2.5, -1.5, -0.6, -1.8],
+      name: t('achat'),
+      data: stat.tabachat,
     },
   ];
 
   return (
-    <DashboardCard
-      title="Revenue Updates"
-      subtitle="Overview of Profit"
-      action={
-        <CustomSelect
-          labelId="month-dd"
-          id="month-dd"
-          size="small"
-          value={month}
-          onChange={handleChange}
-        >
-          <MenuItem value={1}>March 2023</MenuItem>
-          <MenuItem value={2}>April 2023</MenuItem>
-          <MenuItem value={3}>May 2023</MenuItem>
-        </CustomSelect>
-      }
-    >
+    <DashboardCard title={t('vente') + '/' + t('achat') || ''} subtitle={t('stat') || ''}>
       <Grid container spacing={3}>
         {/* column */}
         <Grid item xs={12} sm={8}>
@@ -118,30 +113,6 @@ const RevenueUpdates = () => {
         </Grid>
         {/* column */}
         <Grid item xs={12} sm={4}>
-          <Stack spacing={3} mt={3}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                width={40}
-                height={40}
-                bgcolor="primary.light"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Typography color="primary" variant="h6" display="flex">
-                  <IconGridDots width={21} />
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="h3" fontWeight="700">
-                  $63,489.50
-                </Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Total Earnings
-                </Typography>
-              </Box>
-            </Stack>
-          </Stack>
           <Stack spacing={3} my={5}>
             <Stack direction="row" spacing={2}>
               <Avatar
@@ -149,9 +120,8 @@ const RevenueUpdates = () => {
               ></Avatar>
               <Box>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Earnings this month
+                  {t('vente')}
                 </Typography>
-                <Typography variant="h5">$48,820</Typography>
               </Box>
             </Stack>
             <Stack direction="row" spacing={2}>
@@ -160,15 +130,11 @@ const RevenueUpdates = () => {
               ></Avatar>
               <Box>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Expense this month
+                  {t('achat')}
                 </Typography>
-                <Typography variant="h5">$26,498</Typography>
               </Box>
             </Stack>
           </Stack>
-          <Button color="primary" variant="contained" fullWidth>
-            View Full Report
-          </Button>
         </Grid>
       </Grid>
     </DashboardCard>
