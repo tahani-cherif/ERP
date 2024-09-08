@@ -261,7 +261,7 @@ const TableCaisse = ({
               >
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary" className="w-full">
-                    {moment(row.date).format('YYYY-MM-DD')}
+                    {moment(row.date).format('DD-MM-YYYY')}
                   </Typography>
                 </TableCell>
                 <TableCell>

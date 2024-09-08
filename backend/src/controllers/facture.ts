@@ -9,7 +9,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/factures/
 // @access  Private
 const getFacturesClient = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const factures = await factureModel
     .find({ admin: userId })
     .populate("client")
@@ -22,7 +22,7 @@ const getFacturesClient = asyncHandler(async (req: any, res: Response) => {
   });
 });
 const getFacturesFournisseur = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const factures = await factureModel
     .find({ admin: userId })
     .populate("fournisseur")

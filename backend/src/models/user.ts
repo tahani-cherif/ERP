@@ -11,6 +11,8 @@ interface IUser extends Document {
   role: "user" | "admin";
   status: boolean;
   tokenPassword?: string;
+  admin: mongoose.Schema.Types.ObjectId;
+  acces: string[];
 }
 
 const userSchema = new Schema<IUser>(
@@ -48,6 +50,29 @@ const userSchema = new Schema<IUser>(
     },
     tokenPassword: {
       type: String,
+      required: false,
+    },
+    acces: {
+      type: [String], // Array of strings
+      enum: [
+        "home",
+        "client",
+        "fournisseur",
+        "produit",
+        "achat",
+        "vente",
+        "banque",
+        "credit",
+        "caisse",
+        "juridique",
+        "recouvrement",
+        "deponse",
+      ], // Restrict values to this set
+      required: true, //
+    },
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
       required: false,
     },
   },

@@ -7,7 +7,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/Banques/
 // @access  Private
 const getBanques = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Banques = await banqueModel
     .find({ admin: userId })
     .sort({ createdAt: -1 });
@@ -33,7 +33,7 @@ const getBanque = asyncHandler(
 // @access  Private
 const createBanque = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Banque = await banqueModel.create({ ...body, admin: userId });
   res.status(201).json({ data: Banque });
 });

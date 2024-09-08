@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, IconButton, MenuItem, useMediaQuery } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid, IconButton, MenuItem, TextField, useMediaQuery } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
-import { IconCirclePlus, IconTrash } from '@tabler/icons';
+import { IconCirclePlus, IconPrinter, IconTrash } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -20,6 +20,8 @@ import { addAchat, fetchAchats } from 'src/store/apps/achat/achatSlice';
 import { fetchProduits } from 'src/store/apps/produit/produitSlice';
 import { fetchFournisseurs } from 'src/store/apps/fournisseur/fournisseurSlice';
 import CustomSelect from 'src/components/forms/theme-elements/CustomSelect';
+import { useReactToPrint } from 'react-to-print';
+import moment from 'moment';
 
 interface Ifournisseur {
   _id: string;
@@ -75,6 +77,11 @@ const Vente = () => {
   const [data, setData] = useState<IAchat[]>();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [filterNumero, setFilterNumero] = React.useState<string | null>(null);
+  const [filteredData, setFilteredData] = useState<IAchat[]>();
+  const [filterEcheance, setFilterEcheance] = React.useState<string | null>(null);
+  const [filterFournisseur, setFilterFournisseur] = React.useState<string | null>(null);
+  const printableRef = useRef(null);
   const validationSchema = Yup.object({
     fournisseur: Yup.string().optional(),
     modepaiement: Yup.string().required(t('faildRequired') || ''),
@@ -113,6 +120,23 @@ const Vente = () => {
     setLoading(false);
     setOpen(false);
   };
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+  });
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item: any) => {
+        return (
+          (!filterEcheance ||
+            moment(item.date).format('DD-MM-YYYY') ===
+              moment(filterEcheance).format('DD-MM-YYYY')) &&
+          (!filterNumero || item?._id?.includes(filterNumero)) &&
+          (!filterFournisseur || item?.fournisseur?.fullName?.includes(filterFournisseur))
+        );
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterEcheance, filterFournisseur, filterNumero]);
 
   return (
     <PageContainer title={t('achat') || ''}>
@@ -122,14 +146,52 @@ const Vente = () => {
       <ParentCard title={t('achat') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-4">
+              <Button
+                className="flex gap-4 p-4"
+                color="primary"
+                variant="contained"
+                onClick={() => handlePrint()}
+              >
+                <IconPrinter />
+                <span>{t('imprimer')}</span>
+              </Button>
               <Button className="flex gap-4 p-4" onClick={() => setOpen(true)}>
                 <IconCirclePlus />
                 <span>{t('addAchat')}</span>
               </Button>
             </div>
-            <Box className="mt-4">
-              <TableAchat rows={data || []} setData={setData} data={data} />
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <CustomTextField
+                id="echeance"
+                name="echeance"
+                variant="outlined"
+                fullWidth
+                value={filterEcheance || ''}
+                type="date"
+                onChange={(e: any) => setFilterEcheance(e.target.value)}
+                error={false}
+                helperText=""
+              />
+
+              <TextField
+                label={'N°'}
+                value={filterNumero}
+                onChange={(e) => setFilterNumero(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+              <TextField
+                label={t('nomFournisseur')}
+                value={filterFournisseur}
+                onChange={(e) => setFilterFournisseur(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
+              <TableAchat rows={filteredData || []} setData={setData} data={data} />
             </Box>
           </Grid>
         </Grid>

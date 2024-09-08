@@ -7,7 +7,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/Caisses/
 // @access  Private
 const getCaisses = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Caisses = await caisseModel
     .find({ admin: userId })
     .sort({ createdAt: -1 });
@@ -33,7 +33,7 @@ const getCaisse = asyncHandler(
 // @access  Private
 const createCaisse = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Caisse = await caisseModel.create({ ...body, admin: userId });
   res.status(201).json({ data: Caisse });
 });

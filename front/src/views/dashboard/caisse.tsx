@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, useMediaQuery } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid, TextField, useMediaQuery } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
-import { IconCirclePlus } from '@tabler/icons';
+import { IconCirclePlus, IconPrinter } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -17,6 +17,8 @@ import CustomTextField from 'src/components/forms/theme-elements/CustomTextField
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
 import TableCaisse from 'src/components/tables/caisseTab';
 import { addCaisse, fetchCaisses } from 'src/store/apps/caisse/caisseSlice';
+import { useReactToPrint } from 'react-to-print';
+import moment from 'moment';
 
 interface ICaisse {
   _id: string;
@@ -30,6 +32,7 @@ interface ICaisse {
 const Caisse = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const printableRef = useRef(null);
   const BCrumb = [
     {
       to: '/',
@@ -47,6 +50,9 @@ const Caisse = () => {
   const [loading, setLoading] = React.useState(false);
   const [totalEncaissement, setTotalEncaissement] = React.useState(0);
   const [totalDecaissement, setTotalDecaissement] = React.useState(0);
+  const [filterDesignation, setFilterDesignation] = React.useState<string | null>(null);
+  const [filteredData, setFilteredData] = useState<ICaisse[]>();
+  const [filterEcheance, setFilterEcheance] = React.useState<string | null>(null);
   const validationSchema = Yup.object({
     designation: Yup.string().optional(),
     encaissement: Yup.number()
@@ -85,6 +91,22 @@ const Caisse = () => {
   const handleCloseModal = () => {
     setOpen(false);
   };
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+  });
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item: any) => {
+        return (
+          (!filterEcheance ||
+            moment(item.date).format('DD-MM-YYYY') ===
+              moment(filterEcheance).format('DD-MM-YYYY')) &&
+          (!filterDesignation || item?.numero?.includes(filterDesignation))
+        );
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterEcheance, filterDesignation]);
 
   return (
     <PageContainer title={t('caisse') || ''}>
@@ -94,15 +116,46 @@ const Caisse = () => {
       <ParentCard title={t('caisse') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-4">
+              <Button
+                className="flex gap-4 p-4"
+                color="primary"
+                variant="contained"
+                onClick={() => handlePrint()}
+              >
+                <IconPrinter />
+                <span>{t('imprimer')}</span>
+              </Button>
               <Button className="flex gap-4 p-4" onClick={() => setOpen(true)}>
                 <IconCirclePlus />
                 <span>{t('addCaisse')}</span>
               </Button>
             </div>
-            <Box className="mt-4">
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <CustomTextField
+                id="echeance"
+                name="echeance"
+                variant="outlined"
+                fullWidth
+                value={filterEcheance || ''}
+                type="date"
+                onChange={(e: any) => setFilterEcheance(e.target.value)}
+                error={false}
+                helperText=""
+              />
+
+              <TextField
+                label={t('designation')}
+                value={filterDesignation}
+                onChange={(e) => setFilterDesignation(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
               <TableCaisse
-                rows={data || []}
+                rows={filteredData || []}
                 setData={setData}
                 data={data}
                 setTotalEncaissement={setTotalEncaissement}

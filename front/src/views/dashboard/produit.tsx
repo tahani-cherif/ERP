@@ -6,6 +6,7 @@ import {
   Grid,
   MenuItem,
   RadioGroup,
+  TextField,
   useMediaQuery,
 } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
@@ -63,6 +64,8 @@ const Produit = () => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [etat, setEtat] = React.useState('vente');
+  const [filteredData, setFilteredData] = useState<IProduit[]>();
+  const [filterName, setFilterName] = React.useState<string | null>(null);
   const printableRef = useRef(null);
   const validationSchema = Yup.object({
     reference: Yup.string().required(t('faildRequired') || ''),
@@ -123,6 +126,14 @@ const Produit = () => {
   const handlePrint = useReactToPrint({
     content: () => printableRef.current,
   });
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item: IProduit) => {
+        return (!filterName || item?.name?.includes(filterName)) && (!etat || item?.type === etat);
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterName, etat]);
 
   return (
     <PageContainer title={t('produit') || ''}>
@@ -170,12 +181,18 @@ const Produit = () => {
                 </Button>
               </div>
             </div>
-            <Box className="mt-4" ref={printableRef}>
-              <TableProduit
-                rows={data?.filter((item: IProduit) => item?.type === etat) || []}
-                setData={setData}
-                data={data}
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label={t('nom')}
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                variant="outlined"
+                fullWidth
               />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
+              <TableProduit rows={filteredData || []} setData={setData} data={data} />
             </Box>
           </Grid>
         </Grid>

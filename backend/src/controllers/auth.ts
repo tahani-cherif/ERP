@@ -16,58 +16,86 @@ interface JwtPayload {
 // @desc    signup
 // @route   POST /api/auth/signup
 // @access  Public
-const signup = asyncHandler(async (req: Request, res: Response) => {
-  const user = await userModel.create(req.body);
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
-  });
+const signup = asyncHandler(async (req: any, res: Response) => {
+  let user = await userModel.create(req.body);
+  console.log(req.body?.admin);
+  if (req.body?.admin === undefined) {
+    const updatedUser = await userModel.findOneAndUpdate(
+      { _id: user._id },
+      { admin: user._id },
+      {
+        new: true, // Return the updated document
+      }
+    );
+    if (updatedUser) {
+      user = updatedUser;
+    }
+  }
+  const token = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_SECRET_KEY as string,
+    {
+      expiresIn: process.env.JWT_EXPIRE_TIME,
+    }
+  );
   res.status(201).json({ data: user, token });
 });
 
 // @desc    Login
 // @route   POST /api/auth/login
 // @access  Public
-const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userModel.findOne({ email: req.body.email });
+const login = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userModel.findOne({ email: req.body.email });
 
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    return next(new ApiError("Incorrect email or password", 401));
+    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      return next(new ApiError("Incorrect email or password", 401));
+    }
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET_KEY as string,
+      {
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      }
+    );
+    user.password = undefined; // Remove password from response
+    res.status(200).json({ data: user, token });
   }
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
-  });
-  user.password = undefined; // Remove password from response
-  res.status(200).json({ data: user, token });
-});
+);
 
 // @desc    Forget password
 // @route   POST /api/auth/forgetpassword
 // @access  Public
-const forgetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userModel.findOne({ email: req.body.email });
-  if (!user) {
-    return next(new ApiError("User not found", 404));
-  }
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
-  });
-  await userModel.findByIdAndUpdate(user._id, { tokenPassword: token });
+const forgetPassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+      return next(new ApiError("User not found", 404));
+    }
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET_KEY as string,
+      {
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      }
+    );
+    await userModel.findByIdAndUpdate(user._id, { tokenPassword: token });
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  const mailConfigs = {
-    from: process.env.EMAIL_USER,
-    to: req.body.email,
-    subject: "Reset Password",
-    html: `
+    const mailConfigs = {
+      from: process.env.EMAIL_USER,
+      to: req.body.email,
+      subject: "Reset Password",
+      html: `
       <html lang="en">
       <head>
         <meta charset="UTF-8">
@@ -98,72 +126,102 @@ const forgetPassword = asyncHandler(async (req: Request, res: Response, next: Ne
       </body>
       </html>
     `,
-  };
+    };
 
-  transporter.sendMail(mailConfigs, (error:any, info:any) => {
-    if (error) {
-      return next(new ApiError(error.message, 500));
-    }
-    res.status(200).json({ success: true, data: "Email sent" });
-  });
-});
+    transporter.sendMail(mailConfigs, (error: any, info: any) => {
+      if (error) {
+        return next(new ApiError(error.message, 500));
+      }
+      res.status(200).json({ success: true, data: "Email sent" });
+    });
+  }
+);
 
 // @desc    Update password
 // @route   POST /api/auth/updatepassword
 // @access  Public
-const updatePassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userModel.findOne({ tokenPassword: req.body.token });
-  if (!user) {
-    return next(new ApiError("Invalid token", 400));
+const updatePassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userModel.findOne({ tokenPassword: req.body.token });
+    if (!user) {
+      return next(new ApiError("Invalid token", 400));
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    await userModel.findByIdAndUpdate(user._id, {
+      password: hashedPassword,
+      tokenPassword: "",
+    });
+
+    res.status(200).json({ success: true, data: "Password updated" });
   }
-
-  const hashedPassword = await bcrypt.hash(req.body.password, 12);
-  await userModel.findByIdAndUpdate(user._id, {
-    password: hashedPassword,
-    tokenPassword: "",
-  });
-
-  res.status(200).json({ success: true, data: "Password updated" });
-});
+);
 
 // @desc    Ensure the user is authenticated
-const protect = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    token = req.headers.authorization.split(" ")[1];
-  }
-
-  if (!token) {
-    return next(new ApiError("You are not logged in! Please log in to get access.", 401));
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as JwtPayload;
-    const currentUser:any = await userModel.findById(decoded.userId);
-    if (!currentUser) {
-      return next(new ApiError("The user belonging to this token does no longer exist.", 401));
+const protect = asyncHandler(
+  async (req: any, res: Response, next: NextFunction) => {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
     }
 
-    if (currentUser.passwordChangedAt) {
-      const passChangedTimestamp = parseInt((currentUser.passwordChangedAt.getTime() / 1000).toString(), 10);
-      if (decoded.iat < passChangedTimestamp) {
-        return next(new ApiError("User recently changed password! Please log in again.", 401));
+    if (!token) {
+      return next(
+        new ApiError("You are not logged in! Please log in to get access.", 401)
+      );
+    }
+
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET_KEY as string
+      ) as JwtPayload;
+      const currentUser: any = await userModel.findById(decoded.userId);
+      if (!currentUser) {
+        return next(
+          new ApiError(
+            "The user belonging to this token does no longer exist.",
+            401
+          )
+        );
       }
+
+      if (currentUser.passwordChangedAt) {
+        const passChangedTimestamp = parseInt(
+          (currentUser.passwordChangedAt.getTime() / 1000).toString(),
+          10
+        );
+        if (decoded.iat < passChangedTimestamp) {
+          return next(
+            new ApiError(
+              "User recently changed password! Please log in again.",
+              401
+            )
+          );
+        }
+      }
+      req.user = currentUser;
+      next();
+    } catch (error) {
+      return next(new ApiError("Invalid token. Please log in again.", 401));
     }
-    req.user = currentUser;
-    next();
-  } catch (error) {
-    return next(new ApiError("Invalid token. Please log in again.", 401));
   }
-});
+);
 
 // @desc    Restrict access to specific roles
-const allowedTo = (...roles: string[]) => (req: any, res: Response, next: NextFunction) => {
-  if (!roles.includes(req.user.role)) {
-    return next(new ApiError("You do not have permission to perform this action", 403));
-  }
-  next();
-};
+const allowedTo =
+  (...roles: string[]) =>
+  (req: any, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ApiError("You do not have permission to perform this action", 403)
+      );
+    }
+    next();
+  };
 
 // // @desc    Approve account
 // const approvedAccount = asyncHandler(async (req: Request, res: Response) => {

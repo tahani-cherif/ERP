@@ -11,7 +11,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/stat/count
 // @access  Private
 const getCount = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Banques = await banqueModel.countDocuments({ admin: userId });
   const produit = await produitModel.countDocuments({ admin: userId });
   const client = await clientModel.countDocuments({ admin: userId });
@@ -27,7 +27,7 @@ const getCount = asyncHandler(async (req: any, res: Response) => {
 // @route   GET api/stat/stock
 // @access  Private
 const getstock = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const produit = await produitModel.find({ admin: userId });
   res.status(200).json({
     vendre:
@@ -43,7 +43,7 @@ const getstock = asyncHandler(async (req: any, res: Response) => {
 // @route   GET api/stat/facture
 // @access  Private
 const getachatvente = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 

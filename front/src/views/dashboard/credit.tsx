@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, MenuItem, useMediaQuery } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid, MenuItem, TextField, useMediaQuery } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
-import { IconCirclePlus } from '@tabler/icons';
+import { IconCirclePlus, IconPrinter } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -19,6 +19,7 @@ import TableCredits from 'src/components/tables/creditTab';
 import { addCredit, fetchCredits } from 'src/store/apps/credit/creditSlice';
 import CustomSelect from 'src/components/forms/theme-elements/CustomSelect';
 import { fetchBanques } from 'src/store/apps/banque/banqueSlice';
+import { useReactToPrint } from 'react-to-print';
 
 interface IBanque {
   _id: string;
@@ -61,6 +62,10 @@ const Credit = () => {
   const [data, setData] = useState<ICredit[]>();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const printableRef = useRef(null);
+  const [filterNumero, setFilterNumero] = React.useState<string | null>(null);
+  const [filteredData, setFilteredData] = useState<ICredit[]>();
+  const [filterBanque, setFilterBanque] = React.useState<string | null>(null);
   const validationSchema = Yup.object({
     banque: Yup.string().required(t('faildRequired') || ''),
     montantemprunt: Yup.number()
@@ -105,6 +110,20 @@ const Credit = () => {
   const handleCloseModal = () => {
     setOpen(false);
   };
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+  });
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item: any) => {
+        return (
+          (!filterBanque || item?.banque?.banque?.includes(filterBanque)) &&
+          (!filterNumero || item?._id?.includes(filterNumero))
+        );
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterNumero, filterBanque]);
 
   return (
     <PageContainer title={t('credit') || ''}>
@@ -114,14 +133,45 @@ const Credit = () => {
       <ParentCard title={t('credit') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-4">
+              <Button
+                className="flex gap-4 p-4"
+                color="primary"
+                variant="contained"
+                onClick={() => handlePrint()}
+              >
+                <IconPrinter />
+                <span>{t('imprimer')}</span>
+              </Button>
               <Button className="flex gap-4 p-4" onClick={() => setOpen(true)}>
                 <IconCirclePlus />
                 <span>{t('addCredit')}</span>
               </Button>
             </div>
-            <Box className="mt-4">
-              <TableCredits rows={data || []} setData={setData} data={data} banques={banques} />
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label={'N°'}
+                value={filterNumero}
+                onChange={(e) => setFilterNumero(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+              <TextField
+                label={t('banque')}
+                value={filterBanque}
+                onChange={(e) => setFilterBanque(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
+              <TableCredits
+                rows={filteredData || []}
+                setData={setData}
+                data={data}
+                banques={banques}
+              />
             </Box>
           </Grid>
         </Grid>

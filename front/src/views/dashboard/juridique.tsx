@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Grid } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid, TextField } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
@@ -8,6 +8,8 @@ import { useDispatch } from 'src/store/Store';
 import { useTranslation } from 'react-i18next';
 import { fetchVentes } from 'src/store/apps/vente/venteSlice';
 import TableJuridique from 'src/components/tables/juridiqueTab';
+import { useReactToPrint } from 'react-to-print';
+import { IconPrinter } from '@tabler/icons';
 
 interface Iclient {
   _id: string;
@@ -36,6 +38,12 @@ const Juridique = () => {
   const dispatch = useDispatch();
   const ventes = useSelector((state: any) => state.venteReducer.ventes);
   const [data, setData] = useState<IVente[]>();
+  const printableRef = useRef(null);
+  const [filterReference, setFilterReference] = React.useState('');
+  const [filterClient, setFilterClient] = React.useState('');
+  const [filterNumeroDossier, setFilterNumeroDossier] = React.useState('');
+  const [filterHuissier, setFilterHuissier] = React.useState('');
+  const [filteredData, setFilteredData] = useState<IVente[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +60,25 @@ const Juridique = () => {
   useEffect(() => {
     setData(ventes);
   }, [ventes]);
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item) => {
+        return (
+          (!filterReference || item._id.includes(filterReference)) &&
+          (!filterClient ||
+            item.client?.fullName.toLowerCase().includes(filterClient.toLowerCase())) &&
+          (!filterNumeroDossier || item?.numeroDossier?.includes(filterNumeroDossier)) &&
+          (!filterHuissier ||
+            item?.huissierjustice?.toLowerCase()?.includes(filterHuissier.toLowerCase())) &&
+          item.statut === 'not-paid'
+        );
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterReference, filterClient, filterNumeroDossier, filterHuissier]);
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+  });
 
   return (
     <PageContainer title={t('juridique') || ''}>
@@ -62,12 +89,50 @@ const Juridique = () => {
       <ParentCard title={t('juridique') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Box className="mt-4">
-              <TableJuridique
-                rows={data?.filter((item: IVente) => item?.statut === 'not-paid') || []}
-                setData={setData}
-                data={data?.filter((item: IVente) => item?.statut === 'not-paid')}
+            <div className="flex justify-end gap-4">
+              <Button
+                className="flex gap-4 p-4"
+                color="primary"
+                variant="contained"
+                onClick={() => handlePrint()}
+              >
+                <IconPrinter />
+                <span>{t('imprimer')}</span>
+              </Button>
+            </div>
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label={t('Reference')}
+                value={filterReference}
+                onChange={(e) => setFilterReference(e.target.value)}
+                variant="outlined"
+                fullWidth
               />
+              <TextField
+                label={t('nomClients')}
+                value={filterClient}
+                onChange={(e) => setFilterClient(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+              <TextField
+                label={t('numerodossier')}
+                value={filterNumeroDossier}
+                onChange={(e) => setFilterNumeroDossier(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+              <TextField
+                label={t('huissierjustice')}
+                value={filterHuissier}
+                onChange={(e) => setFilterHuissier(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
+              <TableJuridique rows={filteredData || []} setData={setData} data={filteredData} />
             </Box>
           </Grid>
         </Grid>

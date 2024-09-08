@@ -7,7 +7,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/fornisseurs/
 // @access  Private
 const getFornisseurs = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const fornisseurs = await fornisseurModel
     .find({ admin: userId })
     .sort({ createdAt: -1 });
@@ -33,7 +33,7 @@ const getFornisseur = asyncHandler(
 // @access  Private
 const createFornisseur = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const fornisseur = await fornisseurModel.create({ ...body, admin: userId });
   res.status(201).json({ data: fornisseur });
 });

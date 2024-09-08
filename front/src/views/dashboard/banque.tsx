@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, useMediaQuery } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Grid, TextField, useMediaQuery } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'src/store/Store';
-import { IconCirclePlus } from '@tabler/icons';
+import { IconCirclePlus, IconPrinter } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -17,6 +17,7 @@ import CustomTextField from 'src/components/forms/theme-elements/CustomTextField
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
 import TableBanque from 'src/components/tables/banqueTab';
 import { addBanque, fetchBanques } from 'src/store/apps/banque/banqueSlice';
+import { useReactToPrint } from 'react-to-print';
 
 interface IBanque {
   _id: string;
@@ -30,6 +31,7 @@ interface IBanque {
 const Banque = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const printableRef = useRef(null);
   const BCrumb = [
     {
       to: '/',
@@ -45,6 +47,8 @@ const Banque = () => {
   const [data, setData] = useState<IBanque[]>();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [filteredData, setFilteredData] = useState<IBanque[]>();
+  const [filterBanque, setFilterBanque] = React.useState<string | null>(null);
   const validationSchema = Yup.object({
     banque: Yup.string().required(t('faildRequired') || ''),
     rib: Yup.string().required(t('faildRequired') || ''),
@@ -92,6 +96,17 @@ const Banque = () => {
     formik.resetForm();
     setOpen(false);
   };
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+  });
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item: any) => {
+        return !filterBanque || item?.banque?.includes(filterBanque);
+      });
+      setFilteredData(filtered);
+    }
+  }, [data, filterBanque]);
 
   return (
     <PageContainer title={t('banque') || ''}>
@@ -101,14 +116,33 @@ const Banque = () => {
       <ParentCard title={t('banque') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-4">
+              <Button
+                className="flex gap-4 p-4 "
+                color="primary"
+                variant="contained"
+                onClick={() => handlePrint()}
+              >
+                <IconPrinter />
+                <span>{t('imprimer')}</span>
+              </Button>
               <Button className="flex gap-4 p-4" onClick={() => setOpen(true)}>
                 <IconCirclePlus />
                 <span>{t('addBanque')}</span>
               </Button>
             </div>
-            <Box className="mt-4">
-              <TableBanque rows={data || []} setData={setData} data={data} />
+            <br />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label={t('banque')}
+                value={filterBanque}
+                onChange={(e) => setFilterBanque(e.target.value)}
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box className="mt-4" ref={printableRef}>
+              <TableBanque rows={filteredData || []} setData={setData} data={data} />
             </Box>
           </Grid>
         </Grid>

@@ -7,7 +7,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/Credits/
 // @access  Private
 const getCredits = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Credits = await creditModel
     .find({ admin: userId })
     .populate("banque")
@@ -34,7 +34,7 @@ const getCredit = asyncHandler(
 // @access  Private
 const createCredit = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const Credit = await creditModel.create({ ...body, admin: userId });
   const Creditget = await creditModel.findById(Credit?._id).populate("banque");
   res.status(201).json({ data: Creditget });

@@ -7,7 +7,7 @@ import ApiError from "../utils/apiError";
 // @route   GET api/clients/
 // @access  Private
 const getClients = asyncHandler(async (req: any, res: Response) => {
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const clients = await clientModel
     .find({ admin: userId })
     .sort({ createdAt: -1 });
@@ -33,7 +33,7 @@ const getClient = asyncHandler(
 // @access  Private
 const createClient = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
-  const userId = req?.user?._id;
+  const userId = req?.user?.admin;
   const client = await clientModel.create({ ...body, admin: userId });
   res.status(201).json({ data: client });
 });
