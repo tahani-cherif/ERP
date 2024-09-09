@@ -18,7 +18,7 @@ const SidebarItems = () => {
   const hideMenu: any = lgUp ? customizer.isCollapse && !customizer.isSidebarHover : '';
   const dispatch = useDispatch();
   const Menuitems = MenuItems();
-  const user = JSON.parse(localStorage.getItem('user') || '');
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   return (
     <Box sx={{ px: 3 }}>

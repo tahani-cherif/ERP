@@ -114,6 +114,7 @@ const Sidebar = () => {
       {/* Sidebar For Mobile */}
       {/* ------------------------------------------- */}
       <SidebarItems />
+      <Profile />
     </Drawer>
   );
 };
