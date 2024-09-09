@@ -13,31 +13,44 @@ import {
   getFacture,
   updateFacture,
   deleteFacture,
-  updateStatus
+  updateStatus,
 } from "../controllers/facture";
 import { allowedTo, protect } from "../controllers/auth";
 
 const router = express.Router();
 
-
 router
   .route("/")
-  .post(protect, allowedTo("user"), createfactureValidator, createFacture);
+  .post(
+    protect,
+    allowedTo("user", "agence"),
+    createfactureValidator,
+    createFacture
+  );
 router
   .route("/vente")
-  .get(protect, allowedTo("user"),getFacturesClient)
+  .get(protect, allowedTo("user", "agence"), getFacturesClient);
 router
   .route("/status/:id")
-  .put(protect, allowedTo("user"),updateStatus)
+  .put(protect, allowedTo("user", "agence"), updateStatus);
 router
   .route("/achat")
-  .get(protect, allowedTo("user"),getFacturesFournisseur)
-
+  .get(protect, allowedTo("user", "agence"), getFacturesFournisseur);
 
 router
   .route("/:id")
-  .get(protect, allowedTo("user"),getfactureValidator, getFacture)
-  .put(protect, allowedTo("user"), updatefactureValidator, updateFacture)
-  .delete(protect, allowedTo("user"), deletefactureValidator, deleteFacture);
+  .get(protect, allowedTo("user", "agence"), getfactureValidator, getFacture)
+  .put(
+    protect,
+    allowedTo("user", "agence"),
+    updatefactureValidator,
+    updateFacture
+  )
+  .delete(
+    protect,
+    allowedTo("user", "agence"),
+    deletefactureValidator,
+    deleteFacture
+  );
 
 export { router };

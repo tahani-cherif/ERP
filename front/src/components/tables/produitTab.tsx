@@ -110,6 +110,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  montantbenefices: string;
   stock: number;
   admin: string;
   type: string;
@@ -141,11 +142,16 @@ const TableProduit = ({
   const [selectedRow, setSelectedRow] = React.useState<IProduit>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const validationSchema = Yup.object({
     reference: Yup.string().required(t('faildRequired') || ''),
     name: Yup.string().required(t('faildRequired') || ''),
     description: Yup.string().optional(),
     price: Yup.number()
+      .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+      .required(t('faildRequired') || 'Price is required')
+      .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+    montantbenefices: Yup.string()
       .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
       .required(t('faildRequired') || 'Price is required')
       .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
@@ -156,24 +162,33 @@ const TableProduit = ({
       name: '',
       description: '',
       price: '',
+      montantbenefices: '',
     },
     validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await dispatch(updateProduit({ ...values, price: Number(values.price) }, id)).then(
-          (secc: any) =>
-            setData(() => {
-              const newData = data?.map((item: IProduit) => {
-                if (item?._id === id) {
-                  return secc;
-                } else {
-                  return item;
-                }
-              });
+        await dispatch(
+          updateProduit(
+            {
+              ...values,
+              montantbenefices: user?.role === 'agence' ? Number(values.montantbenefices) : 0,
+              price: Number(values.price),
+            },
+            id,
+          ),
+        ).then((secc: any) =>
+          setData(() => {
+            const newData = data?.map((item: IProduit) => {
+              if (item?._id === id) {
+                return secc;
+              } else {
+                return item;
+              }
+            });
 
-              return newData;
-            }),
+            return newData;
+          }),
         );
         setLoading(false);
         handleCloseModalEdit();
@@ -321,6 +336,7 @@ const TableProduit = ({
                             name: selectedRow?.name || '',
                             description: selectedRow?.description || '',
                             price: selectedRow?.price || '',
+                            montantbenefices: selectedRow?.montantbenefices || '',
                           });
                         }}
                       >
@@ -546,6 +562,24 @@ const TableProduit = ({
                 helperText={formik.touched.price && formik.errors.price}
               />
             </Box>
+            {user?.role === 'agence' && (
+              <Box>
+                <CustomFormLabel htmlFor="montantbenefices">
+                  {t('montantbenefices')}
+                </CustomFormLabel>
+                <CustomTextField
+                  id="montantbenefices"
+                  name="montantbenefices"
+                  variant="outlined"
+                  fullWidth
+                  value={formik.values.montantbenefices}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)}
+                  helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
+                />
+              </Box>
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="error" onClick={handleCloseModalEdit}>

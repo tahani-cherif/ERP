@@ -30,11 +30,15 @@ router
   .get(getUsers)
   .post(protect, allowedTo("admin"), createuserValidator, createUser);
 
-
 router
   .route("/:id")
   .get(getuserValidator, getUser)
-  .put(protect, allowedTo("admin", "user"), updateuserValidator, updateUser)
+  .put(
+    protect,
+    allowedTo("admin", "user", "agence"),
+    updateuserValidator,
+    updateUser
+  )
   .delete(protect, allowedTo("admin"), deleteuserValidator, deleteUser);
 
 export { router };

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
-  section: { marginBottom: 10 },
+  section: { marginBottom: 10, fontSize: 14 },
   table: {
     display: 'table',
     width: 'auto',
@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    marginTop: 10,
+    marginBottom: 20,
   },
   tableRow: { flexDirection: 'row' },
   tableCol: {
@@ -24,9 +26,10 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 14, marginBottom: 10 },
+  subHeader: { fontSize: 18, marginBottom: 10 },
   conditions: { marginTop: 20, fontSize: 12 },
-  headervide:{marginTop:"150px"}
+  headervide: { marginTop: '150px' },
+  entreprise: { marginLeft: 'auto' },
 });
 
 const QuotePDF = ({ quote }) => {
@@ -35,14 +38,28 @@ const QuotePDF = ({ quote }) => {
   return (
     <Document>
       <Page style={styles.page}>
-      <View style={styles.headervide}>
-      </View>
+        <View style={styles.headervide}></View>
         <Text style={styles.header}>Devis N° : {quote?.number}</Text>
         <Text style={styles.section}>Date : {quote?.date}</Text>
-
+        <View style={styles.entreprise}>
+          <Text style={styles.subHeader}>{t('entreprise')} :</Text>
+          <Text style={styles.section}>{t('nameentreprise') + ' : ...................'}</Text>
+          <Text style={styles.section}>
+            {t('address') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+          <Text style={styles.section}>
+            {t('phone') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+          <Text style={styles.section}>
+            {t('matriculeFiscale2') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+        </View>
         <Text style={styles.subHeader}>Client :</Text>
-        <Text style={styles.section}>{quote?.client?.name}</Text>
-        <Text style={styles.section}>{quote?.client?.address}</Text>
+        <Text style={styles.section}>{t('nomClients') + ' : ' + quote?.client?.name}</Text>
+        <Text style={styles.section}>
+          {t('address') + ' Client : '}
+          {quote?.client?.address}
+        </Text>
 
         <View style={styles.table}>
           <View style={styles.tableRow}>
@@ -86,8 +103,7 @@ const QuotePDF = ({ quote }) => {
         <Text style={styles.section}>
           {t('montantTotal') + ' '}TTC: {quote?.totalTTC}
         </Text>
-
-        <Text style={styles.conditions}> {t('modepaiement') + ' ' + quote?.paymentTerms}</Text>
+        <Text style={styles.conditions}> {t('modepaiement') + ' : ' + quote?.paymentTerms}</Text>
       </Page>
     </Document>
   );

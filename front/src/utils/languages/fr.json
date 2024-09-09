@@ -143,5 +143,9 @@
    "deponse":"Suivi dépense",
    "stat":"statistiques des 6 derniers mois",
    "footer1":"Entreprise spécialisée dans le développement informatique (logiciels et application web et mobile) et la construction de réseaux informatiques et de télécom.",
-   "footer2":"Cette application web a été élaborée en étroite collaboration entre Kais Safouene, Directeur Administratif et Financier, et Tahani Cherif, développeuse Full Stack et mobile, témoignant ainsi d'une synergie efficace entre expertise financière et compétences techniques."
+   "footer2":"Cette application web a été élaborée en étroite collaboration entre Kais Safouene, Directeur Administratif et Financier, et Tahani Cherif, développeuse Full Stack et mobile, témoignant ainsi d'une synergie efficace entre expertise financière et compétences techniques.",
+   "montantbenefices":"Montant bénéfices",
+   "entreprise":"Entreprise",
+   "nameentreprise":"Nom de Entreprise ",
+   "matriculeFiscale2":"Matricule fiscal"
 }

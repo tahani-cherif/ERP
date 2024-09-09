@@ -17,17 +17,35 @@ import { allowedTo, protect } from "../controllers/auth";
 
 const router = express.Router();
 
-
 router
   .route("/")
-  .get(protect, allowedTo("user"),getFornisseurs)
-  .post(protect, allowedTo("user"), createfornisseurValidator, createFornisseur);
-
+  .get(protect, allowedTo("user", "agence"), getFornisseurs)
+  .post(
+    protect,
+    allowedTo("user"),
+    createfornisseurValidator,
+    createFornisseur
+  );
 
 router
   .route("/:id")
-  .get(protect, allowedTo("user"),getfornisseurValidator, getFornisseur)
-  .put(protect, allowedTo("user"), updatefornisseurValidator, updateFornisseur)
-  .delete(protect, allowedTo("user"), deletefornisseurValidator, deleteFornisseur);
+  .get(
+    protect,
+    allowedTo("user", "agence"),
+    getfornisseurValidator,
+    getFornisseur
+  )
+  .put(
+    protect,
+    allowedTo("user", "agence"),
+    updatefornisseurValidator,
+    updateFornisseur
+  )
+  .delete(
+    protect,
+    allowedTo("user", "agence"),
+    deletefornisseurValidator,
+    deleteFornisseur
+  );
 
 export { router };

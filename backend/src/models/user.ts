@@ -8,7 +8,7 @@ interface IUser extends Document {
   email: string;
   phone: number;
   password: any;
-  role: "user" | "admin";
+  role: "user" | "admin" | "agence";
   status: boolean;
   tokenPassword?: string;
   admin: mongoose.Schema.Types.ObjectId;
@@ -40,7 +40,7 @@ const userSchema = new Schema<IUser>(
     role: {
       type: String,
       required: true,
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "agence"],
       default: "user",
     },
     status: {

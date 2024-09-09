@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
-  section: { marginBottom: 10 },
+  section: { marginBottom: 10, fontSize: 14 },
   table: {
     display: 'table',
     width: 'auto',
@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    marginTop: 10,
+    marginBottom: 10,
   },
   tableRow: { flexDirection: 'row' },
   tableCol: {
@@ -24,8 +26,9 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 14, marginBottom: 10 },
-  headervide:{marginTop:"150px"}
+  subHeader: { fontSize: 18, marginBottom: 10 },
+  headervide: { marginTop: '150px' },
+  entreprise: { marginLeft: 'auto' },
 });
 
 const InvoicePDF = ({ invoice }) => {
@@ -34,19 +37,30 @@ const InvoicePDF = ({ invoice }) => {
   return (
     <Document>
       <Page style={styles.page}>
-      <View style={styles.headervide}>
-      </View>
+        <View style={styles.headervide}></View>
         <Text style={styles.header}>
           {t('facture')} N° : {invoice?.number}
         </Text>
         <Text style={styles.section}>Date : {invoice?.date}</Text>
+        <View style={styles.entreprise}>
+          <Text style={styles.subHeader}>{t('entreprise')} :</Text>
+          <Text style={styles.section}>{t('nameentreprise') + ' : ...................'}</Text>
+          <Text style={styles.section}>
+            {t('address') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+          <Text style={styles.section}>
+            {t('phone') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+          <Text style={styles.section}>
+            {t('matriculeFiscale2') + ' ' + t('entreprise') + ' : ...................'}
+          </Text>
+        </View>
         <Text style={styles.subHeader}>Client :</Text>
-        <Text style={styles.section}>{t('nomClients') + ' :' + invoice?.client?.name}</Text>
+        <Text style={styles.section}>{t('nomClients') + ' : ' + invoice?.client?.name}</Text>
         <Text style={styles.section}>
-          {t('address') + ' Client :'}
+          {t('address') + ' Client : '}
           {invoice?.client?.address}
         </Text>
-
         <View style={styles.table}>
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
@@ -85,9 +99,7 @@ const InvoicePDF = ({ invoice }) => {
         <Text style={styles.section}>
           TVA ({invoice?.taxRate}%): {invoice?.taxAmount}
         </Text>
-        <Text style={styles.section}>
-          {t("timbre")} : 1
-        </Text>
+        <Text style={styles.section}>{t('timbre')} : 1</Text>
         <Text style={styles.section}>
           {t('montantTotal') + ' '}TTC: {invoice?.totalTTC}
         </Text>

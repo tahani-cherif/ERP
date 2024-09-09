@@ -170,6 +170,7 @@ const TableVente = ({
   const [selectedRow, setSelectedRow] = React.useState<IVente>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const validationSchema = Yup.object({
     status: Yup.string().required(t('faildRequired') || ''),
   });
@@ -384,7 +385,12 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
+                            taxAmount:
+                              user?.role === 'agence'
+                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                : row.tva
+                                ? (row.totalHTV * row.tva) / 100
+                                : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
@@ -402,7 +408,12 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
+                            taxAmount:
+                              user?.role === 'agence'
+                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                : row.tva
+                                ? (row.totalHTV * row.tva) / 100
+                                : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
@@ -432,7 +443,12 @@ const TableVente = ({
                             }),
                             totalHT: row.totalHTV,
                             taxRate: row.tva,
-                            taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
+                            taxAmount:
+                              user?.role === 'agence'
+                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                : row.tva
+                                ? (row.totalHTV * row.tva) / 100
+                                : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },

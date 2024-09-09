@@ -38,6 +38,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  montantbenefices: string;
   stock: number;
   type: string;
   admin: string;
@@ -75,6 +76,7 @@ const Vente = () => {
   const [filterEcheance, setFilterEcheance] = React.useState<string | null>(null);
   const [filterClient, setFilterClient] = React.useState<string | null>(null);
   const [filterNumero, setFilterNumero] = React.useState<string | null>(null);
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   const validationSchema = Yup.object({
     client: Yup.string().required(t('faildRequired') || ''),
@@ -236,11 +238,13 @@ const Vente = () => {
                 return;
               }
               let total_generalhtva = 0;
+              let montantbenefices = 0;
               produits.map((p: IProduit) => {
                 values.articles.map((article) => {
                   console.log(article.produit === p._id);
                   if (article.produit === p._id) {
                     total_generalhtva += Number(article.quantite) * Number(p.price);
+                    montantbenefices += Number(p.montantbenefices);
                   }
                 });
               });
@@ -253,9 +257,15 @@ const Vente = () => {
                   date: new Date(),
                   modepaiement: values.modepaiement,
                   total_general:
-                    total_generalhtva +
-                    1 +
-                    (values.tva ? total_generalhtva * (Number(values.tva) / 100) : 0),
+                    user?.role === 'agence'
+                      ? total_generalhtva +
+                        1 +
+                        (values.tva
+                          ? montantbenefices * (Number(values.tva) / 100)
+                          : montantbenefices)
+                      : total_generalhtva +
+                        1 +
+                        (values.tva ? total_generalhtva * (Number(values.tva) / 100) : 0),
                   tva: Number(values.tva),
                   totalHTV: total_generalhtva,
                   articles: values.articles,

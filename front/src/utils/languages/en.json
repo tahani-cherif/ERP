@@ -138,6 +138,10 @@
    "deponse":"Expense tracking",
    "stat":"statistics for last 6 months",
    "footer1":"Company specializing in IT development (software and web and mobile applications) and the construction of IT and telecom networks.",
-   "footer2":"This web application was developed in close collaboration between Kais Safouene, Administrative and Financial Director, and Tahani Cherif, Full Stack and mobile developer, thus demonstrating an effective synergy between financial expertise and technical skills."
+   "footer2":"This web application was developed in close collaboration between Kais Safouene, Administrative and Financial Director, and Tahani Cherif, Full Stack and mobile developer, thus demonstrating an effective synergy between financial expertise and technical skills.",
+   "montantbenefices":"Profit amount",
+   "entreprise":"Company",
+    "nameentreprise":"Company Name",
+    "matriculeFiscale2":"Tax registration number"
 
 }

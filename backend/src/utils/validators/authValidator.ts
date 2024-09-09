@@ -36,7 +36,7 @@ export const signupValidator = [
     .notEmpty()
     .withMessage("Password confirmation required"),
   check("role")
-    .isIn(["user", "admin"])
+    .isIn(["user", "admin", "agence"])
     .withMessage("Role must be either user or admin"),
   validatorMiddleware,
 ];

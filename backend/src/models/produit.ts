@@ -6,6 +6,7 @@ interface IProduit extends Document {
   name: string;
   description: string;
   price: number;
+  montantbenefices: number;
   stock: number;
   admin: mongoose.Schema.Types.ObjectId;
   type: string;
@@ -44,6 +45,10 @@ const produitSchema = new Schema<IProduit>(
     price: {
       type: Number,
       required: true,
+    },
+    montantbenefices: {
+      type: Number,
+      required: false,
     },
     stock: {
       type: Number,

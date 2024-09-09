@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
-  section: { marginBottom: 10 },
+  section: { marginBottom: 10, fontSize: 14 },
   table: {
     display: 'table',
     width: 'auto',
@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    marginTop: 10,
+    marginBottom: 10,
   },
   tableRow: { flexDirection: 'row' },
   tableCol: {
@@ -24,8 +26,9 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 14, marginBottom: 10 },
-  headervide:{marginTop:"150px"}
+  subHeader: { fontSize: 18, marginBottom: 10 },
+  headervide: { marginTop: '150px' },
+  entreprise: { marginLeft: 'auto' },
 });
 
 const PurchaseOrderPDF = ({ order }) => {
@@ -34,21 +37,20 @@ const PurchaseOrderPDF = ({ order }) => {
   return (
     <Document>
       <Page style={styles.page}>
-      <View style={styles.headervide}>
-      </View>
+        <View style={styles.headervide}></View>
         <Text style={styles.header}>
           {t('bonCommande')} N° : {order?.number}
         </Text>
         <Text style={styles.section}>Date : {order?.date}</Text>
         <Text style={styles.subHeader}>{t('fournisseur')} :</Text>
-        <Text style={styles.section}>{t('nomFournisseur') + ' ' + order?.supplier?.name}</Text>
+        <Text style={styles.section}>{t('nomFournisseur') + ' :' + order?.supplier?.name}</Text>
         <Text style={styles.section}>
-          {t('address') + ' ' + t('fournisseur')} {order?.supplier?.address}
+          {t('address') + ' ' + t('fournisseur') + ' :'} {order?.supplier?.address}
         </Text>
         <Text style={styles.subHeader}>Client :</Text>
-        <Text style={styles.section}>{t('nomClients') + ' ' + order?.client?.name}</Text>
+        <Text style={styles.section}>{t('nomClients') + ' :' + order?.client?.name}</Text>
         <Text style={styles.section}>
-          {t('address') + ' Client'}
+          {t('address') + ' Client :'}
           {order?.client?.address}
         </Text>
 

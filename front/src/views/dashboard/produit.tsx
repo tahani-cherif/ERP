@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  RadioGroup,
-  TextField,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Button, Grid, TextField, useMediaQuery } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
@@ -26,8 +17,6 @@ import CustomTextField from 'src/components/forms/theme-elements/CustomTextField
 import SpinnerSubmit from '../spinnerSubmit/Spinner';
 import TableProduit from 'src/components/tables/produitTab';
 import { addProduit, fetchProduits } from 'src/store/apps/produit/produitSlice';
-import CustomRadio from 'src/components/forms/theme-elements/CustomRadio';
-import CustomSelect from 'src/components/forms/theme-elements/CustomSelect';
 import { useReactToPrint } from 'react-to-print';
 
 interface IProduit {
@@ -36,6 +25,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  montantbenefices: string;
   stock: number;
   admin: string;
   type: string;
@@ -63,10 +53,12 @@ const Produit = () => {
   const [data, setData] = useState<IProduit[]>();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [etat, setEtat] = React.useState('vente');
+
+  // const [etat, setEtat] = React.useState('vente');
   const [filteredData, setFilteredData] = useState<IProduit[]>();
   const [filterName, setFilterName] = React.useState<string | null>(null);
   const printableRef = useRef(null);
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const validationSchema = Yup.object({
     reference: Yup.string().required(t('faildRequired') || ''),
     name: Yup.string().required(t('faildRequired') || ''),
@@ -75,7 +67,12 @@ const Produit = () => {
       .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
       .required(t('faildRequired') || 'Price is required')
       .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
-    type: Yup.string().required(t('faildRequired') || ''),
+    montantbenefices: Yup.string()
+      .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+      .required(t('faildRequired') || 'Price is required')
+      .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+
+    // type: Yup.string().required(t('faildRequired') || ''),
   });
   const formik = useFormik({
     initialValues: {
@@ -83,15 +80,21 @@ const Produit = () => {
       name: '',
       description: '',
       price: '',
-      type: '',
+      montantbenefices: '',
+
+      // type: '',
     },
     validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await dispatch(addProduit({ ...values, price: Number(values.price) })).then((secc: any) =>
-          setData(data ? [secc, ...data] : [secc]),
-        );
+        await dispatch(
+          addProduit({
+            ...values,
+            montantbenefices: user?.role === 'agence' ? Number(values.montantbenefices) : 0,
+            price: Number(values.price),
+          }),
+        ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
         setLoading(false);
 
         handleCloseModal();
@@ -120,20 +123,23 @@ const Produit = () => {
     setLoading(false);
     setOpen(false);
   };
-  const handleChange = (event: any) => {
-    setEtat(event.target.value);
-  };
+
+  // const handleChange = (event: any) => {
+  //   setEtat(event.target.value);
+  // };
   const handlePrint = useReactToPrint({
     content: () => printableRef.current,
   });
   useEffect(() => {
     if (data) {
       const filtered = data.filter((item: IProduit) => {
-        return (!filterName || item?.name?.includes(filterName)) && (!etat || item?.type === etat);
+        return !filterName || item?.name?.includes(filterName);
+
+        //  && (!etat || item?.type === etat);
       });
       setFilteredData(filtered);
     }
-  }, [data, filterName, etat]);
+  }, [data, filterName]);
 
   return (
     <PageContainer title={t('produit') || ''}>
@@ -143,8 +149,8 @@ const Produit = () => {
       <ParentCard title={t('produit') || ''}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className="flex justify-between">
-              <RadioGroup
+            <div className="flex justify-end">
+              {/* <RadioGroup
                 row
                 aria-label="position"
                 name="position"
@@ -164,7 +170,7 @@ const Produit = () => {
                   label={t('stockAchat')}
                   labelPlacement="start"
                 />
-              </RadioGroup>
+              </RadioGroup> */}
               <div className="flex flex-row gap-4">
                 <Button
                   className="flex gap-4 p-4"
@@ -263,7 +269,26 @@ const Produit = () => {
                 helperText={formik.touched.price && formik.errors.price}
               />
             </Box>
-            <Box>
+            {user?.role === 'agence' && (
+              <Box>
+                <CustomFormLabel htmlFor="montantbenefices">
+                  {t('montantbenefices')}
+                </CustomFormLabel>
+                <CustomTextField
+                  id="montantbenefices"
+                  name="montantbenefices"
+                  variant="outlined"
+                  fullWidth
+                  value={formik.values.montantbenefices}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)}
+                  helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
+                />
+              </Box>
+            )}
+
+            {/* <Box>
               <CustomFormLabel htmlFor="typeProduit">{t('typeProduit')}</CustomFormLabel>
               <CustomSelect
                 id="type"
@@ -280,7 +305,7 @@ const Produit = () => {
                 <MenuItem value="vente">{t('stockProduction')}</MenuItem>
                 <MenuItem value="achat">{t('stockAchat')}</MenuItem>
               </CustomSelect>
-            </Box>
+            </Box> */}
           </DialogContent>
           <DialogActions>
             <Button color="error" onClick={handleCloseModal}>

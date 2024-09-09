@@ -19,13 +19,28 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(protect, allowedTo("user"), getBanques)
-  .post(protect, allowedTo("user"), createBanqueValidator, createBanque);
+  .get(protect, allowedTo("user", "agence"), getBanques)
+  .post(
+    protect,
+    allowedTo("user", "agence"),
+    createBanqueValidator,
+    createBanque
+  );
 
 router
   .route("/:id")
-  .get(protect, allowedTo("user"), getBanqueValidator, getBanque)
-  .put(protect, allowedTo("user"), updateBanqueValidator, updateBanque)
-  .delete(protect, allowedTo("user"), deleteBanqueValidator, deleteBanque);
+  .get(protect, allowedTo("user", "agence"), getBanqueValidator, getBanque)
+  .put(
+    protect,
+    allowedTo("user", "agence"),
+    updateBanqueValidator,
+    updateBanque
+  )
+  .delete(
+    protect,
+    allowedTo("user", "agence"),
+    deleteBanqueValidator,
+    deleteBanque
+  );
 
 export { router };

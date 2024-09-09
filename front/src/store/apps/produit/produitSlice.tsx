@@ -19,7 +19,7 @@ export const ProduitSlice = createSlice({
       state.produits = action.payload;
     },
     setProduitsAdd: (state: StateType, action) => {
-      state.produits =[action.payload,...state.produits ];
+      state.produits = [action.payload, ...state.produits];
     },
 
     setProduit: (state: StateType, action) => {
@@ -27,58 +27,67 @@ export const ProduitSlice = createSlice({
     },
   },
 });
-export const { setProduits, setProduit ,setProduitsAdd} = ProduitSlice.actions;
+export const { setProduits, setProduit, setProduitsAdd } = ProduitSlice.actions;
 
 export const fetchProduits = () => async (dispatch: AppDispatch) => {
   try {
     const response = await axios.get('/produits/');
     dispatch(setProduits(response.data));
-  } catch (err:any) {
+  } catch (err: any) {
     throw new Error(err);
   }
 };
-export const addProduit =(body:{
-  name:string,
-  description:string,
-  price:number | null,
-  type:string 
-})=> async (dispatch: AppDispatch) => {
-  try {
-    const response = await axios.post('/produits/',body);
-    dispatch(setProduitsAdd(response.data));
-    
-    return response.data
-  } catch (err:any) {
-    throw new Error(err);
-  }
-};
+export const addProduit =
+  (body: {
+    name: string;
+    description: string;
+    montantbenefices: number | null;
+    price: number | null;
+  }) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      const response = await axios.post('/produits/', body);
+      dispatch(setProduitsAdd(response.data));
+
+      return response.data;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 
 export const fetchProduitById = (clientId: string) => async (dispatch: AppDispatch) => {
   try {
     const response = await axios.get(`/produits/${clientId}`);
     dispatch(setProduit(response.data.data));
-  } catch (err:any) {
+  } catch (err: any) {
     throw new Error(err);
   }
 };
 export const deleteProduit = (clientId: string) => async () => {
   try {
-   await axios.delete(`/produits/${clientId}`);
-  } catch (err:any) {
+    await axios.delete(`/produits/${clientId}`);
+  } catch (err: any) {
     throw new Error(err);
   }
 };
 
-export const updateProduit =(body: {
-  name:string,
-  description:string,
-  price:number | null,},id:string)=> async () => {
-  try {
-    const response = await axios.put('/produits/'+id,body);
+export const updateProduit =
+  (
+    body: {
+      name: string;
+      description: string;
+      montantbenefices: number | null;
+      price: number | null;
+    },
+    id: string,
+  ) =>
+  async () => {
+    try {
+      const response = await axios.put('/produits/' + id, body);
 
-    return response.data
-  } catch (err:any) {
-    throw new Error(err);
-  }
-};
+      return response.data;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 export default ProduitSlice.reducer;
