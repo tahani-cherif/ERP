@@ -228,7 +228,7 @@ const TableClient = ({
                 <Typography variant="h6">{t('email')}</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">{t('matriculeFiscale')}</Typography>
+                <Typography variant="h6">{t('matriculeFiscalepassport')}</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">Action</Typography>
@@ -465,7 +465,9 @@ const TableClient = ({
               </Box>
             </div>
             <Box>
-              <CustomFormLabel htmlFor="matriculeFiscale">{t('matriculeFiscale')}</CustomFormLabel>
+              <CustomFormLabel htmlFor="matriculeFiscale">
+                {t('matriculeFiscalepassport')}
+              </CustomFormLabel>
               <CustomTextField
                 id="matriculeFiscale"
                 name="matriculeFiscale"

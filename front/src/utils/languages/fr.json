@@ -36,6 +36,7 @@
    "phone":"Téléphone",
    "email":"Adresse e-mail",
    "matriculeFiscale":"Matricule fiscal / CIN",
+   "matriculeFiscalepassport":"Matricule fiscal / Num passport",
    "deleteTitleClient":"Supprimer le client",
    "deleteDescriptionClient":"Êtes-vous sûr de vouloir supprimer ce client ? Cette action ne peut être annulée.",
    "deleteTitleFournisseur":"Supprimer le Fournisseur",

@@ -267,6 +267,11 @@ const TableVente = ({
               <TableCell>
                 <Typography variant="h6">{t('montantTotal')}</Typography>
               </TableCell>
+              {user?.role === 'agence' && (
+                <TableCell>
+                  <Typography variant="h6">Marge HT</Typography>
+                </TableCell>
+              )}
               <TableCell>
                 <Typography variant="h6">Action</Typography>
               </TableCell>
@@ -364,6 +369,13 @@ const TableVente = ({
                       {row.total_general}
                     </Typography>
                   </TableCell>
+                  {user?.role === 'agence' && (
+                    <TableCell>
+                      <Typography variant="subtitle1" color="textSecondary">
+                        {Number(row.total_general) - Number(row.totalHTV) - 1}
+                      </Typography>
+                    </TableCell>
+                  )}
                   <TableCell>
                     <Button
                       onClick={() => {

@@ -22,7 +22,7 @@ router
   .get(protect, allowedTo("user", "agence"), getFornisseurs)
   .post(
     protect,
-    allowedTo("user"),
+    allowedTo("user", "agence"),
     createfornisseurValidator,
     createFornisseur
   );

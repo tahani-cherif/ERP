@@ -228,7 +228,9 @@ const Client = () => {
               </Box>
             </div>
             <Box>
-              <CustomFormLabel htmlFor="matriculeFiscale">{t('matriculeFiscale')}</CustomFormLabel>
+              <CustomFormLabel htmlFor="matriculeFiscale">
+                {t('matriculeFiscalepassport')}
+              </CustomFormLabel>
               <CustomTextField
                 id="matriculeFiscale"
                 name="matriculeFiscale"
