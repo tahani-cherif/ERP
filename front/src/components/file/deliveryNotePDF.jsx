@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 18, marginBottom: 10 },
+  subHeader: { fontSize: 14, marginBottom: 10 },
   signature: { marginTop: 20, fontSize: 12 },
   headervide: { marginTop: '150px' },
   entreprise: { marginLeft: 'auto' },

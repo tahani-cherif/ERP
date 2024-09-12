@@ -80,10 +80,14 @@ const Produit = () => {
           reference: Yup.string().required(t('faildRequired') || ''),
           name: Yup.string().required(t('faildRequired') || ''),
           description: Yup.string().optional(),
-          price: Yup.string()
+          price: Yup.number()
             .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
             .required(t('faildRequired') || 'Price is required')
             .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+          stock: Yup.number()
+            .typeError(t('mustnumber') || 'must be a number')
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('mustnonnegative') || ' must be a non-negative number'),
 
           // type: Yup.string().required(t('faildRequired') || ''),
         });
@@ -93,6 +97,7 @@ const Produit = () => {
       name: '',
       description: '',
       price: '',
+      stock: '',
       montantbenefices: '',
 
       // type: '',
@@ -106,6 +111,7 @@ const Produit = () => {
             ...values,
             montantbenefices: user?.role === 'agence' ? Number(values.montantbenefices) : 0,
             price: Number(values.price),
+            stock: Number(values.stock),
           }),
         ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
         setLoading(false);
@@ -267,6 +273,20 @@ const Produit = () => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.description && Boolean(formik.errors.description)}
                 helperText={formik.touched.description && formik.errors.description}
+              />
+            </Box>
+            <Box>
+              <CustomFormLabel htmlFor="stock">{t('stock')}</CustomFormLabel>
+              <CustomTextField
+                id="stock"
+                name="stock"
+                variant="outlined"
+                fullWidth
+                value={formik.values.stock}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.stock && Boolean(formik.errors.stock)}
+                helperText={formik.touched.stock && formik.errors.stock}
               />
             </Box>
             <Box>

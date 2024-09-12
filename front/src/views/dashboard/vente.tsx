@@ -36,9 +36,9 @@ interface Iclient {
 interface IProduit {
   _id: string;
   name: string;
+  montantbenefices: string;
   description: string;
   price: string;
-  montantbenefices: string;
   stock: number;
   type: string;
   admin: string;
@@ -46,6 +46,7 @@ interface IProduit {
 
 interface IVente {
   _id: string;
+  reference: string;
   client: Iclient;
   articles: {
     produit: IProduit;
@@ -79,6 +80,7 @@ const Vente = () => {
   const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   const validationSchema = Yup.object({
+    reference: Yup.string().required(t('faildRequired') || ''),
     client: Yup.string().required(t('faildRequired') || ''),
     modepaiement: Yup.string().required(t('faildRequired') || ''),
     articles: Yup.array().of(
@@ -216,6 +218,7 @@ const Vente = () => {
         <Formik
           initialValues={{
             client: '',
+            reference: '',
             modepaiement: '',
             tva: '',
             articles: [{ produit: '', quantite: '' }],
@@ -254,6 +257,7 @@ const Vente = () => {
               await dispatch(
                 addVente({
                   client: values.client,
+                  reference: values.reference,
                   date: new Date(),
                   modepaiement: values.modepaiement,
                   total_general:
@@ -288,6 +292,20 @@ const Vente = () => {
               <DialogTitle id="responsive-dialog-title">{t('addVente')}</DialogTitle>
               <DialogContent>
                 <Box>
+                  <CustomFormLabel htmlFor="reference">{t('facture')} N°</CustomFormLabel>
+                  <CustomTextField
+                    id="reference"
+                    name="reference"
+                    variant="outlined"
+                    fullWidth
+                    value={values.reference}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.reference && Boolean(errors.reference)}
+                    helperText={touched.reference && errors.reference}
+                  />
+                </Box>
+                <Box>
                   <CustomFormLabel htmlFor="client">{t('client')}</CustomFormLabel>
                   <CustomSelect
                     id="client"
@@ -307,7 +325,6 @@ const Vente = () => {
                     ))}
                   </CustomSelect>
                 </Box>
-
                 <Box>
                   <CustomFormLabel htmlFor="tva">TVA</CustomFormLabel>
                   <CustomSelect

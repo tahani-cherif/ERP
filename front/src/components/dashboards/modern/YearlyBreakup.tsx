@@ -110,7 +110,7 @@ const YearlyBreakup = () => {
                   {t('stockAchat')}
                 </Typography>
                 <Typography variant="h6" fontWeight="600">
-                  {stat.achat}%
+                  {stat.achat?.toFixed(2)}%
                 </Typography>
               </Box>
             </Stack>
@@ -137,7 +137,7 @@ const YearlyBreakup = () => {
                   {t('stockProduction')}
                 </Typography>
                 <Typography variant="h6" fontWeight="600">
-                  {stat.vendre}%
+                  {stat.vendre?.toFixed(2)}%
                 </Typography>
               </Box>
             </Stack>

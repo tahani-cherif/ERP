@@ -38,11 +38,13 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  montantbenefices: string;
   stock: number;
   admin: string;
 }
 interface IAchat {
   _id: string;
+  reference: string;
   fournisseur: Ifournisseur;
   articles: {
     produit: IProduit;
@@ -83,6 +85,7 @@ const Vente = () => {
   const [filterFournisseur, setFilterFournisseur] = React.useState<string | null>(null);
   const printableRef = useRef(null);
   const validationSchema = Yup.object({
+    reference: Yup.string().required(t('faildRequired') || ''),
     fournisseur: Yup.string().optional(),
     modepaiement: Yup.string().required(t('faildRequired') || ''),
     articles: Yup.array().of(
@@ -204,6 +207,7 @@ const Vente = () => {
       >
         <Formik
           initialValues={{
+            reference: '',
             fournisseur: '',
             modepaiement: '',
             tva: '',
@@ -216,7 +220,6 @@ const Vente = () => {
               let total_generalhtva = 0;
               produits.map((p: IProduit) => {
                 values.articles.map((article) => {
-                  console.log(article.produit === p._id);
                   if (article.produit === p._id) {
                     total_generalhtva += Number(article.quantite) * Number(p.price);
                   }
@@ -228,6 +231,7 @@ const Vente = () => {
                   fournisseur: values.fournisseur ? values.fournisseur : null,
                   date: new Date(),
                   modepaiement: values.modepaiement,
+                  reference: values.reference,
                   total_general:
                     total_generalhtva +
                     1 +
@@ -252,6 +256,20 @@ const Vente = () => {
             <form onSubmit={handleSubmit}>
               <DialogTitle id="responsive-dialog-title">{t('addVente')}</DialogTitle>
               <DialogContent>
+                <Box>
+                  <CustomFormLabel htmlFor="reference">{t('facture')} N°</CustomFormLabel>
+                  <CustomTextField
+                    id="reference"
+                    name="reference"
+                    variant="outlined"
+                    fullWidth
+                    value={values.reference}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.reference && Boolean(errors.reference)}
+                    helperText={touched.reference && errors.reference}
+                  />
+                </Box>
                 <Box>
                   <CustomFormLabel htmlFor="fournisseur">{t('fournisseur')}</CustomFormLabel>
                   <CustomSelect

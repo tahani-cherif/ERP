@@ -43,6 +43,7 @@ export const addProduit =
     description: string;
     montantbenefices: number | null;
     price: number | null;
+    stock: number | null;
   }) =>
   async (dispatch: AppDispatch) => {
     try {
@@ -78,6 +79,7 @@ export const updateProduit =
       description: string;
       montantbenefices: number | null;
       price: number | null;
+      stock: number | null;
     },
     id: string,
   ) =>

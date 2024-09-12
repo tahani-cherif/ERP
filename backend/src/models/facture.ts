@@ -8,6 +8,7 @@ interface IFacture extends Document {
   echeance: Date;
   total_general: Number;
   statut: string;
+  reference: string;
   tva: number;
   totalHTV: number;
   avance: number;
@@ -28,6 +29,10 @@ interface IFacture extends Document {
 
 const factureSchema = new Schema<IFacture>(
   {
+    reference: {
+      type: String,
+      required: true,
+    },
     client: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",

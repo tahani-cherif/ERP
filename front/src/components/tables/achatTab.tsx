@@ -126,12 +126,14 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  montantbenefices: string;
   stock: number;
   admin: string;
 }
 
 interface IAchat {
   _id: string;
+  reference: string;
   fournisseur: Ifournisseur;
   articles: {
     produit: IProduit;
@@ -290,7 +292,7 @@ const TableAchat = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
-                        <Typography variant="h6">{row._id}</Typography>
+                        <Typography variant="h6">{row?.reference}</Typography>
                       </Box>
                     </Stack>
                   </TableCell>
@@ -380,37 +382,39 @@ const TableAchat = ({
                         setOpenAttachment(true);
                         setFacture({
                           order: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             supplier: {
                               name: row?.fournisseur?.fullName,
                               address: row?.fournisseur?.address,
                             },
                             client: { name: '', address: '' },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles?.map((item: any) => {
                               return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
+                                description: item?.produit?.name,
+                                quantity: item?.quantite,
+                                unitPrice: item?.produit?.price,
+                                montantbenefices: item?.produit?.montantbenefices,
+                                total: Number(item?.quantite) * Number(item?.produit?.price),
                               };
                             }),
-                            totalHT: row.totalHTV,
-                            taxRate: row.tva,
+                            totalHT: row?.totalHTV,
+                            taxRate: row?.tva,
                             taxAmount: row.tva ? (row.totalHTV * row.tva) / 100 : row.totalHTV,
                             totalTTC: row.total_general,
                             paymentTerms: row.modepaiement,
                           },
                           invoice: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             client: { name: '', address: '' },
                             items: row?.articles.map((item: any) => {
                               return {
                                 description: item?.produit?.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
+                                quantity: item?.quantite,
+                                unitPrice: item?.produit?.price,
+                                montantbenefices: item?.produit?.montantbenefices,
+                                total: Number(item?.quantite) * Number(item?.produit?.price),
                               };
                             }),
                             totalHT: row.totalHTV,

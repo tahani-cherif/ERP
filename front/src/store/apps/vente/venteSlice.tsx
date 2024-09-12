@@ -40,6 +40,7 @@ export const fetchVentes = () => async (dispatch: AppDispatch) => {
 export const addVente =
   (body: {
     client: string;
+    reference: string;
     modepaiement: string;
     date: Date;
     total_general: number;

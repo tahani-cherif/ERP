@@ -41,6 +41,7 @@ export const addAchat =
   (body: {
     fournisseur: string | null;
     modepaiement: string;
+    reference: string;
     date: Date;
     total_general: number;
     tva: number;

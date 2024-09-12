@@ -133,6 +133,7 @@ interface IProduit {
 
 interface IVente {
   _id: string;
+  reference: string;
   client: Iclient;
   articles: {
     produit: IProduit;
@@ -296,7 +297,7 @@ const TableVente = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
-                        <Typography variant="h6">{row._id}</Typography>
+                        <Typography variant="h6">{row?.reference}</Typography>
                       </Box>
                     </Stack>
                   </TableCell>
@@ -383,16 +384,19 @@ const TableVente = ({
 
                         setFacture({
                           order: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             supplier: { name: '', address: '' },
-                            client: { name: row.client.fullName, address: row.client.address },
+                            client: { name: row?.client?.fullName, address: row?.client?.address },
                             items: row?.articles?.map((item: any) => {
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
                                 unitPrice: item?.produit?.price,
-                                total: Number(item?.quantite) * Number(item?.produit?.price),
+                                montantbenefices: item?.produit?.montantbenefices,
+                                total:
+                                  Number(item?.produit?.price) +
+                                  Number(item?.produit?.montantbenefices),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -407,15 +411,20 @@ const TableVente = ({
                             paymentTerms: row.modepaiement,
                           },
                           invoice: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
-                            client: { name: row.client.fullName, address: row.client.address },
+                            client: { name: row?.client?.fullName, address: row?.client?.address },
+                            type: 'vente',
                             items: row?.articles?.map((item: any) => {
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
                                 unitPrice: item?.produit?.price,
-                                total: Number(item?.quantite) * Number(item?.produit?.price),
+                                montantbenefices: item?.produit?.montantbenefices,
+                                total:
+                                  Number(item?.quantite) *
+                                  (Number(item?.produit?.price) +
+                                    Number(item?.produit?.montantbenefices)),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -430,9 +439,9 @@ const TableVente = ({
                             paymentTerms: row.modepaiement,
                           },
                           deliveryNote: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
-                            client: { name: row.client.fullName, address: row.client.address },
+                            client: { name: row?.client?.fullName, address: row?.client?.address },
                             items: row?.articles?.map((item: any) => {
                               return {
                                 description: item?.produit?.name,
@@ -442,15 +451,19 @@ const TableVente = ({
                             }),
                           },
                           quote: {
-                            number: row._id,
+                            number: row?.reference,
                             date: moment(row.date).format('YYYY-MM-DD'),
-                            client: { name: row.client.fullName, address: row.client.address },
+                            client: { name: row?.client?.fullName, address: row?.client?.address },
                             items: row?.articles?.map((item: any) => {
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
                                 unitPrice: item?.produit?.price,
-                                total: Number(item?.quantite) * Number(item?.produit?.price),
+                                montantbenefices: item?.produit?.montantbenefices,
+                                total:
+                                  Number(item?.quantite) *
+                                  (Number(item?.produit?.price) +
+                                    Number(item?.produit?.montantbenefices)),
                               };
                             }),
                             totalHT: row.totalHTV,

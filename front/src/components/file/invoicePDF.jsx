@@ -26,13 +26,14 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 18, marginBottom: 10 },
+  subHeader: { fontSize: 14, marginBottom: 10 },
   headervide: { marginTop: '150px' },
   entreprise: { marginLeft: 'auto' },
 });
 
 const InvoicePDF = ({ invoice }) => {
   const { t } = useTranslation();
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   return (
     <Document>
@@ -72,6 +73,11 @@ const InvoicePDF = ({ invoice }) => {
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{t('price')}</Text>
             </View>
+            {user?.role === 'agence' && invoice?.type === 'vente' && (
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{t('montantbenefices')}</Text>
+              </View>
+            )}
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{t('montantTotal')}</Text>
             </View>
@@ -87,6 +93,11 @@ const InvoicePDF = ({ invoice }) => {
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{item?.unitPrice}</Text>
               </View>
+              {user?.role === 'agence' && invoice?.type === 'vente' && (
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>{item?.montantbenefices}</Text>
+                </View>
+              )}
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{item?.total}</Text>
               </View>
@@ -103,7 +114,7 @@ const InvoicePDF = ({ invoice }) => {
         <Text style={styles.section}>
           {t('montantTotal') + ' '}TTC: {invoice?.totalTTC}
         </Text>
-        <Text style={styles.section}> {t('modepaiement') + ' ' + invoice?.paymentTerms}</Text>
+        <Text style={styles.section}> {t('modepaiement') + ' : ' + t(invoice?.paymentTerms)}</Text>
       </Page>
     </Document>
   );

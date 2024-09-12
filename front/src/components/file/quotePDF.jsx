@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   tableCell: { margin: 5, fontSize: 12 },
   header: { fontSize: 18, marginBottom: 10, textAlign: 'center' },
-  subHeader: { fontSize: 18, marginBottom: 10 },
+  subHeader: { fontSize: 14, marginBottom: 10 },
   conditions: { marginTop: 20, fontSize: 12 },
   headervide: { marginTop: '150px' },
   entreprise: { marginLeft: 'auto' },
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
 
 const QuotePDF = ({ quote }) => {
   const { t } = useTranslation();
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
 
   return (
     <Document>
@@ -72,6 +73,11 @@ const QuotePDF = ({ quote }) => {
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{t('price')}</Text>
             </View>
+            {user?.role === 'agence' && (
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{t('montantbenefices')}</Text>
+              </View>
+            )}
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{t('montantTotal')}</Text>
             </View>
@@ -87,6 +93,11 @@ const QuotePDF = ({ quote }) => {
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{item?.unitPrice}</Text>
               </View>
+              {user?.role === 'agence' && (
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>{item?.montantbenefices}</Text>
+                </View>
+              )}
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{item?.total}</Text>
               </View>
@@ -103,7 +114,7 @@ const QuotePDF = ({ quote }) => {
         <Text style={styles.section}>
           {t('montantTotal') + ' '}TTC: {quote?.totalTTC}
         </Text>
-        <Text style={styles.conditions}> {t('modepaiement') + ' : ' + quote?.paymentTerms}</Text>
+        <Text style={styles.conditions}> {t('modepaiement') + ' : ' + t(quote?.paymentTerms)}</Text>
       </Page>
     </Document>
   );
