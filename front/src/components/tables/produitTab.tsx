@@ -143,19 +143,34 @@ const TableProduit = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
-  const validationSchema = Yup.object({
-    reference: Yup.string().required(t('faildRequired') || ''),
-    name: Yup.string().required(t('faildRequired') || ''),
-    description: Yup.string().optional(),
-    price: Yup.number()
-      .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
-      .required(t('faildRequired') || 'Price is required')
-      .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
-    montantbenefices: Yup.string()
-      .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
-      .required(t('faildRequired') || 'Price is required')
-      .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
-  });
+  const validationSchema =
+    user?.role === 'agence'
+      ? Yup.object({
+          reference: Yup.string().required(t('faildRequired') || ''),
+          name: Yup.string().required(t('faildRequired') || ''),
+          description: Yup.string().optional(),
+          price: Yup.string()
+            .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+          montantbenefices: Yup.string()
+            .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+
+          // type: Yup.string().required(t('faildRequired') || ''),
+        })
+      : Yup.object({
+          reference: Yup.string().required(t('faildRequired') || ''),
+          name: Yup.string().required(t('faildRequired') || ''),
+          description: Yup.string().optional(),
+          price: Yup.string()
+            .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+
+          // type: Yup.string().required(t('faildRequired') || ''),
+        });
   const formik = useFormik({
     initialValues: {
       reference: '',
