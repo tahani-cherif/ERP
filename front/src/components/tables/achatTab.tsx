@@ -405,9 +405,9 @@ const TableAchat = ({
                             number: row._id,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             client: { name: '', address: '' },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles.map((item: any) => {
                               return {
-                                description: item.produit.name,
+                                description: item?.produit?.name,
                                 quantity: item.quantite,
                                 unitPrice: item.produit.price,
                                 total: Number(item.quantite) * Number(item.produit.price),
@@ -471,28 +471,28 @@ const TableAchat = ({
                           </TableHead>
                           <TableBody>
                             {row.articles.map((article: any) => (
-                              <TableRow key={article._id}>
+                              <TableRow key={article?._id}>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit._id}
+                                    {article?.produit?._id}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.name}
+                                    {article?.produit?.name}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.price}
+                                    {article?.produit?.price}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
-                                  <Typography fontWeight="600">{article.quantite}</Typography>
+                                  <Typography fontWeight="600">{article?.quantite}</Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography fontWeight="600">
-                                    {Number(article.quantite) * Number(article.produit.price)}
+                                    {Number(article?.quantite) * Number(article?.produit?.price)}
                                   </Typography>
                                 </TableCell>
                               </TableRow>

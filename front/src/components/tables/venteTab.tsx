@@ -387,12 +387,12 @@ const TableVente = ({
                             date: moment(row.date).format('YYYY-MM-DD'),
                             supplier: { name: '', address: '' },
                             client: { name: row.client.fullName, address: row.client.address },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles?.map((item: any) => {
                               return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
+                                description: item?.produit?.name,
+                                quantity: item?.quantite,
+                                unitPrice: item?.produit?.price,
+                                total: Number(item?.quantite) * Number(item?.produit?.price),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -410,12 +410,12 @@ const TableVente = ({
                             number: row._id,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             client: { name: row.client.fullName, address: row.client.address },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles?.map((item: any) => {
                               return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
+                                description: item?.produit?.name,
+                                quantity: item?.quantite,
+                                unitPrice: item?.produit?.price,
+                                total: Number(item?.quantite) * Number(item?.produit?.price),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -433,11 +433,11 @@ const TableVente = ({
                             number: row._id,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             client: { name: row.client.fullName, address: row.client.address },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles?.map((item: any) => {
                               return {
-                                description: item.produit.name,
-                                quantityDelivered: item.quantite,
-                                quantityOrdered: item.quantite,
+                                description: item?.produit?.name,
+                                quantityDelivered: item?.quantite,
+                                quantityOrdered: item?.quantite,
                               };
                             }),
                           },
@@ -445,12 +445,12 @@ const TableVente = ({
                             number: row._id,
                             date: moment(row.date).format('YYYY-MM-DD'),
                             client: { name: row.client.fullName, address: row.client.address },
-                            items: row.articles.map((item: any) => {
+                            items: row?.articles?.map((item: any) => {
                               return {
-                                description: item.produit.name,
-                                quantity: item.quantite,
-                                unitPrice: item.produit.price,
-                                total: Number(item.quantite) * Number(item.produit.price),
+                                description: item?.produit?.name,
+                                quantity: item?.quantite,
+                                unitPrice: item?.produit?.price,
+                                total: Number(item?.quantite) * Number(item?.produit?.price),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -516,28 +516,28 @@ const TableVente = ({
                           </TableHead>
                           <TableBody>
                             {row.articles.map((article: any) => (
-                              <TableRow key={article._id}>
+                              <TableRow key={article?._id}>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit._id}
+                                    {article?.produit?._id}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.name}
+                                    {article?.produit?.name}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article.produit.price}
+                                    {article?.produit?.price}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
-                                  <Typography fontWeight="600">{article.quantite}</Typography>
+                                  <Typography fontWeight="600">{article?.quantite}</Typography>
                                 </TableCell>
                                 <TableCell>
                                   <Typography fontWeight="600">
-                                    {Number(article.quantite) * Number(article.produit.price)}
+                                    {Number(article?.quantite) * Number(article?.produit?.price)}
                                   </Typography>
                                 </TableCell>
                               </TableRow>
