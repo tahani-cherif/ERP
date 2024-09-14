@@ -127,6 +127,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  pricesales: string;
   stock: number;
   admin: string;
 }
@@ -392,10 +393,15 @@ const TableVente = ({
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
-                                unitPrice: item?.produit?.price,
+                                unitPrice:
+                                  user?.role === 'agence'
+                                    ? item?.produit?.price
+                                    : item?.produit?.pricesales,
                                 montantbenefices: item?.produit?.montantbenefices,
                                 total:
-                                  Number(item?.produit?.price) +
+                                  (user?.role === 'agence'
+                                    ? Number(item?.produit?.price)
+                                    : Number(item?.produit?.pricesales)) +
                                   Number(item?.produit?.montantbenefices),
                               };
                             }),
@@ -419,11 +425,16 @@ const TableVente = ({
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
-                                unitPrice: item?.produit?.price,
+                                unitPrice:
+                                  user?.role === 'agence'
+                                    ? item?.produit?.price
+                                    : item?.produit?.pricesales,
                                 montantbenefices: item?.produit?.montantbenefices,
                                 total:
                                   Number(item?.quantite) *
-                                  (Number(item?.produit?.price) +
+                                  ((user?.role === 'agence'
+                                    ? Number(item?.produit?.price)
+                                    : Number(item?.produit?.pricesales)) +
                                     Number(item?.produit?.montantbenefices)),
                               };
                             }),
@@ -458,11 +469,16 @@ const TableVente = ({
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
-                                unitPrice: item?.produit?.price,
+                                unitPrice:
+                                  user?.role === 'agence'
+                                    ? item?.produit?.price
+                                    : item?.produit?.pricesales,
                                 montantbenefices: item?.produit?.montantbenefices,
                                 total:
                                   Number(item?.quantite) *
-                                  (Number(item?.produit?.price) +
+                                  ((user?.role === 'agence'
+                                    ? Number(item?.produit?.price)
+                                    : Number(item?.produit?.pricesales)) +
                                     Number(item?.produit?.montantbenefices)),
                               };
                             }),
@@ -542,7 +558,9 @@ const TableVente = ({
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article?.produit?.price}
+                                    {user?.role === 'agence'
+                                      ? article?.produit?.price
+                                      : article?.produit?.pricesales}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
@@ -550,7 +568,10 @@ const TableVente = ({
                                 </TableCell>
                                 <TableCell>
                                   <Typography fontWeight="600">
-                                    {Number(article?.quantite) * Number(article?.produit?.price)}
+                                    {Number(article?.quantite) *
+                                      (user?.role === 'agence'
+                                        ? Number(article?.produit?.price)
+                                        : Number(article?.produit?.pricesales))}
                                   </Typography>
                                 </TableCell>
                               </TableRow>

@@ -24,6 +24,8 @@ interface IProduit {
   reference: string;
   name: string;
   description: string;
+  pricepurchase: string;
+  pricesales: string;
   price: string;
   montantbenefices: string;
   stock: number;
@@ -80,7 +82,11 @@ const Produit = () => {
           reference: Yup.string().required(t('faildRequired') || ''),
           name: Yup.string().required(t('faildRequired') || ''),
           description: Yup.string().optional(),
-          price: Yup.number()
+          pricepurchase: Yup.number()
+            .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+          pricesales: Yup.number()
             .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
             .required(t('faildRequired') || 'Price is required')
             .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
@@ -96,6 +102,8 @@ const Produit = () => {
       reference: '',
       name: '',
       description: '',
+      pricesales: '',
+      pricepurchase: '',
       price: '',
       stock: '',
       montantbenefices: '',
@@ -110,7 +118,9 @@ const Produit = () => {
           addProduit({
             ...values,
             montantbenefices: user?.role === 'agence' ? Number(values.montantbenefices) : 0,
-            price: Number(values.price),
+            price: user?.role === 'agence' ? Number(values.price) : 0,
+            pricesales: Number(values.pricesales),
+            pricepurchase: Number(values.pricepurchase),
             stock: Number(values.stock),
           }),
         ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
@@ -248,7 +258,7 @@ const Produit = () => {
               />
             </Box>
             <Box>
-              <CustomFormLabel htmlFor="fullName">{t('nom')}</CustomFormLabel>
+              <CustomFormLabel htmlFor="name">{t('nom')}</CustomFormLabel>
               <CustomTextField
                 id="name"
                 name="name"
@@ -262,7 +272,7 @@ const Produit = () => {
               />
             </Box>
             <Box>
-              <CustomFormLabel htmlFor="address">{t('description')}</CustomFormLabel>
+              <CustomFormLabel htmlFor="description">{t('description')}</CustomFormLabel>
               <CustomTextField
                 id="description"
                 name="description"
@@ -289,37 +299,72 @@ const Produit = () => {
                 helperText={formik.touched.stock && formik.errors.stock}
               />
             </Box>
-            <Box>
-              <CustomFormLabel htmlFor="matriculeFiscale">{t('price')}</CustomFormLabel>
-              <CustomTextField
-                id="price"
-                name="price"
-                variant="outlined"
-                fullWidth
-                value={formik.values.price}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.price && Boolean(formik.errors.price)}
-                helperText={formik.touched.price && formik.errors.price}
-              />
-            </Box>
-            {user?.role === 'agence' && (
-              <Box>
-                <CustomFormLabel htmlFor="montantbenefices">
-                  {t('montantbenefices')}
-                </CustomFormLabel>
-                <CustomTextField
-                  id="montantbenefices"
-                  name="montantbenefices"
-                  variant="outlined"
-                  fullWidth
-                  value={formik.values.montantbenefices}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)}
-                  helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
-                />
-              </Box>
+            {user?.role === 'agence' ? (
+              <>
+                <Box>
+                  <CustomFormLabel htmlFor="price">{t('price')}</CustomFormLabel>
+                  <CustomTextField
+                    id="price"
+                    name="price"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.price}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.price && Boolean(formik.errors.price)}
+                    helperText={formik.touched.price && formik.errors.price}
+                  />
+                </Box>
+                <Box>
+                  <CustomFormLabel htmlFor="montantbenefices">
+                    {t('montantbenefices')}
+                  </CustomFormLabel>
+                  <CustomTextField
+                    id="montantbenefices"
+                    name="montantbenefices"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.montantbenefices}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)
+                    }
+                    helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
+                  />
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box>
+                  <CustomFormLabel htmlFor="pricepurchase">{t('pricepurchase')}</CustomFormLabel>
+                  <CustomTextField
+                    id="pricepurchase"
+                    name="pricepurchase"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.pricepurchase}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.pricepurchase && Boolean(formik.errors.pricepurchase)}
+                    helperText={formik.touched.pricepurchase && formik.errors.pricepurchase}
+                  />
+                </Box>
+                <Box>
+                  <CustomFormLabel htmlFor="pricesales">{t('pricesales')}</CustomFormLabel>
+                  <CustomTextField
+                    id="pricesales"
+                    name="pricesales"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.pricesales}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.pricesales && Boolean(formik.errors.pricesales)}
+                    helperText={formik.touched.pricesales && formik.errors.pricesales}
+                  />
+                </Box>
+              </>
             )}
 
             {/* <Box>

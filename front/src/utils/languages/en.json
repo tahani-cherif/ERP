@@ -55,6 +55,8 @@
    "nom":"Product name",
    "description": "Description by invoice/uninvoiced",
    "price": "Price",
+   "pricesales": "Selling price", 
+   "pricepurchase": "Purchase price", 
    "stock":"Stock",
    "ref":"Reference",
    "priceMustBeNumber":"Price must be a number",

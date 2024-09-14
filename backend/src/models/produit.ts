@@ -5,6 +5,8 @@ interface IProduit extends Document {
   reference: string;
   name: string;
   description: string;
+  pricepurchase: number;
+  pricesales: number;
   price: number;
   montantbenefices: number;
   stock: number;
@@ -42,7 +44,15 @@ const produitSchema = new Schema<IProduit>(
       type: String,
       required: false,
     },
+    pricepurchase: {
+      type: Number,
+      required: true,
+    },
     price: {
+      type: Number,
+      required: true,
+    },
+    pricesales: {
       type: Number,
       required: true,
     },

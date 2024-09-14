@@ -38,6 +38,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  pricepurchase: string;
   montantbenefices: string;
   stock: number;
   admin: string;
@@ -83,6 +84,7 @@ const Vente = () => {
   const [filteredData, setFilteredData] = useState<IAchat[]>();
   const [filterEcheance, setFilterEcheance] = React.useState<string | null>(null);
   const [filterFournisseur, setFilterFournisseur] = React.useState<string | null>(null);
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const printableRef = useRef(null);
   const validationSchema = Yup.object({
     reference: Yup.string().required(t('faildRequired') || ''),
@@ -221,7 +223,9 @@ const Vente = () => {
               produits.map((p: IProduit) => {
                 values.articles.map((article) => {
                   if (article.produit === p._id) {
-                    total_generalhtva += Number(article.quantite) * Number(p.price);
+                    total_generalhtva +=
+                      Number(article.quantite) *
+                      (user?.role === 'agence' ? Number(p.price) : Number(p.pricepurchase));
                   }
                 });
               });

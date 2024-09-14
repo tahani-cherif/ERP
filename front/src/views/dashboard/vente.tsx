@@ -39,6 +39,7 @@ interface IProduit {
   montantbenefices: string;
   description: string;
   price: string;
+  pricesales: string;
   stock: number;
   type: string;
   admin: string;
@@ -246,7 +247,9 @@ const Vente = () => {
                 values.articles.map((article) => {
                   console.log(article.produit === p._id);
                   if (article.produit === p._id) {
-                    total_generalhtva += Number(article.quantite) * Number(p.price);
+                    total_generalhtva +=
+                      Number(article.quantite) *
+                      (user?.role === 'agence' ? Number(p?.price) : Number(p?.pricesales));
                     montantbenefices += Number(p.montantbenefices);
                   }
                 });

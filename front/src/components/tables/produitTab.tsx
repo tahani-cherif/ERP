@@ -109,6 +109,8 @@ interface IProduit {
   reference: string;
   name: string;
   description: string;
+  pricepurchase: string;
+  pricesales: string;
   price: string;
   montantbenefices: string;
   stock: number;
@@ -168,7 +170,11 @@ const TableProduit = ({
           reference: Yup.string().required(t('faildRequired') || ''),
           name: Yup.string().required(t('faildRequired') || ''),
           description: Yup.string().optional(),
-          price: Yup.number()
+          pricepurchase: Yup.number()
+            .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
+            .required(t('faildRequired') || 'Price is required')
+            .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+          pricesales: Yup.number()
             .typeError(t('priceMustBeNumber') || 'Price must be a number') // Custom message for type errors
             .required(t('faildRequired') || 'Price is required')
             .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
@@ -184,6 +190,8 @@ const TableProduit = ({
       reference: '',
       name: '',
       description: '',
+      pricesales: '',
+      pricepurchase: '',
       price: '',
       stock: '',
       montantbenefices: '',
@@ -197,7 +205,9 @@ const TableProduit = ({
             {
               ...values,
               montantbenefices: user?.role === 'agence' ? Number(values.montantbenefices) : 0,
-              price: Number(values.price),
+              price: user?.role === 'agence' ? Number(values.price) : 0,
+              pricesales: Number(values.pricesales),
+              pricepurchase: Number(values.pricepurchase),
               stock: Number(values.stock),
             },
             id,
@@ -268,8 +278,16 @@ const TableProduit = ({
               <TableCell>
                 <Typography variant="h6">{t('description')}</Typography>
               </TableCell>
+              {user?.role === 'agence' && (
+                <TableCell>
+                  <Typography variant="h6">{t('price')}</Typography>
+                </TableCell>
+              )}
               <TableCell>
-                <Typography variant="h6">{t('Prix')}</Typography>
+                <Typography variant="h6">{t('pricesales')}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">{t('pricepurchase')}</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="h6">{t('quantite')}</Typography>
@@ -321,9 +339,21 @@ const TableProduit = ({
                       </Box>
                     </Stack>
                   </TableCell>
+                  {user?.role === 'agence' && (
+                    <TableCell scope="row">
+                      <Typography variant="subtitle1" color="textSecondary">
+                        {row.pricesales}
+                      </Typography>
+                    </TableCell>
+                  )}
                   <TableCell scope="row">
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.price}
+                      {row.pricesales}
+                    </Typography>
+                  </TableCell>
+                  <TableCell scope="row">
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {row.pricepurchase}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -360,7 +390,9 @@ const TableProduit = ({
                             reference: selectedRow?.reference || '',
                             name: selectedRow?.name || '',
                             description: selectedRow?.description || '',
-                            price: String(selectedRow?.price || ''),
+                            price: String(selectedRow?.pricesales || ''),
+                            pricesales: String(selectedRow?.pricesales || ''),
+                            pricepurchase: String(selectedRow?.pricepurchase || ''),
                             stock: String(selectedRow?.stock || ''),
                             montantbenefices: String(selectedRow?.montantbenefices || ''),
                           });
@@ -588,37 +620,72 @@ const TableProduit = ({
                 helperText={formik.touched.stock && formik.errors.stock}
               />
             </Box>
-            <Box>
-              <CustomFormLabel htmlFor="matriculeFiscale">{t('price')}</CustomFormLabel>
-              <CustomTextField
-                id="price"
-                name="price"
-                variant="outlined"
-                fullWidth
-                value={formik.values.price}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.price && Boolean(formik.errors.price)}
-                helperText={formik.touched.price && formik.errors.price}
-              />
-            </Box>
-            {user?.role === 'agence' && (
-              <Box>
-                <CustomFormLabel htmlFor="montantbenefices">
-                  {t('montantbenefices')}
-                </CustomFormLabel>
-                <CustomTextField
-                  id="montantbenefices"
-                  name="montantbenefices"
-                  variant="outlined"
-                  fullWidth
-                  value={formik.values.montantbenefices}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)}
-                  helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
-                />
-              </Box>
+            {user?.role === 'agence' ? (
+              <>
+                <Box>
+                  <CustomFormLabel htmlFor="price">{t('price')}</CustomFormLabel>
+                  <CustomTextField
+                    id="price"
+                    name="price"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.price}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.price && Boolean(formik.errors.price)}
+                    helperText={formik.touched.price && formik.errors.price}
+                  />
+                </Box>
+                <Box>
+                  <CustomFormLabel htmlFor="montantbenefices">
+                    {t('montantbenefices')}
+                  </CustomFormLabel>
+                  <CustomTextField
+                    id="montantbenefices"
+                    name="montantbenefices"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.montantbenefices}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.montantbenefices && Boolean(formik.errors.montantbenefices)
+                    }
+                    helperText={formik.touched.montantbenefices && formik.errors.montantbenefices}
+                  />
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box>
+                  <CustomFormLabel htmlFor="pricepurchase">{t('pricepurchase')}</CustomFormLabel>
+                  <CustomTextField
+                    id="pricepurchase"
+                    name="pricepurchase"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.pricepurchase}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.pricepurchase && Boolean(formik.errors.pricepurchase)}
+                    helperText={formik.touched.pricepurchase && formik.errors.pricepurchase}
+                  />
+                </Box>
+                <Box>
+                  <CustomFormLabel htmlFor="pricesales">{t('pricesales')}</CustomFormLabel>
+                  <CustomTextField
+                    id="pricesales"
+                    name="pricesales"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.pricesales}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.pricesales && Boolean(formik.errors.pricesales)}
+                    helperText={formik.touched.pricesales && formik.errors.pricesales}
+                  />
+                </Box>
+              </>
             )}
           </DialogContent>
           <DialogActions>

@@ -54,6 +54,8 @@
    "addProduit": "Ajouter un nouveau Produit",
    "nom":"Nom de produit",
    "description":"Description par facture/non facturé",
+   "pricesales":"Prix de vente",
+   "pricepurchase":"Prix d'achat",
    "price":"Prix",
    "stock":"Stock",
    "ref":"Référence",

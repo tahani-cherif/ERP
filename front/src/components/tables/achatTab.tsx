@@ -126,6 +126,7 @@ interface IProduit {
   name: string;
   description: string;
   price: string;
+  pricepurchase: string;
   montantbenefices: string;
   stock: number;
   admin: string;
@@ -170,6 +171,7 @@ const TableAchat = ({
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = React.useState<IAchat>();
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const validationSchema = Yup.object({
@@ -181,7 +183,6 @@ const TableAchat = ({
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       setData([]);
       setLoading(true);
       try {
@@ -393,9 +394,16 @@ const TableAchat = ({
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
-                                unitPrice: item?.produit?.price,
+                                unitPrice:
+                                  user?.role === 'agence'
+                                    ? item?.produit?.price
+                                    : item?.produit?.pricepurchase,
                                 montantbenefices: item?.produit?.montantbenefices,
-                                total: Number(item?.quantite) * Number(item?.produit?.price),
+                                total:
+                                  Number(item?.quantite) *
+                                  (user?.role === 'agence'
+                                    ? Number(item?.produit?.price)
+                                    : Number(item?.produit?.pricepurchase)),
                               };
                             }),
                             totalHT: row?.totalHTV,
@@ -412,9 +420,16 @@ const TableAchat = ({
                               return {
                                 description: item?.produit?.name,
                                 quantity: item?.quantite,
-                                unitPrice: item?.produit?.price,
+                                unitPrice:
+                                  user?.role === 'agence'
+                                    ? item?.produit?.price
+                                    : item?.produit?.pricepurchase,
                                 montantbenefices: item?.produit?.montantbenefices,
-                                total: Number(item?.quantite) * Number(item?.produit?.price),
+                                total:
+                                  Number(item?.quantite) *
+                                  (user?.role === 'agence'
+                                    ? Number(item?.produit?.price)
+                                    : Number(item?.produit?.pricepurchase)),
                               };
                             }),
                             totalHT: row.totalHTV,
@@ -462,7 +477,9 @@ const TableAchat = ({
                               </TableCell>
 
                               <TableCell>
-                                <Typography variant="h6">{t('Prix')}</Typography>
+                                <Typography variant="h6">
+                                  {user?.role === 'agence' ? t('price') : t('pricepurchase')}
+                                </Typography>
                               </TableCell>
                               <TableCell>
                                 <Typography variant="h6">{t('quantite')}</Typography>
@@ -488,7 +505,9 @@ const TableAchat = ({
                                 </TableCell>
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
-                                    {article?.produit?.price}
+                                    {user?.role === 'agence'
+                                      ? article?.produit?.price
+                                      : article?.produit?.pricepurchase}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
@@ -496,7 +515,10 @@ const TableAchat = ({
                                 </TableCell>
                                 <TableCell>
                                   <Typography fontWeight="600">
-                                    {Number(article?.quantite) * Number(article?.produit?.price)}
+                                    {Number(article?.quantite) *
+                                      (user?.role === 'agence'
+                                        ? Number(article?.produit?.price)
+                                        : Number(article?.produit?.pricepurchase))}
                                   </Typography>
                                 </TableCell>
                               </TableRow>
