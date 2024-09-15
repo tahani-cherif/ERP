@@ -8,16 +8,19 @@ import { Props } from 'react-apexcharts';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { dispatch } from 'src/store/Store';
-import { fetchstatstock } from 'src/store/apps/stat/statSlice';
 import { IconGridDots } from '@tabler/icons';
+import { fetchVentes } from 'src/store/apps/vente/venteSlice';
+import { fetchAchats } from 'src/store/apps/achat/achatSlice';
 
 const YearlyBreakup = () => {
   const { t } = useTranslation();
-  const stat = useSelector((state: any) => state.statReducer.statstock);
+  const ventes = useSelector((state: any) => state.venteReducer.ventes);
+  const achats = useSelector((state: any) => state.achatReducer.achats);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(fetchstatstock());
+        await dispatch(fetchVentes());
+        await dispatch(fetchAchats());
       } catch (error) {
         console.error(error);
       }
@@ -76,16 +79,16 @@ const YearlyBreakup = () => {
       },
     ],
   };
-  const seriescolumnchart = [stat.achat, stat.vendre];
+  const seriescolumnchart = [
+    (achats.length / (achats.length + ventes.length)) * 100,
+    (ventes.length / (achats.length + ventes.length)) * 100,
+  ];
 
   return (
-    <DashboardCard title={t('produit') || ''}>
+    <DashboardCard title={t('recouverement') + ' / ' + t('deponse') || ''}>
       <Grid container spacing={3} className="h-full">
         {/* column */}
         <Grid item xs={7} sm={7}>
-          <Typography variant="h3" fontWeight="700">
-            {stat.produit}
-          </Typography>
           <Stack direction="column" spacing={2} justifyContent="space-between" mt={2}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Box
@@ -107,10 +110,10 @@ const YearlyBreakup = () => {
               </Box>
               <Box>
                 <Typography variant="subtitle2" color="textSecondary">
-                  {t('stockAchat')}
+                  {t('deponse')}
                 </Typography>
                 <Typography variant="h6" fontWeight="600">
-                  {stat.achat?.toFixed(2)}%
+                  {((achats.length / (achats.length + ventes.length)) * 100)?.toFixed(2)}%
                 </Typography>
               </Box>
             </Stack>
@@ -134,10 +137,10 @@ const YearlyBreakup = () => {
               </Box>
               <Box>
                 <Typography variant="subtitle2" color="textSecondary">
-                  {t('stockProduction')}
+                  {t('recouverement')}
                 </Typography>
                 <Typography variant="h6" fontWeight="600">
-                  {stat.vendre?.toFixed(2)}%
+                  {((ventes.length / (achats.length + ventes.length)) * 100)?.toFixed(2)}%
                 </Typography>
               </Box>
             </Stack>

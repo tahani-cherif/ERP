@@ -1,7 +1,8 @@
 // InvoicePDF.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { useTranslation } from 'react-i18next';
+import api from 'src/utils/axios';
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
@@ -33,7 +34,29 @@ const styles = StyleSheet.create({
 
 const InvoicePDF = ({ invoice }) => {
   const { t } = useTranslation();
-  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
+  const [user, setUser] = useState(
+    localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || ''),
+  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (user?._id !== user?.admin) {
+          const userupdate = await api.get('/users/' + user?.admin);
+          setUser({
+            ...user,
+            matriculefiscaleEntreprise: userupdate?.data?.matriculefiscaleEntreprise,
+            phoneEntreprise: userupdate?.data?.phoneEntreprise,
+            addressEntreprise: userupdate?.data?.addressEntreprise,
+            nomEntreprise: userupdate?.data?.nomEntreprise,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Document>
@@ -45,15 +68,19 @@ const InvoicePDF = ({ invoice }) => {
         <Text style={styles.section}>Date : {invoice?.date}</Text>
         <View style={styles.entreprise}>
           <Text style={styles.subHeader}>{t('entreprise')} :</Text>
-          <Text style={styles.section}>{t('nameentreprise') + ' : ...................'}</Text>
+          <Text style={styles.section}>{t('nameentreprise') + ' : ' + user?.nomEntreprise}</Text>
           <Text style={styles.section}>
-            {t('address') + ' ' + t('entreprise') + ' : ...................'}
+            {t('address') + ' ' + t('entreprise') + ' :' + user?.addressEntreprise}
           </Text>
           <Text style={styles.section}>
-            {t('phone') + ' ' + t('entreprise') + ' : ...................'}
+            {t('phone') + ' ' + t('entreprise') + ' :' + user?.phoneEntreprise}
           </Text>
           <Text style={styles.section}>
-            {t('matriculeFiscale2') + ' ' + t('entreprise') + ' : ...................'}
+            {t('matriculeFiscale2') +
+              ' ' +
+              t('entreprise') +
+              ' : ' +
+              user?.matriculefiscaleEntreprise}
           </Text>
         </View>
         <Text style={styles.subHeader}>Client :</Text>

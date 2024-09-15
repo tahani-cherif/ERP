@@ -150,5 +150,9 @@
    "montantbenefices":"Montant bénéfices",
    "entreprise":"Entreprise",
    "nameentreprise":"Nom de Entreprise ",
-   "matriculeFiscale2":"Matricule fiscal"
+   "matriculeFiscale2":"Matricule fiscal",
+   "nomEntreprise":"Nom de l'entreprise",
+   "addressEntreprise":"Adresse de l'entreprise",
+   "phoneEntreprise":"Téléphone de l'entreprise",
+   "matriculefiscaleEntreprise":"Matricule fiscale de l'entreprise"
 }

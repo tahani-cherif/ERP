@@ -8,6 +8,10 @@ interface IUser extends Document {
   email: string;
   phone: number;
   password: any;
+  nomEntreprise: string;
+  addressEntreprise: string;
+  phoneEntreprise: string;
+  matriculefiscaleEntreprise: string;
   role: "user" | "admin" | "agence";
   status: boolean;
   tokenPassword?: string;
@@ -36,6 +40,22 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+    },
+    nomEntreprise: {
+      type: String,
+      required: false,
+    },
+    addressEntreprise: {
+      type: String,
+      required: false,
+    },
+    phoneEntreprise: {
+      type: String,
+      required: false,
+    },
+    matriculefiscaleEntreprise: {
+      type: String,
+      required: false,
     },
     role: {
       type: String,

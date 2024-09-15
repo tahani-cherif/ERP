@@ -145,6 +145,10 @@
    "montantbenefices":"Profit amount",
    "entreprise":"Company",
     "nameentreprise":"Company Name",
-    "matriculeFiscale2":"Tax registration number"
+    "matriculeFiscale2":"Tax registration number",
+    "nomEntreprise":"Company name",
+    "addressEntreprise":"Company address",
+    "phoneEntreprise":"Company phone",
+    "matriculefiscaleEntreprise":"company tax number"
 
 }

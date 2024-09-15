@@ -28,6 +28,7 @@ import {
   IconPackgeExport,
   IconPackgeImport,
   IconAperture,
+  IconSmartHome,
 } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -123,6 +124,13 @@ const Menuitems = () => {
       icon: IconNotes,
       href: '/dashboards/juridique',
       role: 'juridique',
+    },
+    {
+      id: uniqueId(),
+      title: t('entreprise') || 'Entreprise',
+      icon: IconSmartHome,
+      href: '/dashboards/entreprise',
+      role: 'entreprise',
     },
 
     // {

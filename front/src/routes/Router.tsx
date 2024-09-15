@@ -22,6 +22,7 @@ const Caisse = Loadable(lazy(() => import('../views/dashboard/caisse')));
 const Recouverement = Loadable(lazy(() => import('../views/dashboard/recouvrement')));
 const Deponse = Loadable(lazy(() => import('../views/dashboard/deponse')));
 const Juridique = Loadable(lazy(() => import('../views/dashboard/juridique')));
+const Entreprise = Loadable(lazy(() => import('../views/dashboard/entreprise')));
 
 /* ****Apps***** */
 const Blog = Loadable(lazy(() => import('../views/apps/blog/Blog')));
@@ -175,6 +176,11 @@ const Router = [
         path: '/dashboards/juridique',
         exact: true,
         element: <ProtectedRoute element={<Juridique />} />,
+      },
+      {
+        path: '/dashboards/entreprise',
+        exact: true,
+        element: <ProtectedRoute element={<Entreprise />} />,
       },
       {
         path: '/dashboards/ecommerce',

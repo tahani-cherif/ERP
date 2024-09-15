@@ -24,7 +24,11 @@ const SidebarItems = () => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {Menuitems.map((item) => {
-          if (user?.acces?.includes(item?.role) || item.role === 'home') {
+          if (
+            user?.acces?.includes(item?.role) ||
+            item.role === 'home' ||
+            (item.role === 'entreprise' && user?._id === user?.admin)
+          ) {
             // {/********SubHeader**********/}
             if (item.subheader) {
               return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
