@@ -298,7 +298,7 @@ const TableCredits = ({
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.banque.banque}
+                    {row?.banque?.banque}
                   </Typography>
                 </TableCell>
                 <TableCell>
