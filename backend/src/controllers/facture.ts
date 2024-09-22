@@ -54,11 +54,26 @@ const getFacture = asyncHandler(
 const createFacture = asyncHandler(async (req: any, res: Response) => {
   const body = req.body;
   const facture = await factureModel.create(body);
+  const user = req?.user;
   const factureget = await factureModel
     .findById(facture?._id)
     .populate("client")
     .populate("fournisseur")
     .populate("articles.produit");
+  if (factureget?.fournisseur || factureget?.fournisseur === null) {
+    await Promise.all(
+      body.articles.map(async (article: any) => {
+        user?.role !== "agence" &&
+          (await produitModel.findByIdAndUpdate(
+            article.produit,
+            {
+              pricepurchase: Number(article.pricepurchase),
+            },
+            { new: true }
+          ));
+      })
+    );
+  }
   if (
     (factureget?.fournisseur || factureget?.fournisseur === null) &&
     factureget?.modepaiement === "espece"
@@ -90,8 +105,9 @@ const createFacture = asyncHandler(async (req: any, res: Response) => {
 // @route   PUT api/factures/:id
 // @access  Private
 const updateFacture = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: any, res: Response, next: NextFunction) => {
     const { id } = req.params;
+
     console.log(req.body);
     const facture = await factureModel.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
@@ -106,8 +122,9 @@ const updateFacture = asyncHandler(
 // @route   PUT api/factures/status/:id
 // @access  Private
 const updateStatus = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: any, res: Response, next: NextFunction) => {
     const { id } = req.params;
+
     const facture = await factureModel.findOneAndUpdate(
       { _id: id },
       { statut: req.body.status, montantimpaye: req.body.montantimpaye },
@@ -118,7 +135,10 @@ const updateStatus = asyncHandler(
       return next(new ApiError(`facture not found for this id ${id}`, 404));
     }
 
-    if (req.body.status === "paid" && req.body.type === "vente") {
+    if (
+      (req.body.status === "paid" || req.body.status === "pendingecheance") &&
+      req.body.type === "vente"
+    ) {
       await Promise.all(
         facture.articles.map(async (article: any) => {
           const produit = await produitModel.findById(article.produit);
@@ -147,7 +167,10 @@ const updateStatus = asyncHandler(
         })
       );
     }
-    if (req.body.status === "paid" && req.body.type === "achat") {
+    if (
+      (req.body.status === "paid" || req.body.status === "pendingecheance") &&
+      req.body.type === "achat"
+    ) {
       await Promise.all(
         facture.articles.map(async (article: any) => {
           const produit = await produitModel.findById(article.produit);
@@ -166,10 +189,13 @@ const updateStatus = asyncHandler(
                   },
                 ]
               : [];
-
+            console.log(article);
             await produitModel.findByIdAndUpdate(
               article.produit,
-              { stock: newStock, historique: newHistorique },
+              {
+                stock: newStock,
+                historique: newHistorique,
+              },
               { new: true }
             );
           }

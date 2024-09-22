@@ -105,9 +105,20 @@ const Caisse = () => {
         );
       });
       setFilteredData(filtered);
+      let totalenc = 0;
+      let totaldec = 0;
+      filtered?.map((item: ICaisse) => {
+        totalenc += Number(item.encaissement);
+        totaldec += Number(item.decaissement);
+      });
+      setTotalEncaissement(totalenc);
+      setTotalDecaissement(totaldec);
     }
   }, [data, filterEcheance, filterDesignation]);
-
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
   return (
     <PageContainer title={t('caisse') || ''}>
       {/* breadcrumb */}
@@ -164,7 +175,7 @@ const Caisse = () => {
             </Box>
             <p className="pt-4 ml-auto w-fit ">
               <b>TOTAL :</b>
-              {totalEncaissement - totalDecaissement}
+              {formatNumber(Number(totalEncaissement - totalDecaissement))}
             </p>
           </Grid>
         </Grid>

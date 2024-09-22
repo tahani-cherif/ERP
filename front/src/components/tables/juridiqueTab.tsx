@@ -197,7 +197,10 @@ const TableJuridique = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
   return (
     <BlankCard>
       <TableContainer>
@@ -265,7 +268,7 @@ const TableJuridique = ({
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.montantimpaye}
+                      {formatNumber(Number(row.montantimpaye))}
                     </Typography>
                   </TableCell>
                   <TableCell>

@@ -225,6 +225,10 @@ const TableCaisse = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
 
   return (
     <BlankCard>
@@ -271,12 +275,12 @@ const TableCaisse = ({
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.encaissement}
+                    {formatNumber(Number(row.encaissement))}DT
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.decaissement}
+                    {formatNumber(Number(row.decaissement))} DT
                   </Typography>
                 </TableCell>
                 <TableCell>

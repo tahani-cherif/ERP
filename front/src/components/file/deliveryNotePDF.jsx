@@ -68,18 +68,15 @@ const DeliveryNotePDF = ({ deliveryNote }) => {
         </Text>
         <Text style={styles.section}>Date : {deliveryNote?.date}</Text>
         <View style={styles.entreprise}>
-          <Text style={styles.subHeader}>{t('entreprise')} :</Text>
           <Text style={styles.section}>{t('nameentreprise') + ' : ' + user?.nomEntreprise}</Text>
           <Text style={styles.section}>
-            {t('address') + ' ' + t('entreprise') + ' :' + user?.addressEntreprise}
+            {t('address') + ' :' + user?.addressEntreprise}
           </Text>
           <Text style={styles.section}>
-            {t('phone') + ' ' + t('entreprise') + ' :' + user?.phoneEntreprise}
+            {t('phone')+ ' :' + user?.phoneEntreprise}
           </Text>
           <Text style={styles.section}>
             {t('matriculeFiscale2') +
-              ' ' +
-              t('entreprise') +
               ' : ' +
               user?.matriculefiscaleEntreprise}
           </Text>

@@ -167,6 +167,7 @@ const TableVente = ({
   const [id, setId] = React.useState<string>('');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [etat, setEtat] = React.useState<string>('');
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = React.useState<IVente>();
@@ -246,6 +247,10 @@ const TableVente = ({
     setFacture({});
     setId('');
   };
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
 
   return (
     <BlankCard>
@@ -331,7 +336,10 @@ const TableVente = ({
                       {(row.statut === 'cancelled' || row.statut === 'not-paid') && (
                         <Chip label={t(row.statut)} color="error" size="small" />
                       )}
-                      {row.statut === 'pending' && (
+                      {row.statut === 'pendingecheance' && (
+                        <Chip label={t(row.statut)} color="warning" size="small" />
+                      )}
+                      {(row.statut === 'pending' || row.statut === 'pendingecheance') && (
                         <IconButton
                           id="basic-button"
                           aria-controls={open ? 'basic-menu' : undefined}
@@ -356,6 +364,7 @@ const TableVente = ({
                             handleClose();
                             setOpenAlerteDelete(true);
                             setId(selectedRow?._id || '');
+                            setEtat(selectedRow?.statut || '');
                           }}
                         >
                           <ListItemIcon>
@@ -368,13 +377,13 @@ const TableVente = ({
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.total_general}
+                      {formatNumber(Number(row.total_general))}
                     </Typography>
                   </TableCell>
                   {user?.role === 'agence' && (
                     <TableCell>
                       <Typography variant="subtitle1" color="textSecondary">
-                        {Number(row.total_general) - Number(row.totalHTV) - 1}
+                        {formatNumber(Number(row.total_general) - Number(row.totalHTV) - 1)}
                       </Typography>
                     </TableCell>
                   )}
@@ -395,9 +404,11 @@ const TableVente = ({
                                 quantity: item?.quantite,
                                 unitPrice:
                                   user?.role === 'agence'
-                                    ? item?.produit?.price
-                                    : item?.produit?.pricesales,
-                                montantbenefices: item?.produit?.montantbenefices,
+                                    ? formatNumber(Number(item?.produit?.price))
+                                    : formatNumber(Number(item?.produit?.pricesales)),
+                                montantbenefices: formatNumber(
+                                  Number(item?.produit?.montantbenefices),
+                                ),
                                 total:
                                   (user?.role === 'agence'
                                     ? Number(item?.produit?.price)
@@ -409,11 +420,11 @@ const TableVente = ({
                             taxRate: row.tva,
                             taxAmount:
                               user?.role === 'agence'
-                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                ? formatNumber(Number(row.total_general) - Number(row.totalHTV) - 1)
                                 : row.tva
-                                ? (row.totalHTV * row.tva) / 100
-                                : row.totalHTV,
-                            totalTTC: row.total_general,
+                                ? formatNumber(Number((row.totalHTV * row.tva) / 100))
+                                : formatNumber(Number(row.totalHTV)),
+                            totalTTC: formatNumber(Number(row.total_general)),
                             paymentTerms: row.modepaiement,
                           },
                           invoice: {
@@ -427,26 +438,29 @@ const TableVente = ({
                                 quantity: item?.quantite,
                                 unitPrice:
                                   user?.role === 'agence'
-                                    ? item?.produit?.price
-                                    : item?.produit?.pricesales,
-                                montantbenefices: item?.produit?.montantbenefices,
-                                total:
+                                    ? formatNumber(Number(item?.produit?.price))
+                                    : formatNumber(Number(item?.produit?.pricesales)),
+                                montantbenefices: formatNumber(
+                                  Number(item?.produit?.montantbenefices),
+                                ),
+                                total: formatNumber(
                                   Number(item?.quantite) *
-                                  ((user?.role === 'agence'
-                                    ? Number(item?.produit?.price)
-                                    : Number(item?.produit?.pricesales)) +
-                                    Number(item?.produit?.montantbenefices)),
+                                    ((user?.role === 'agence'
+                                      ? Number(item?.produit?.price)
+                                      : Number(item?.produit?.pricesales)) +
+                                      Number(item?.produit?.montantbenefices)),
+                                ),
                               };
                             }),
-                            totalHT: row.totalHTV,
+                            totalHT: formatNumber(Number(row.totalHTV)),
                             taxRate: row.tva,
                             taxAmount:
                               user?.role === 'agence'
-                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                ? formatNumber(Number(row.total_general) - Number(row.totalHTV) - 1)
                                 : row.tva
-                                ? (row.totalHTV * row.tva) / 100
-                                : row.totalHTV,
-                            totalTTC: row.total_general,
+                                ? formatNumber(Number((row.totalHTV * row.tva) / 100))
+                                : formatNumber(Number(row.totalHTV)),
+                            totalTTC: formatNumber(Number(row.total_general)),
                             paymentTerms: row.modepaiement,
                           },
                           deliveryNote: {
@@ -471,26 +485,29 @@ const TableVente = ({
                                 quantity: item?.quantite,
                                 unitPrice:
                                   user?.role === 'agence'
-                                    ? item?.produit?.price
-                                    : item?.produit?.pricesales,
-                                montantbenefices: item?.produit?.montantbenefices,
-                                total:
+                                    ? formatNumber(Number(item?.produit?.price))
+                                    : formatNumber(Number(item?.produit?.pricesales)),
+                                montantbenefices: formatNumber(
+                                  Number(item?.produit?.montantbenefices),
+                                ),
+                                total: formatNumber(
                                   Number(item?.quantite) *
-                                  ((user?.role === 'agence'
-                                    ? Number(item?.produit?.price)
-                                    : Number(item?.produit?.pricesales)) +
-                                    Number(item?.produit?.montantbenefices)),
+                                    ((user?.role === 'agence'
+                                      ? Number(item?.produit?.price)
+                                      : Number(item?.produit?.pricesales)) +
+                                      Number(item?.produit?.montantbenefices)),
+                                ),
                               };
                             }),
-                            totalHT: row.totalHTV,
+                            totalHT: formatNumber(Number(row.totalHTV)),
                             taxRate: row.tva,
                             taxAmount:
                               user?.role === 'agence'
-                                ? Number(row.total_general) - Number(row.totalHTV) - 1
+                                ? formatNumber(Number(row.total_general) - Number(row.totalHTV) - 1)
                                 : row.tva
-                                ? (row.totalHTV * row.tva) / 100
-                                : row.totalHTV,
-                            totalTTC: row.total_general,
+                                ? formatNumber(Number((row.totalHTV * row.tva) / 100))
+                                : formatNumber(Number(row.totalHTV)),
+                            totalTTC: formatNumber(Number(row.total_general)),
                             paymentTerms: row.modepaiement,
                           },
                         });
@@ -559,8 +576,8 @@ const TableVente = ({
                                 <TableCell>
                                   <Typography color="textSecondary" fontWeight="400">
                                     {user?.role === 'agence'
-                                      ? article?.produit?.price
-                                      : article?.produit?.pricesales}
+                                      ? formatNumber(Number(article?.produit?.price))
+                                      : formatNumber(Number(article?.produit?.pricesales))}
                                   </Typography>
                                 </TableCell>
                                 <TableCell>
@@ -568,10 +585,12 @@ const TableVente = ({
                                 </TableCell>
                                 <TableCell>
                                   <Typography fontWeight="600">
-                                    {Number(article?.quantite) *
-                                      (user?.role === 'agence'
-                                        ? Number(article?.produit?.price)
-                                        : Number(article?.produit?.pricesales))}
+                                    {formatNumber(
+                                      Number(article?.quantite) *
+                                        (user?.role === 'agence'
+                                          ? Number(article?.produit?.price)
+                                          : Number(article?.produit?.pricesales)),
+                                    )}
                                   </Typography>
                                 </TableCell>
                               </TableRow>
@@ -636,7 +655,10 @@ const TableVente = ({
               variant="outlined"
             >
               <MenuItem value="paid">{t('paid')}</MenuItem>
-              <MenuItem value="semi-paid">{t('semi-paid')}</MenuItem>
+              {etat !== 'pendingecheance' && <MenuItem value="semi-paid">{t('semipaid')}</MenuItem>}
+              {etat !== 'pendingecheance' && (
+                <MenuItem value="pendingecheance">{t('pendingecheance')}</MenuItem>
+              )}
               <MenuItem value="not-paid">{t('not-paid')}</MenuItem>
               <MenuItem value="cancelled">{t('cancelled')}</MenuItem>
             </CustomSelect>

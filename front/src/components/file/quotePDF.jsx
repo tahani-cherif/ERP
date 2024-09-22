@@ -66,20 +66,11 @@ const QuotePDF = ({ quote }) => {
         <Text style={styles.header}>Devis N° : {quote?.number}</Text>
         <Text style={styles.section}>Date : {quote?.date}</Text>
         <View style={styles.entreprise}>
-          <Text style={styles.subHeader}>{t('entreprise')} :</Text>
           <Text style={styles.section}>{t('nameentreprise') + ' : ' + user?.nomEntreprise}</Text>
+          <Text style={styles.section}>{t('address') + ' :' + user?.addressEntreprise}</Text>
+          <Text style={styles.section}>{t('phone') + ' :' + user?.phoneEntreprise}</Text>
           <Text style={styles.section}>
-            {t('address') + ' ' + t('entreprise') + ' :' + user?.addressEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('phone') + ' ' + t('entreprise') + ' :' + user?.phoneEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('matriculeFiscale2') +
-              ' ' +
-              t('entreprise') +
-              ' : ' +
-              user?.matriculefiscaleEntreprise}
+            {t('matriculeFiscale2') + ' : ' + user?.matriculefiscaleEntreprise}
           </Text>
         </View>
         <Text style={styles.subHeader}>Client :</Text>
@@ -126,20 +117,20 @@ const QuotePDF = ({ quote }) => {
                 </View>
               )}
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item?.total}</Text>
+                <Text style={styles.tableCell}>{item?.total} DT</Text>
               </View>
             </View>
           ))}
         </View>
 
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}HT: {quote?.totalHT}
+          {t('montantTotal') + ' '}HT: {quote?.totalHT} DT
         </Text>
         <Text style={styles.section}>
-          TVA ({quote?.taxRate}%) : {quote?.taxAmount}
+          TVA ({quote?.taxRate}%) : {quote?.taxAmount} DT
         </Text>
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}TTC: {quote?.totalTTC}
+          {t('montantTotal') + ' '}TTC: {quote?.totalTTC} DT
         </Text>
         <Text style={styles.conditions}> {t('modepaiement') + ' : ' + t(quote?.paymentTerms)}</Text>
       </Page>

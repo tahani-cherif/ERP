@@ -238,6 +238,10 @@ const TableCredits = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
 
   return (
     <BlankCard>
@@ -308,27 +312,27 @@ const TableCredits = ({
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.montantemprunt}
+                    {formatNumber(Number(row.montantemprunt))}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.principal}
+                    {formatNumber(Number(row.principal))}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.interet}
+                    {formatNumber(Number(row.interet))}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.total}
+                    {formatNumber(Number(row.total))}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {row.encours}
+                    {formatNumber(Number(row.encours))}
                   </Typography>
                 </TableCell>
                 <TableCell>

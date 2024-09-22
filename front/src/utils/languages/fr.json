@@ -154,5 +154,6 @@
    "nomEntreprise":"Nom de l'entreprise",
    "addressEntreprise":"Adresse de l'entreprise",
    "phoneEntreprise":"Téléphone de l'entreprise",
-   "matriculefiscaleEntreprise":"Matricule fiscale de l'entreprise"
+   "matriculefiscaleEntreprise":"Matricule fiscale de l'entreprise",
+   "pendingecheance":"En attente d'échéance"
 }

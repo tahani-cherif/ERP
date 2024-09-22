@@ -67,20 +67,11 @@ const InvoicePDF = ({ invoice }) => {
         </Text>
         <Text style={styles.section}>Date : {invoice?.date}</Text>
         <View style={styles.entreprise}>
-          <Text style={styles.subHeader}>{t('entreprise')} :</Text>
           <Text style={styles.section}>{t('nameentreprise') + ' : ' + user?.nomEntreprise}</Text>
+          <Text style={styles.section}>{t('address') + ' :' + user?.addressEntreprise}</Text>
+          <Text style={styles.section}>{t('phone') + ' :' + user?.phoneEntreprise}</Text>
           <Text style={styles.section}>
-            {t('address') + ' ' + t('entreprise') + ' :' + user?.addressEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('phone') + ' ' + t('entreprise') + ' :' + user?.phoneEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('matriculeFiscale2') +
-              ' ' +
-              t('entreprise') +
-              ' : ' +
-              user?.matriculefiscaleEntreprise}
+            {t('matriculeFiscale2') + ' : ' + user?.matriculefiscaleEntreprise}
           </Text>
         </View>
         <Text style={styles.subHeader}>Client :</Text>
@@ -126,20 +117,20 @@ const InvoicePDF = ({ invoice }) => {
                 </View>
               )}
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item?.total}</Text>
+                <Text style={styles.tableCell}>{item?.total} DT</Text>
               </View>
             </View>
           ))}
         </View>
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}HT: {invoice?.totalHT}
+          {t('montantTotal') + ' '}HT: {invoice?.totalHT} DT
         </Text>
         <Text style={styles.section}>
-          TVA ({invoice?.taxRate}%): {invoice?.taxAmount}
+          TVA ({invoice?.taxRate}%): {invoice?.taxAmount} DT
         </Text>
-        <Text style={styles.section}>{t('timbre')} : 1</Text>
+        <Text style={styles.section}>{t('timbre')} : 1 DT</Text>
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}TTC: {invoice?.totalTTC}
+          {t('montantTotal') + ' '}TTC: {invoice?.totalTTC} DT
         </Text>
         <Text style={styles.section}> {t('modepaiement') + ' : ' + t(invoice?.paymentTerms)}</Text>
       </Page>

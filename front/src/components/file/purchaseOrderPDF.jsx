@@ -95,19 +95,19 @@ const PurchaseOrderPDF = ({ order }) => {
                 </View>
               )} */}
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item?.total}</Text>
+                <Text style={styles.tableCell}>{item?.total} DT</Text>
               </View>
             </View>
           ))}
         </View>
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}HT: {order?.totalHT}
+          {t('montantTotal') + ' '}HT: {order?.totalHT} DT
         </Text>
         <Text style={styles.section}>
-          TVA ({order?.taxRate}%): {order?.taxAmount}
+          TVA ({order?.taxRate}%): {order?.taxAmount} DT
         </Text>
         <Text style={styles.section}>
-          {t('montantTotal') + ' '}TTC: {order?.totalTTC}
+          {t('montantTotal') + ' '}TTC: {order?.totalTTC} DT
         </Text>
         <Text style={styles.section}> {t('modepaiement') + ' : ' + t(order?.paymentTerms)}</Text>
       </Page>

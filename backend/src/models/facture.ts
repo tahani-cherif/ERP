@@ -110,7 +110,14 @@ const factureSchema = new Schema<IFacture>(
     },
     statut: {
       type: String,
-      enum: ["pending", "paid", "cancelled", "semi-paid", "not-paid"],
+      enum: [
+        "pending",
+        "paid",
+        "cancelled",
+        "semi-paid",
+        "not-paid",
+        "pendingecheance",
+      ],
       default: "pending",
       required: true,
     },

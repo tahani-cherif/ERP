@@ -217,6 +217,10 @@ const TableDepnose = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
 
   return (
     <BlankCard>
@@ -290,6 +294,9 @@ const TableDepnose = ({
                       {(row.statut === 'pending' || row.statut === 'semi-paid') && (
                         <Chip label={t(row.statut)} color="warning" size="small" />
                       )}
+                      {row.statut === 'pendingecheance' && (
+                        <Chip label={t(row.statut)} color="warning" size="small" />
+                      )}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -309,17 +316,17 @@ const TableDepnose = ({
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.total_general}
+                      {formatNumber(Number(row.total_general))}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.avance || '-'}
+                      {row.avance ? formatNumber(Number(row.avance)) : '-'}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
-                      {row.reste || '-'}
+                      {row.reste ? formatNumber(Number(row.reste)) : '-'}
                     </Typography>
                   </TableCell>
                   <TableCell>

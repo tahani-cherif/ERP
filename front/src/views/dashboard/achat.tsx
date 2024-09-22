@@ -86,24 +86,49 @@ const Vente = () => {
   const [filterFournisseur, setFilterFournisseur] = React.useState<string | null>(null);
   const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user') || '');
   const printableRef = useRef(null);
-  const validationSchema = Yup.object({
-    reference: Yup.string().required(t('faildRequired') || ''),
-    fournisseur: Yup.string().optional(),
-    modepaiement: Yup.string().required(t('faildRequired') || ''),
-    articles: Yup.array().of(
-      Yup.object({
-        produit: Yup.string().required(t('faildRequired') || ''),
-        quantite: Yup.number()
-          .typeError(t('quantiteMustBeNumber') || 'quantite must be a number')
-          .required(t('faildRequired') || 'quantite is required')
-          .min(1, t('quantiteMustBePositive') || 'quantite must be a non-negative number'),
-      }),
-    ),
-    tva: Yup.number()
-      .typeError(t('tvaMustBeNumber') || 'tva must be a number')
-      .optional()
-      .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
-  });
+  const validationSchema =
+    user?.role === 'agence'
+      ? Yup.object({
+          reference: Yup.string().required(t('faildRequired') || ''),
+          fournisseur: Yup.string().optional(),
+          modepaiement: Yup.string().required(t('faildRequired') || ''),
+          articles: Yup.array().of(
+            Yup.object({
+              produit: Yup.string().required(t('faildRequired') || ''),
+              quantite: Yup.number()
+                .typeError(t('quantiteMustBeNumber') || 'quantite must be a number')
+                .required(t('faildRequired') || 'quantite is required')
+                .min(1, t('quantiteMustBePositive') || 'quantite must be a non-negative number'),
+            }),
+          ),
+          tva: Yup.number()
+            .typeError(t('tvaMustBeNumber') || 'tva must be a number')
+            .optional()
+            .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
+        })
+      : Yup.object({
+          reference: Yup.string().required(t('faildRequired') || ''),
+          fournisseur: Yup.string().optional(),
+          modepaiement: Yup.string().required(t('faildRequired') || ''),
+          articles: Yup.array().of(
+            Yup.object({
+              produit: Yup.string().required(t('faildRequired') || ''),
+              quantite: Yup.number()
+                .typeError(t('quantiteMustBeNumber') || 'quantite must be a number')
+                .required(t('faildRequired') || 'quantite is required')
+                .min(1, t('quantiteMustBePositive') || 'quantite must be a non-negative number'),
+              pricepurchase: Yup.number()
+                .typeError(t('priceMustBeNumber') || 'Price must be a number')
+                .required(t('faildRequired') || 'Price is required')
+                .min(0, t('priceMustBePositive') || 'Price must be a non-negative number'),
+            }),
+          ),
+          tva: Yup.number()
+            .typeError(t('tvaMustBeNumber') || 'tva must be a number')
+            .optional()
+            .min(0, t('tvaMustBePositive') || 'tva must be a non-negative number'),
+        });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -213,7 +238,7 @@ const Vente = () => {
             fournisseur: '',
             modepaiement: '',
             tva: '',
-            articles: [{ produit: '', quantite: '' }],
+            articles: [{ produit: '', quantite: '', pricepurchase: '' }],
           }}
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
@@ -225,11 +250,10 @@ const Vente = () => {
                   if (article.produit === p._id) {
                     total_generalhtva +=
                       Number(article.quantite) *
-                      (user?.role === 'agence' ? Number(p.price) : Number(p.pricepurchase));
+                      (user?.role === 'agence' ? Number(p.price) : Number(article.pricepurchase));
                   }
                 });
               });
-              console.log(values.tva);
               await dispatch(
                 addAchat({
                   fournisseur: values.fournisseur ? values.fournisseur : null,
@@ -245,7 +269,9 @@ const Vente = () => {
                   articles: values.articles,
                   admin: JSON.parse(localStorage.getItem('user') || '')._id,
                 }),
-              ).then((secc: any) => setData(data ? [secc, ...data] : [secc]));
+              ).then(async (secc: any) => {
+                await dispatch(fetchAchats());
+              });
 
               setLoading(false);
               handleCloseModal();
@@ -339,7 +365,11 @@ const Vente = () => {
                     <div className=" flex flex-col gap-2">
                       {values.articles.map((article, index) => {
                         const articleError = errors.articles?.[index] as
-                          | FormikErrors<{ produit: string; quantite: string }>
+                          | FormikErrors<{
+                              produit: string;
+                              quantite: string;
+                              pricepurchase: string;
+                            }>
                           | undefined;
                         const selectedProduits = values.articles.map((a) => a.produit);
 
@@ -391,6 +421,24 @@ const Vente = () => {
                                 variant="outlined"
                               />
                             </Box>
+                            {user?.role !== 'agence' && (
+                              <Box className="w-full">
+                                <CustomFormLabel htmlFor={`articles[${index}].pricepurchase`}>
+                                  {t('pricepurchase')}
+                                </CustomFormLabel>
+                                <CustomTextField
+                                  id={`articles[${index}].pricepurchase`}
+                                  name={`articles[${index}].pricepurchase`}
+                                  value={values.articles?.[index].pricepurchase}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  error={Boolean(articleError?.pricepurchase)}
+                                  helperText={articleError?.pricepurchase}
+                                  fullWidth
+                                  variant="outlined"
+                                />
+                              </Box>
+                            )}
 
                             <Box className="items-end mt-auto">
                               {index > 0 && (
@@ -411,7 +459,11 @@ const Vente = () => {
                         variant="outlined"
                         color="primary"
                         type="button"
-                        onClick={() => push({ produit: '', quantite: '' })}
+                        onClick={() => {
+                          user?.role !== 'agence'
+                            ? push({ produit: '', quantite: '', pricepurchase: '' })
+                            : push({ produit: '', quantite: '' });
+                        }}
                         disabled={
                           values.articles.length >=
                           produits.filter((produit: IProduit) => produit?.stock > 0)?.length

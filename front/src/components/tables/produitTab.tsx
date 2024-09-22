@@ -261,6 +261,10 @@ const TableProduit = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  function formatNumber(number: number) {
+    const roundedNumber = number.toFixed(3);
+    return roundedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
 
   return (
     <BlankCard>
@@ -283,12 +287,17 @@ const TableProduit = ({
                   <Typography variant="h6">{t('price')}</Typography>
                 </TableCell>
               )}
-              <TableCell>
-                <Typography variant="h6">{t('pricesales')}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">{t('pricepurchase')}</Typography>
-              </TableCell>
+              {user?.role !== 'agence' && (
+                <>
+                  {' '}
+                  <TableCell>
+                    <Typography variant="h6">{t('pricesales')}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h6">{t('pricepurchase')}</Typography>
+                  </TableCell>
+                </>
+              )}
               <TableCell>
                 <Typography variant="h6">{t('quantite')}</Typography>
               </TableCell>
@@ -342,20 +351,25 @@ const TableProduit = ({
                   {user?.role === 'agence' && (
                     <TableCell scope="row">
                       <Typography variant="subtitle1" color="textSecondary">
-                        {row.pricesales}
+                        {formatNumber(Number(row.price))}
                       </Typography>
                     </TableCell>
                   )}
-                  <TableCell scope="row">
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {row.pricesales}
-                    </Typography>
-                  </TableCell>
-                  <TableCell scope="row">
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {row.pricepurchase}
-                    </Typography>
-                  </TableCell>
+                  {user?.role !== 'agence' && (
+                    <>
+                      {' '}
+                      <TableCell scope="row">
+                        <Typography variant="subtitle1" color="textSecondary">
+                          {formatNumber(Number(row.pricesales))}
+                        </Typography>
+                      </TableCell>
+                      <TableCell scope="row">
+                        <Typography variant="subtitle1" color="textSecondary">
+                          {formatNumber(Number(row.pricepurchase))}
+                        </Typography>
+                      </TableCell>
+                    </>
+                  )}
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
                       {row.stock}

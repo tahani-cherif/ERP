@@ -149,6 +149,7 @@
     "nomEntreprise":"Company name",
     "addressEntreprise":"Company address",
     "phoneEntreprise":"Company phone",
-    "matriculefiscaleEntreprise":"company tax number"
+    "matriculefiscaleEntreprise":"company tax number",
+    "pendingecheance":"pending due date"
 
 }
