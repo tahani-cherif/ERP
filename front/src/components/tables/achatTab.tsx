@@ -45,12 +45,13 @@ import moment from 'moment';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { IconDotsVertical, IconEdit } from '@tabler/icons';
+import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons';
 import CustomSelect from '../forms/theme-elements/CustomSelect';
 import { updateStatus } from 'src/store/apps/chat/ChatSlice';
 import { PDFViewer } from '@react-pdf/renderer';
 import PurchaseOrderPDF from '../file/purchaseOrderPDF';
 import InvoicePDF from '../file/invoicePDF';
+import { deleteAchat } from 'src/store/apps/achat/achatSlice';
 
 //pagination
 interface TablePaginationActionsProps {
@@ -461,6 +462,17 @@ const TableAchat = ({
                     >
                       {t('attachment')}
                     </Button>
+                    <IconButton
+                      aria-label="delete"
+                      size="large"
+                      onClick={() => {
+                        dispatch(deleteAchat(row?._id));
+                        const newdata = data?.filter((item) => item._id !== row?._id);
+                        setData(newdata);
+                      }}
+                    >
+                      <IconTrash />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
                 <TableRow>

@@ -41,16 +41,29 @@ const QuotePDF = ({ quote }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (user?._id !== user?.admin) {
-          const userupdate = await api.get('/users/' + user?.admin);
-          setUser({
-            ...user,
-            matriculefiscaleEntreprise: userupdate?.data?.matriculefiscaleEntreprise,
-            phoneEntreprise: userupdate?.data?.phoneEntreprise,
-            addressEntreprise: userupdate?.data?.addressEntreprise,
-            nomEntreprise: userupdate?.data?.nomEntreprise,
-          });
-        }
+        // if (user?._id !== user?.admin) {
+        const userupdate = await api.get('/users/' + user?.admin);
+        setUser({
+          ...user,
+          matriculefiscaleEntreprise:
+            userupdate?.data?.matriculefiscaleEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.matriculefiscaleEntreprise,
+          phoneEntreprise:
+            userupdate?.data?.phoneEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.phoneEntreprise,
+          addressEntreprise:
+            userupdate?.data?.addressEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.addressEntreprise,
+          nomEntreprise:
+            userupdate?.data?.nomEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.nomEntreprise,
+        });
+
+        // }
       } catch (error) {
         console.error(error);
       }

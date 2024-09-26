@@ -41,16 +41,29 @@ const DeliveryNotePDF = ({ deliveryNote }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (user?._id !== user?.admin) {
-          const userupdate = await api.get('/users/' + user?.admin);
-          setUser({
-            ...user,
-            matriculefiscaleEntreprise: userupdate?.data?.matriculefiscaleEntreprise,
-            phoneEntreprise: userupdate?.data?.phoneEntreprise,
-            addressEntreprise: userupdate?.data?.addressEntreprise,
-            nomEntreprise: userupdate?.data?.nomEntreprise,
-          });
-        }
+        // if (user?._id !== user?.admin) {
+        const userupdate = await api.get('/users/' + user?.admin);
+        setUser({
+          ...user,
+          matriculefiscaleEntreprise:
+            userupdate?.data?.matriculefiscaleEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.matriculefiscaleEntreprise,
+          phoneEntreprise:
+            userupdate?.data?.phoneEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.phoneEntreprise,
+          addressEntreprise:
+            userupdate?.data?.addressEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.addressEntreprise,
+          nomEntreprise:
+            userupdate?.data?.nomEntreprise === undefined
+              ? '-------------------------'
+              : userupdate?.data?.nomEntreprise,
+        });
+
+        // }
       } catch (error) {
         console.error(error);
       }
@@ -69,16 +82,10 @@ const DeliveryNotePDF = ({ deliveryNote }) => {
         <Text style={styles.section}>Date : {deliveryNote?.date}</Text>
         <View style={styles.entreprise}>
           <Text style={styles.section}>{t('nameentreprise') + ' : ' + user?.nomEntreprise}</Text>
+          <Text style={styles.section}>{t('address') + ' :' + user?.addressEntreprise}</Text>
+          <Text style={styles.section}>{t('phone') + ' :' + user?.phoneEntreprise}</Text>
           <Text style={styles.section}>
-            {t('address') + ' :' + user?.addressEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('phone')+ ' :' + user?.phoneEntreprise}
-          </Text>
-          <Text style={styles.section}>
-            {t('matriculeFiscale2') +
-              ' : ' +
-              user?.matriculefiscaleEntreprise}
+            {t('matriculeFiscale2') + ' : ' + user?.matriculefiscaleEntreprise}
           </Text>
         </View>
         <Text style={styles.subHeader}>Client :</Text>

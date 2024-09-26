@@ -45,9 +45,9 @@ import moment from 'moment';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { IconDotsVertical, IconEdit } from '@tabler/icons';
+import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons';
 import CustomSelect from '../forms/theme-elements/CustomSelect';
-import { updateStatus } from 'src/store/apps/vente/venteSlice';
+import { deleteVente, updateStatus } from 'src/store/apps/vente/venteSlice';
 import { PDFViewer } from '@react-pdf/renderer';
 import InvoicePDF from '../file/invoicePDF';
 import DeliveryNotePDF from '../file/deliveryNotePDF';
@@ -515,6 +515,17 @@ const TableVente = ({
                     >
                       {t('attachment')}
                     </Button>
+                    <IconButton
+                      aria-label="delete"
+                      size="large"
+                      onClick={() => {
+                        dispatch(deleteVente(row?._id));
+                        const newdata = data?.filter((item) => item._id !== row?._id);
+                        setData(newdata);
+                      }}
+                    >
+                      <IconTrash />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
                 <TableRow>

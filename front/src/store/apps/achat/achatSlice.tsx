@@ -25,9 +25,12 @@ export const AchatSlice = createSlice({
     setAchat: (state: StateType, action) => {
       state.selectedAchat = action.payload;
     },
+    setAchatDelete: (state: StateType, action) => {
+      state.achats = state.achats.filter((achat) => achat._id !== action.payload._id);
+    },
   },
 });
-export const { setAchats, setAchat, setAchatsAdd } = AchatSlice.actions;
+export const { setAchats, setAchat, setAchatsAdd, setAchatDelete } = AchatSlice.actions;
 
 export const fetchAchats = () => async (dispatch: AppDispatch) => {
   try {

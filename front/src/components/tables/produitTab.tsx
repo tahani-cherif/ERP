@@ -282,22 +282,13 @@ const TableProduit = ({
               <TableCell>
                 <Typography variant="h6">{t('description')}</Typography>
               </TableCell>
-              {user?.role === 'agence' && (
-                <TableCell>
-                  <Typography variant="h6">{t('price')}</Typography>
-                </TableCell>
-              )}
-              {user?.role !== 'agence' && (
-                <>
-                  {' '}
-                  <TableCell>
-                    <Typography variant="h6">{t('pricesales')}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">{t('pricepurchase')}</Typography>
-                  </TableCell>
-                </>
-              )}
+              <TableCell>
+                <Typography variant="h6">{t('pricesales')}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6">{t('pricepurchase')}</Typography>
+              </TableCell>
+
               <TableCell>
                 <Typography variant="h6">{t('quantite')}</Typography>
               </TableCell>
@@ -348,28 +339,20 @@ const TableProduit = ({
                       </Box>
                     </Stack>
                   </TableCell>
-                  {user?.role === 'agence' && (
-                    <TableCell scope="row">
-                      <Typography variant="subtitle1" color="textSecondary">
-                        {formatNumber(Number(row.price))}
-                      </Typography>
-                    </TableCell>
-                  )}
-                  {user?.role !== 'agence' && (
-                    <>
-                      {' '}
-                      <TableCell scope="row">
-                        <Typography variant="subtitle1" color="textSecondary">
-                          {formatNumber(Number(row.pricesales))}
-                        </Typography>
-                      </TableCell>
-                      <TableCell scope="row">
-                        <Typography variant="subtitle1" color="textSecondary">
-                          {formatNumber(Number(row.pricepurchase))}
-                        </Typography>
-                      </TableCell>
-                    </>
-                  )}
+                  <TableCell scope="row">
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {user?.role === 'agence'
+                        ? formatNumber(Number(row.price) + Number(row.montantbenefices))
+                        : formatNumber(Number(row.pricesales))}
+                    </Typography>
+                  </TableCell>
+                  <TableCell scope="row">
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {user?.role === 'agence'
+                        ? formatNumber(Number(row.price))
+                        : formatNumber(Number(row.pricepurchase))}
+                    </Typography>
+                  </TableCell>
                   <TableCell>
                     <Typography variant="subtitle1" color="textSecondary">
                       {row.stock}
