@@ -79,7 +79,7 @@ const createFacture = asyncHandler(async (req: any, res: Response) => {
     factureget?.modepaiement === "espece"
   ) {
     await caisseModel.create({
-      designation: facture?._id,
+      designation: facture?.reference,
       encaissement: 0,
       decaissement: factureget.total_general,
       date: factureget.date,
@@ -91,7 +91,7 @@ const createFacture = asyncHandler(async (req: any, res: Response) => {
     factureget?.modepaiement === "espece"
   ) {
     await caisseModel.create({
-      designation: facture?._id,
+      designation: facture?.reference,
       encaissement: factureget.total_general,
       decaissement: 0,
       date: factureget.date,
