@@ -36,6 +36,7 @@ interface IProduit {
 
 interface IVente {
   _id: string;
+  reference: string;
   client: Iclient;
   articles: {
     produit: IProduit;

@@ -116,6 +116,7 @@ interface IProduit {
 
 interface IVente {
   _id: string;
+  reference: string;
   client: Iclient;
   articles: {
     produit: IProduit;
@@ -281,7 +282,7 @@ const TableRecouverement = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
-                        <Typography variant="h6">{row._id}</Typography>
+                        <Typography variant="h6">{row.reference}</Typography>
                       </Box>
                     </Stack>
                   </TableCell>

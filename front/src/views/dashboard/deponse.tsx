@@ -25,6 +25,7 @@ interface IProduit {
 }
 interface IAchat {
   _id: string;
+  reference: string;
   articles: {
     produit: IProduit;
     quantite: string;

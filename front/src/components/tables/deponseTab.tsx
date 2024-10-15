@@ -107,6 +107,7 @@ interface IProduit {
 
 interface IAchat {
   _id: string;
+  reference: string;
   articles: {
     produit: IProduit;
     quantite: string;
@@ -270,7 +271,7 @@ const TableDepnose = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box>
-                        <Typography variant="h6">{row._id}</Typography>
+                        <Typography variant="h6">{row.reference}</Typography>
                       </Box>
                     </Stack>
                   </TableCell>

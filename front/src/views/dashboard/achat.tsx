@@ -284,7 +284,7 @@ const Vente = () => {
         >
           {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => (
             <form onSubmit={handleSubmit}>
-              <DialogTitle id="responsive-dialog-title">{t('addVente')}</DialogTitle>
+              <DialogTitle id="responsive-dialog-title">{t('addAchat')}</DialogTitle>
               <DialogContent>
                 <Box>
                   <CustomFormLabel htmlFor="reference">{t('facture')} N°</CustomFormLabel>
